@@ -1,0 +1,87 @@
+<extend name="Base/common" />
+<block name="style">
+<style type="text/css">
+	.ellipsis, .ellipsis li {
+	    overflow: hidden;
+	    text-overflow: ellipsis;
+	    white-space: nowrap;
+	}
+    .material_list{ margin:0 -14px; overflow:hidden; zoom:1; padding:15px 0;}
+    .material_list li{ width:;border:1px solid #ddd; float:left; margin:9px; list-style:none; position:relative}
+    .appmsg_dialog .material_list li{ cursor:pointer}
+    .material_list li:hover .hover_area{ display:block; cursor:pointer}
+    .appmsg_item{ padding:15px; width:278px;}
+    .appmsg_area .appmsg_item{ width:278px;}
+    .appmsg_item h6{ font-size:16px; color:#222; font-weight:normal}
+    .appmsg_item .time{ color:#888; font-size:12px;}
+    .appmsg_item h6{ font-size:16px; color:#222; font-weight:normal;text-align:center;line-height:20px;margin-top:0;text-align: left;}
+    .appmsg_item .main_img{ margin:10px 0; height:150px; position:relative; overflow:hidden;}
+    .appmsg_item .main_img img{ width:100%; min-height:150px;}
+    .appmsg_item .main_img h6{ position:absolute; background:RGBA(0,0,0,.5); color:#fff; padding:3px 5px; bottom:0; right:0; left:0; z-index:10; font-size:14px;}
+    .appmsg_item .intro{text-overflow: ellipsis; overflow:hidden; white-space:nowrap}
+	.appmsg_action{ width:100%; border-top:1px solid #ddd; overflow:hidden;zoom:1; background:#eee;}
+	.appmsg_action a{ width:50%; float:left; text-align:center; height:40px; line-height:40px; color:#444;}
+	.appmsg_action a:hover{ background:#ddd;}
+    ul.img-list > img { width: 100px; height: 100px; float: left; margin: 5px }
+</style>
+</block>
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <include file="Public/nav" />
+        </h3>
+    </div>
+    <div class="mod-body tab-content">
+        <div class="tab-pane active" id="list">
+            <if condition="$tip">
+                <div class="alert alert-info tip" role="alert">{$tip}</div>
+            </if>
+            <div class="mod-table-head">
+                <volist name="btn" id="vo">
+                    <a class="{$vo.class}" href="{$vo.url}" {$vo.attr}>{$vo.title}</a>&nbsp;
+                </volist>
+            </div>
+            <form action="" method="post">
+	            <input type="hidden" id="action" name="action" value="del">
+	            <div class="table">
+	                <ul class="material_list">   
+	                    <volist name="lists" id="vo">     
+	                    <li class="appmsg_li"> 
+	                    	<div class="appmsg_item">
+	                    		<h6 class="ellipsis">{$vo.title}</h6>
+                                <p class="title"></p>
+	                            <div class="main_img">
+	                                <a href="{$vo.url}" target="_blank"><img src="{$vo.picurl}"></a>
+	                            </div>
+	                            <p class="desc ellipsis">{$vo.description}</p>
+	                            <div class="appmsg_action">
+	                                <a href="{:U('edit',array('id'=>$vo['id']))}">编辑</a>
+	                                <a href="{:U('delete',array('id'=>$vo['id']))}" class="del_material">删除</a>
+	                            </div>
+	                        </div>
+	                    </li>
+	                    </volist>     	
+	                </ul>
+	            </div>
+            </form>
+            <div class="mod-table-foot">
+                {$pagination}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function() {
+        $('.del_material').on('click', function() {
+            if (confirm('删除此素材，可能会导致引用了该素材的内容不可用，是否确认要删除？')) {
+                window.location.href = $(this).attr('href');
+                return false;
+            } else {
+                return false;
+            }
+        });
+    });
+</script>
+</block>

@@ -1,0 +1,64 @@
+<extend name="Base/common" />
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <ul class="nav nav-tabs">
+                <li><a href="{:U('lists')}">已安装插件</a></li>
+                <li class="active"><a href="{:U('not_install')}">未安装插件</a></li>
+                <li><a href="{:U('add')}">设计新插件</a></li>
+            </ul>
+        </h3>
+    </div>
+    <div class="mod-body tab-content">
+        <div class="tab-pane active" id="list">
+            <div class="mod-table-head">
+                <notempty name="add_button">
+                <a class="btn btn-primary" href="{:U('add')}">新增</a>
+                </notempty>
+                <notempty name="del_button">
+                <a class="btn btn-danger" onclick="$('#action').val('del'); AWS.ajax_post($('#batchs_form'));" href="javascript:;">删除</a>
+                </notempty>
+            </div>
+            <br>
+            <form action="" method="post">
+            <input type="hidden" id="action" name="action" value="del">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th><div class="icheckbox_square-blue" style="position: relative;"><input type="checkbox" class="check-all" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div></th>
+                            <th>插件LOGO</th>
+                            <th>插件名</th>
+                            <th>插件标识</th>
+                            <th>插件描述</th>
+                            <th>当前版本</th>
+                            <th>作者</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <volist name="addons" id="vo">
+                        <tr>
+                            <td><div class="icheckbox_square-blue" style="position: relative;"><input type="checkbox" name="notice_ids[]" value="7" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div></td>
+                            <td><img src="{$vo.logo}" width="50" height="50"></td>
+                            <td>{$vo.name}</td>
+                            <td>{$vo.bzname}</td>
+                            <td>{$vo.desc}</td>
+                            <td>{$vo.version}</td>
+                            <td>{$vo.author}</td>
+                            <td><a href="{:U('install_addon', array('_addon'=>$vo['bzname']))}" class="icon icon-edit md-tip" title="" data-original-title="安装插件">安装</a></td>
+                        </tr>
+                        </volist>                                            
+                    </tbody>
+                </table>
+            </div>
+            </form>
+            <div class="mod-table-foot">
+                
+            </div>
+        </div>
+    </div>
+</div>
+</block>

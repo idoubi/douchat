@@ -1,0 +1,66 @@
+<block name="html">
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+	<meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport">
+    <meta content="application/xhtml+xml;charset=UTF-8" http-equiv="Content-Type">
+    <meta content="no-cache,must-revalidate" http-equiv="Cache-Control">
+    <meta content="no-cache" http-equiv="pragma">
+    <meta content="0" http-equiv="expires">
+    <meta content="telephone=no, address=no" name="format-detection">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="stylesheet" type="text/css" href="__PUBLIC__/Mp/css/mobile_module.css" media="all">
+    <script type="text/javascript" src="__PUBLIC__/Common/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="__PUBLIC__/Common/js/flipsnap.min.js"></script>
+<!--<script type="text/javascript" src="__PUBLIC__/Mp/js/mobile_module.js"></script> -->
+    <script type="text/javascript">
+    
+    var RAND_COLOR = ["#ff6600","#ff9900","#99cc00","#33cc00","#0099cc","#3399ff","#9933ff","#cc3366","#333333","#339999","#ff6600","#ff9900","#99cc00","#33cc00","#0099cc","#3399ff","#9933ff","#cc3366","#333333","#339999","#ff6600","#ff9900","#99cc00","#33cc00","#0099cc","#3399ff","#9933ff","#cc3366","#333333","#339999"];
+
+    //通用banner
+    function banner(isAuto,delayTime){
+        var screenWidth = $('.container').width();
+        var count = $('.banner li').size();
+        $('.banner ul').width(screenWidth*count);
+        $('.banner ul').height(screenWidth/2);
+        $('.banner').height(screenWidth/2);
+        $('.banner li').width(screenWidth).height(screenWidth/2);
+        $('.banner li img').width(screenWidth).height(screenWidth/2);
+        $('.banner li .title').css({'width':'98%','padding-left':'2%'})
+        // With options
+        $('.banner li .title').each(function(index, element) {
+            $(this).text($(this).text().length>15?$(this).text().substring(0,15)+" ...":$(this).text());
+        });
+        var flipsnap = Flipsnap('.banner ul');
+        flipsnap.element.addEventListener('fstouchend', function(ev) {
+            $('.identify em').eq(ev.newPoint).addClass('cur').siblings().removeClass('cur');
+        }, false);
+        $('.identify em').eq(0).addClass('cur')
+        if(isAuto){
+            var point = 1;
+            setInterval(function(){
+                //console.log(point);
+                flipsnap.moveToPoint(point);
+                $('.identify em').eq(point).addClass('cur').siblings().removeClass('cur');
+                if(point+1==$('.banner li').size()){
+                    point=0;
+                }else{
+                    point++;
+                    }
+                
+                },delayTime)
+        }
+    }
+
+    //随机颜色
+    function setRandomColor(selector){
+        $(selector).each(function(index, element) {
+            $(this).css('background-color',RAND_COLOR[index]);
+        });;
+    }
+
+    </script>
+</head>

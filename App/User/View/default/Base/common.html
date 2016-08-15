@@ -1,0 +1,270 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="renderer" content="webkit" />
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="blank" />
+<meta name="format-detection" content="telephone=no" />
+<title>{$system_settings['site_name']}</title>
+<meta name="keywords" content="{$settings['site_keywords']}" />
+<meta name="description" content="{$settings['site_intro']}" />
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Common/css/bootstrap.css" />
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Common/css/icon.css?v=20141226" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Common/css/font-awesome.min.css" />
+<link type="text/css" rel="stylesheet" href="__PUBLIC__/Admin/css/common.css" />
+<script type="text/javascript" src="__PUBLIC__/Common/js/jquery.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/Admin/js/framework.js" ></script>
+<script type="text/javascript" src="__PUBLIC__/Admin/js/global.js" ></script>
+<!--[if lte IE 8]>
+    <script type="text/javascript" src="__PUBLIC__/Common/js/respond.js"></script>
+<![endif]-->
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Plugins/webuploader/css/webuploader.css" />
+<link rel="stylesheet" type="text/css" href="__PUBLIC__/Plugins/webuploader/css/style.css" />
+<script type="text/javascript" src="__PUBLIC__/Plugins/webuploader/js/webuploader.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Plugins/webuploader/js/upload.js"></script>
+<script type="text/javascript" src="__PUBLIC__/Plugins/jqPaginator/jqPaginator.min.js"></script>
+</head>
+
+<body>
+ 
+    <div id="modal-wechat-webuploader" class="modal fade in" tabindex="-1" role="dialog" aria-hidden="false" style="display: none; padding-right: 17px;">
+        <div class="modal-dialog" style="width:700px;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <ul class="nav nav-pills" role="tablist">
+                        <li id="li_upload_perm" data-mode="perm" class="active" role="presentation">
+                            <a href="#wechat_upload" aria-controls="wechat_upload" role="tab" data-toggle="tab">上传图片</a>
+                        </li>
+                        <!-- <li id="li_upload_temp" data-mode="temp" role="presentation">
+                            <a href="#wechat_upload" aria-controls="wechat_upload" role="tab" data-toggle="tab">上传临时图片(保留3天)</a>
+                        </li> -->
+                        <li id="li_history_image" class="" role="presentation">
+                            <a href="#wechat_history_image" aria-controls="wechat_history_image" role="tab" data-toggle="tab">浏览图片</a>
+                        </li>
+                        <!-- <li id="li_history_audio" class="hide" role="presentation">
+                            <a href="#wechat_history_audio" aria-controls="wechat_history_audio" role="tab" data-toggle="tab">浏览音频</a>
+                        </li>
+                        <li id="li_history_video" class="hide" role="presentation"><a href="#wechat_history_video" aria-controls="wechat_history_video" role="tab" data-toggle="tab">浏览视频</a></li> -->
+                    </ul>
+                </div>
+                <div class="modal-body tab-content">
+                    <div role="tabpanel" class="tab-pane history" id="wechat_history_image">
+                        <div class="history-content" style="height:330px">
+                            <ul class="img-list clearfix">
+                            </li>
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <div style="float: left;" class="pagination">
+                            </div>
+                            <div style="float: right;">
+                                <button style="display:none;" type="button" class="btn btn-primary">确认</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div role="tabpanel" class="tab-pane upload active" id="wechat_upload">
+                        <div id="uploader">
+                            <div class="queueList">
+                                <div id="dndArea" class="placeholder">
+                                    <div id="filePicker"></div>
+                                    <p>或将照片拖到这里，单次最多可选300张</p>
+                                </div>
+                            </div>
+                            <div class="statusBar" style="display:none;">
+                                <div class="progress">
+                                    <span class="text">0%</span>
+                                    <span class="percentage"></span>
+                                </div><div class="info"></div>
+                                <div class="btns">
+                                    <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>      
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div  class="aw-header">
+    <button class="btn btn-sm mod-head-btn pull-left">
+        <i class="icon icon-bar"></i>
+    </button>
+
+    <div class="mod-header-user">
+        <ul class="pull-left">
+            <li class="dropdown mp">
+                <if condition="$mp_info['origin_id']">
+                <a href="#" class="dropdown-toggle mod-bell" data-toggle="dropdown">
+                    <img src="<if condition="$mp_info['headimg']">{$mp_info['headimg']}<else />__PUBLIC__/Admin/img/noname.jpg</if>" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
+                    {$mp_info['name']}
+                    <span class="caret"></span>
+                </a>
+                <else />
+                <a href="#" class="dropdown-toggle mod-bell" data-toggle="">
+                    <img src="__PUBLIC__/Admin/img/noname.jpg" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
+                    系统管理后台
+                </a>
+                </if>
+                <ul class="dropdown-menu mod-user">
+                    <li>
+                        <a href="{:U('Mp/Index/index')}"><i class="icon icon-home"></i>公众号首页</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mp/Mp/edit', array('id'=>$mp_info['id']))}"><i class="icon icon-edit"></i>编辑当前账号</a>
+                    </li>
+                    <li>
+                        <a href="{:U('Mp/Mp/lists')}"><i class="icon icon-ul"></i>管理其他账号</a>
+                    </li>
+                </ul>
+            </li>
+            <volist name="topmenu" id="vo">
+            <li class="top-menu"> 
+                <a href="{$vo.url}" class="{$vo.class}">{$vo.title}</a>
+            </li>
+            </volist>
+        </ul>
+       <!--  <if condition="$mp_info"><a href="{:U('Mp/Index/index', array('mpid'=>$mp_info['id']))}">{$mp_info['name']}</a></if> -->
+        <ul class="pull-right">
+            
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle mod-bell" data-toggle="dropdown">
+                    <i class="icon icon-bell"></i>
+                                        <span class="label label-danger">1</span>
+                                    </a>
+                <ul class="dropdown-menu mod-chat">
+                                    <div class="mod-list-head">
+                        您有 1 条消息                    </div>
+
+                                        <li class="mod-media">
+                        <a href="http://www.wecenter.com/downloads/">
+                            程序需要更新，最新版本为 3.1.8                        </a>
+                    </li>
+                                    </ul>
+            </li>
+
+            <li class="dropdown username">
+                <a href="" class="dropdown-toggle" data-toggle="dropdown">
+                    <img src="http://112.124.26.161/uploads/avatar/000/00/00/03_avatar_mid.jpg" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
+                    <if condition="$user_info['nickname'] neq ''">{$user_info['nickname']}<else />{$user_info['username']}</if>
+                    <span class="caret"></span>
+                </a>
+
+                <ul class="dropdown-menu pull-right mod-user">
+                    <li>
+                        <a href="{:U('Index/index')}"><i class="icon icon-home"></i>首页</a>
+                    </li>
+
+                    <li>
+                        <a href="{:U('User/Public/profile')}"><i class="icon icon-ul"></i>个人资料</a>
+                    </li>
+
+                    <li>
+                        <a href="{:U('User/Public/login_out')}"><i class="icon icon-logout"></i>退出</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</div>
+
+<div id="aw-ajax-box" class="aw-ajax-box">
+    <div id="aw-loading" class="hide" style="display: none;">
+        <div id="aw-loading-box"></div>
+    </div>
+    <div class="modal fade alert-box aw-tips-box in" aria-hidden="false" style="display: none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                    <h3 class="modal-title" id="myModalLabel">提示信息</h3>
+                </div>
+                <div class="modal-body">
+                    <p>提示内容</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-backdrop fade in" style="display:none"></div>
+<div class="aw-side" id="aw-side">
+    <div class="mod">
+        <div class="mod-logo">
+            <img class="pull-left" src="__PUBLIC__/Admin/img/logo.png" alt="" />
+            <h1>豆信3.0</h1>
+        </div>
+
+        <div class="mod-message">
+            <div class="message">
+                <a class="btn btn-sm" href="{:U('Home/Index/index')}" target="_blank" title="网站首页">
+                    <i class="icon icon-home"></i>
+                </a>
+
+                <a class="btn btn-sm" href="{:U('Admin/Index/index')}" title="后台首页">
+                    <i class="icon icon-ul"></i>
+                </a>
+
+                <a class="btn btn-sm" href="{:U('User/Public/login_out')}" title="退出登录">
+                    <i class="icon icon-logout"></i>
+                </a>
+            </div>
+        </div>
+        
+        <block name="sidenav">
+            <ul class="mod-bar" >
+                <li>
+                    <a href="{:U('User/Public/profile')}" class=" icon icon-home">
+                        <span>个人资料</span>
+                    </a>
+                </li>
+            </ul>
+        </block>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+var controller = "<php>echo CONTROLLER_NAME;</php>";        // 获取当前控制器
+var action = "<php>echo ACTION_NAME;</php>";
+var ca = controller+'/'+action;
+var active_a = $("#aw-side a[href*='"+controller+"/']");              // 获取链接中包含当前控制器的a标签
+var active_ul = active_a.parent("li").parent("ul");         // 获取需要显示的ul标签
+var active_wrap = active_ul.siblings("a");                  
+
+active_a.addClass("active");
+active_ul.removeClass("hide");
+active_wrap.addClass("active");
+
+</script>
+
+<div class="aw-content-wrap">
+<block name="main_content">
+
+</block>
+</div>
+<div class="aw-footer">
+    <p>{$settings['site_copyright']} - Powered By <a href="http://douchat.cc/" target="blank">豆信</a></p>
+</div>
+
+<!-- DO NOT REMOVE -->
+<div id="aw-ajax-box" class="aw-ajax-box"></div>
+
+
+<div style="display:none;" id="__crond">
+	<script type="text/javascript">
+		$(document).ready(function () {
+			//$('#__crond').html(unescape('%3Cimg%20src%3D%22' + G_BASE_URL + '/crond/run/1459163416%22%20width%3D%221%22%20height%3D%221%22%20/%3E'));
+		});
+
+	</script>
+</div>
+
+<script type="text/javascript" src="__PUBLIC__/Admin/js/common.js"></script>
+
+</body>
+</html>

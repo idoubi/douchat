@@ -1,0 +1,166 @@
+<extend name="Base/common" />
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <include file="Public/nav" />
+        </h3>
+    </div>
+    <div class="tab-content mod-content">
+        <if condition="$tip">
+        <div class="alert alert-info tip" role="alert">{$tip}</div>
+        </if>
+        <if condition="$subnav">
+            <ul class="nav nav-tabs">
+                <volist name="subnav" id="vo">
+                <li role="presentation" class="{$vo.class}"><a href="{$vo.url}">{$vo.title}</a></li>
+                </volist>
+            </ul> 
+            <br>
+        </if>
+        <if condition="$fields">
+        <form method="post" action="" class="form-horizontal" role="form">
+        	<volist name="fields" id="vo"> 
+        		<switch name="vo.type">
+        			<case value="text">
+        				<div class="form-group">
+        				    <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+        				    <div class="col-sm-9 col-xs-12">
+        				        <input class="form-control" type="text" name="{$vo.name}" placeholder="{$vo.placeholder}" value="{$vo.value}" {$vo.attr} />
+        				        <span class="help-block">{$vo.tip}</span>
+        				    </div>
+        				</div>
+        			</case>
+                    <case value="number">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="number" name="{$vo.name}" placeholder="{$vo.placeholder}" value="{$vo.value}" {$vo.attr} />
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="password">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="password" name="{$vo.name}" placeholder="{$vo.placeholder}" value="" />
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="email">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="email" name="{$vo.name}" placeholder="{$vo.placeholder}" value="{$vo.value}" />
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="image">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$vo.title}</label>
+                            <div class="col-sm-9 col-xs-12" ng-invoker="context.bind();">        
+                                <div class="input-group ">
+                                    <input type="text" name="{$vo.name}" class="form-control webuploader-input" value="{$vo.value}">
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-default webuploader-btn" type="button"  data-toggle="modal" data-target="#modal-wechat-webuploader">选择图片</button>
+                                    </span>
+                                </div>
+                                <div class="input-group " style="margin-top:.5em;">
+                                    <img src="<if condition="$vo['value']">{$vo.value}<else />__PUBLIC__/Mp/img/nopic.jpg</if>" data-nopic="__PUBLIC__/Mp/img/nopic.jpg" class="img-responsive img-thumbnail webuploader-picture" width="150">
+                                    <em class="close" style="position:absolute; top: 0px; right: -14px;" title="删除这张图片">×</em>
+                                </div>                                  
+                            </div>
+                        </div>
+                    </case>
+        			<case value="textarea">
+        				<div class="form-group">
+        				    <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+        				    <div class="col-sm-9 col-xs-12">
+        				        <textarea class="form-control" name="{$vo.name}" placeholder="{$vo.placeholder}" rows="6">{$vo.value}</textarea>
+        				        <span class="help-block">{$vo.tip}</span>
+        				    </div>
+        				</div>
+        			</case>
+                    <case value="ueditor">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <script id="ueditor" name="{$vo.name}" type="text/plain" placeholder="{$vo.placeholder}" style="height:300px;z-index:-1;">{$vo['value']|htmlspecialchars_decode=###}</script>
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case> 
+                    <case value="markdown">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div id="test-editormd">
+                                    <textarea style="display:none;" name="content">{$vo['value']}</textarea>
+                                </div>
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>                    
+                    <case value="select">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <select name="{$vo.name}" class="form-control">
+                                    <volist name="vo.options" id="vv">
+                                    <option value="{$key}" <if condition="$vo['value'] eq $key">selected</if>>{$vv}</option>
+                                    </volist>
+                                </select>
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="radio">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <volist name="vo.options" id="vv">
+                                <label class="radio-inline">
+                                  <input type="radio" name="{$vo.name}" value="{$key}" <if condition="$vo['value'] eq $key">checked</if>> {$vv}
+                                </label>
+                                </volist>
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="checkbox">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <volist name="vo.options" id="vv">
+                                <label class="checkbox-inline">
+                                  <input type="checkbox" name="{$vo.name}[]" value="{$key}" <php> if (in_array($key, json_decode($vo['value'], true))) { echo 'checked'; } </php>> {$vv}
+                                </label>
+                                </volist>
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="hidden">
+                        <input type="hidden" name="{$vo.name}" value="{$vo.value}" />
+                    </case>
+        		</switch>
+        	</volist>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-5 col-xs-8">
+
+                    <volist name="hiddens" id="vo">
+                    <input type="hidden" name="{$key}" value="{$vo}" />
+                    </volist>
+
+                    <input type="submit" value="确认提交" class="btn btn-primary center-block ajax-post" />
+                </div>
+            </div>
+        </form>
+        </if>
+    </div>
+</div>
+</block>

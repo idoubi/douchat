@@ -1,0 +1,7 @@
+<if condition="$crumb">
+<ol class="breadcrumb">
+	<volist name="crumb" id="vo">
+	<li class="{$vo.class}"><notempty name="vo.url"><a href="{$vo.url}">{$vo.title}</a><else />{$vo.title}</notempty></li>
+	</volist>
+</ol>
+</if>

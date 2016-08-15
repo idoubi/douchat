@@ -1,0 +1,71 @@
+<div class="aw-side" id="aw-side">
+    <div class="mod">
+        <div class="mod-logo">
+            <img class="pull-left" src="__PUBLIC__/Admin/img/logo.png" alt="" />
+            <h1>豆信3.0</h1>
+        </div>
+
+        <div class="mod-message">
+            <div class="message">
+                <a class="btn btn-sm" href="{:U('Home/Index/index')}" target="_blank" title="网站首页">
+                    <i class="icon icon-home"></i>
+                </a>
+
+                <a class="btn btn-sm" href="{:U('Mp/Index/index')}" title="公众号首页">
+                    <i class="icon icon-ul"></i>
+                </a>
+
+                <a class="btn btn-sm" href="{:U('User/Public/login_out')}" title="退出登录">
+                    <i class="icon icon-logout"></i>
+                </a>
+            </div>
+        </div>
+
+        <block name="sidenav">
+        <volist name="sidenav" id="vo">
+        <ul class="mod-bar" >
+            <li>
+                <a href="{$vo.url}" class="{$vo.class}" {$vo.attr}>
+                    <span>{$vo.title}</span>
+                </a>
+                <!-- <ul <if condition="CONTROLLER_NAME neq 'Addons'">class="hide"</if>> -->
+                <ul>
+                    <volist name="vo.children" id="vv">
+                    <li>
+                        <a href="{$vv.url}">
+                            <span>{$vv.title}</span>
+                        </a>
+                    </li>
+                    </volist>
+                </ul>
+            </li>
+        </ul>
+        </volist>
+        </block>
+    </div>
+</div>
+
+<script type="text/javascript">
+var path_info = "<php>echo $_SERVER['PATH_INFO'];</php>";
+var controller = "<php>echo CONTROLLER_NAME;</php>";        // 获取当前控制器
+var addon = "{:get_addon()}";
+if (controller == 'Web') {
+    if (addon) {
+        var active_a = $("#aw-side a[href*='"+addon+"']"); 
+    } else {
+        var active_a = $("#aw-side a[href*='"+path_info+"']"); 
+    }
+} else {
+    var active_a = $("#aw-side a[href*='"+controller+"']");              // 获取链接中包含当前控制器的a标签
+}
+
+var active_ul = active_a.parent("li").parent("ul");         // 获取需要显示的ul标签
+var active_wrap = active_ul.siblings("a");                  
+
+active_a.addClass("active");
+active_ul.removeClass("hide");
+active_wrap.addClass("active");
+
+</script>
+
+

@@ -1,0 +1,64 @@
+<extend name="Base/common" />
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <include file="Public/nav" />
+        </h3>
+    </div>
+    <div class="mod-body tab-content">
+        <div class="tab-pane active" id="list">
+            <form id="batchs_form" action="" method="post">
+            <div class="table-responsive">
+                <table class="table table-striped">
+	                <tbody>
+	                	<tr>
+		                    <td>
+		                        <div class="form-group">
+		                            <span class="col-sm-4 col-xs-3 control-label">公众号名称:</span>
+		                            <div class="col-sm-6 col-xs-8">
+		                                {$info.name}
+		                            </div>
+		                        </div>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        <div class="form-group">
+		                            <span class="col-sm-4 col-xs-3 control-label">URL(服务器地址):</span>
+		                            <div class="col-sm-6 col-xs-8">
+		                                <!-- {:U('Api/index@'.C('HTTP_HOST'), array('id'=>$info['id']))} -->
+		                                {$api_url}
+		                            </div>
+		                        </div>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        <div class="form-group">
+		                            <span class="col-sm-4 col-xs-3 control-label">Token(令牌):</span>
+		                            <div class="col-sm-6 col-xs-8">
+		                                {$info.valid_token}
+		                            </div>
+		                        </div>
+		                    </td>
+		                </tr>
+		                <tr>
+		                    <td>
+		                        <div class="form-group">
+		                            <span class="col-sm-4 col-xs-3 control-label">EncodingAESKey(消息加解密密钥):</span>
+		                            <div class="col-sm-6 col-xs-8">
+		                                {$info.encodingaeskey}
+		                            </div>
+		                        </div>
+		                    </td>
+		                </tr>
+	            	</tbody>
+	            </table>
+            </div>
+            </form>    
+        </div>
+    </div>
+</div>
+</block>

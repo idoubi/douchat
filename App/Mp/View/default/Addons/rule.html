@@ -1,0 +1,31 @@
+<extend name="Base/common" />
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+        	<include file="Public/nav" />
+        </h3>
+    </div>
+    <div class="tab-content mod-content">
+        <if condition="$tip">
+            <div class="alert alert-info tip" role="alert">{$tip}</div>
+        </if>
+        <form method="post" action="" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-sm-2 col-xs-3 control-label">触发关键词:</label>
+                <div class="col-sm-5 col-xs-8">
+                    <input class="form-control" type="text" name="keyword" value="{$rule.keyword}">
+                    <span class="help-block">多个关键词用<font color="red">英文逗号</font>隔开，支持正则表达式，如：^点歌、点歌$</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-5 col-xs-8">
+                    <input type="hidden" name="id" value="{$rule.id}" />
+                    <input type="submit" value="确认提交" class="btn btn-primary center-block ajax-post" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+</block>

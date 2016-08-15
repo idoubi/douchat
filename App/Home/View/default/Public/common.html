@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{$system_settings.site_name}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="utf-8">
+  <meta name="keyword" content="{$system_settings.site_keywords}" />
+  <meta name="description" content="{$system_settings.site_intro}" />
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/Common/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/Home/default/css/site.min.css">
+  <link rel="stylesheet" type="text/css" href="__PUBLIC__/Home/default/css/style.css">
+  <block name="style"></block>
+</head>
+<body>
+  <div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle collapsed" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand hidden-sm" href="./">豆信</a>
+      </div>
+      <div class="navbar-collapse collapse" role="navigation">
+        <ul class="nav navbar-nav">
+          <li class="hidden-sm hidden-md">
+            <a href="./" target="_self">首页</a>
+          </li>
+          <li>
+            <a href="http://douchat.cc/cases" target="_blank">案例</a>
+          </li>
+          <li>
+            <a href="http://doc.douchat.cc/" target="_blank">手册</a>
+          </li>
+          <li class="hidden-sm hidden-md">
+            <a href="http://bbs.douchat.cc/" target="_blank">社区</a>
+          </li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right hidden-sm">
+          <li><a href="{:U('Mp/Index/index')}" target="_self">后台管理</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <block name="main_content"></block>
+
+  <footer class="footer ">
+      <div class="container">
+        <div class="row footer-bottom">
+          <ul class="list-inline text-center">
+            <li><if condition="$system_settings['site_copyright']">{$system_settings.site_copyright}<else />Copyright © 2014-2016 <a href="http://douchat.cc/" target="_blank">豆信</a>版权所有</if></li><li>{$system_settings.site_icp_beian}</li>
+          </ul>
+        </div>
+      </div>
+    </footer>
+  <script type="text/javascript" src="__PUBLIC__/Common/js/jquery-3.1.0.js"></script>
+  <script type="text/javascript" src="__PUBLIC__/Common/js/bootstrap.min.js"></script>
+</body>
+</html>

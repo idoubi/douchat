@@ -1,0 +1,92 @@
+<extend name="Base/common" />
+<block name="style">
+<style type="text/css">
+.null_deal {
+    margin: 100px auto;
+    padding-top: 150px;
+    background: url(__PUBLIC__/Admin/img/cry.png) no-repeat center top;
+    text-align: center;
+    color: #666;
+}
+</style>
+</block>
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="">功能导航</a>
+                </li>
+            </ul>
+        </h3>
+    </div>
+    <div class="mod-body tab-content">
+        <div class="tab-pane active" id="list">
+            <if condition="empty($sidenavs['rule']) AND empty($sidenavs['setting']) AND empty($sidenavs['entry']) AND empty($sidenavs['menu'])">
+            <div class="null_deal">
+                <p>
+                    aOh! 当前插件没有配置参数和业务功能! 
+                </p>
+            </div>
+            <else />
+            <div class="clearfix welcome-container">
+                    <if condition="$sidenavs['rule']">
+                    <div class="page-header">
+                        <h4><i class="fa fa-comments"></i>&nbsp;&nbsp;基础设置</h4>
+                    </div>
+                    <div class="shortcut clearfix">
+                        <a href="{$sidenavs['rule']['url']}" class="btn btn-info">
+                            <span>{$sidenavs['rule']['title']}</span>
+                        </a>
+                    </div>
+                    </if>
+                    <if condition="$sidenavs['setting']">
+                    <div class="page-header">
+                        <h4><i class="fa fa-cog"></i>&nbsp;&nbsp;配置参数</h4>
+                    </div>
+                    <div class="shortcut clearfix">
+                        <volist name="sidenavs.setting.children" id="vo">
+                        <if condition="isset($vo['title']) && isset($vo['url'])">
+                        <a href="{$vo.url}" class="btn btn-primary">
+                            <span>{$vo.title}</span>
+                        </a>&nbsp;&nbsp;
+                        </if>
+                        </volist>
+                    </div>
+                    </if>
+                    <if condition="$sidenavs['entry']">
+                    <div class="page-header">
+                        <h4><i class="fa fa-plane"></i>&nbsp;&nbsp;封面入口</h4>
+                    </div>
+                    <div class="shortcut clearfix">
+                        <volist name="sidenavs.entry.children" id="vo">
+                        <if condition="isset($vo['title']) && isset($vo['url'])">
+                        <a href="{$vo.url}" class="btn btn-warning">
+                            <span>{$vo.title}</span>
+                        </a>&nbsp;&nbsp;
+                        </if>
+                        </volist>
+                    </div>
+                    </if>
+                    <if condition="$sidenavs['menu']">
+                    <div class="page-header">
+                        <h4><i class="fa fa-navicon"></i>&nbsp;&nbsp;业务导航</h4>
+                    </div>
+                    <div class="shortcut clearfix">
+                        <volist name="sidenavs.menu.children" id="vo">
+                        <if condition="isset($vo['title']) && isset($vo['url'])">
+                        <a href="{$vo.url}" class="btn btn-success">
+                            <span>{$vo.title}</span>
+                        </a>&nbsp;&nbsp;
+                        </if>
+                        </volist>
+                    </div>
+                    </if>   
+                </div>
+            </div>
+            </if>
+        </div>
+    </div>
+</div>
+</block>

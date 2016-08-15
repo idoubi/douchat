@@ -1,0 +1,100 @@
+<extend name="Base/wechat_addon_common" />
+<block name="main_content">
+<div class="aw-content-wrap">
+    <div class="mod">
+        <div class="mod-head">
+            <h3>
+                <include file="Public/nav" />
+            </h3>
+        </div>
+
+        <div class="tab-content mod-content">
+            <form method="post" action="http://douchat.cc/?/admin/question/question_list/" onsubmit="return false;" id="search_form" class="form-horizontal" role="form">
+
+                    <input name="action" type="hidden" value="search">
+
+                    <div class="form-group">
+                        <label class="col-sm-2 col-xs-3 control-label">关键词:</label>
+
+                        <div class="col-sm-5 col-xs-8">
+                            <input class="form-control" type="text" value="" name="keyword">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 col-xs-3 control-label">分类:</label>
+
+                        <div class="col-sm-5 col-xs-8">
+                            <select name="category_id" class="form-control">
+                                <option value="0"></option>
+                                <option value="2">开发交流</option><option value="4">应用商城</option><option value="1">开发教程</option><option value="6">开源下载</option><option value="5">需求定制</option><option value="8">官方公告</option>                          </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 col-xs-3 control-label">发起时间范围:</label>
+
+                        <div class="col-sm-6 col-xs-9">
+                            <div class="row">
+                                <div class="col-xs-11  col-sm-5 mod-double">
+                                    <input type="text" class="form-control mod-data" value="" name="start_date"><div class="date_selector" style="display: none; top: 34px;"><div class="nav"><p class="month_nav"><span class="buttonx prev" title="[Page-Up]">«</span> <span class="month_name">四月</span> <span class="buttonx next" title="[Page-Down]">»</span></p><p class="year_nav"><span class="buttonx prev" title="[Ctrl+Page-Up]">«</span> <span class="year_name">2016</span> <span class="buttonx next" title="[Ctrl+Page-Down]">»</span></p></div><table><thead><tr><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th><th>日</th></tr></thead><tbody><tr><td class="unselected_month" date="2016-03-27">27</td><td class="unselected_month" date="2016-03-28">28</td><td class="unselected_month" date="2016-03-29">29</td><td class="unselected_month" date="2016-03-30">30</td><td class="unselected_month" date="2016-03-31">31</td><td class="selectable_day" date="2016-04-01">1</td><td class="selectable_day" date="2016-04-02">2</td></tr><tr><td class="selectable_day" date="2016-04-03">3</td><td class="selectable_day" date="2016-04-04">4</td><td class="selectable_day" date="2016-04-05">5</td><td class="selectable_day" date="2016-04-06">6</td><td class="selectable_day" date="2016-04-07">7</td><td class="selectable_day" date="2016-04-08">8</td><td class="selectable_day" date="2016-04-09">9</td></tr><tr><td class="selectable_day" date="2016-04-10">10</td><td class="selectable_day" date="2016-04-11">11</td><td class="selectable_day" date="2016-04-12">12</td><td class="selectable_day" date="2016-04-13">13</td><td class="selectable_day" date="2016-04-14">14</td><td class="selectable_day" date="2016-04-15">15</td><td class="selectable_day today selected" date="2016-04-16">16</td></tr><tr><td class="selectable_day" date="2016-04-17">17</td><td class="selectable_day" date="2016-04-18">18</td><td class="selectable_day" date="2016-04-19">19</td><td class="selectable_day" date="2016-04-20">20</td><td class="selectable_day" date="2016-04-21">21</td><td class="selectable_day" date="2016-04-22">22</td><td class="selectable_day" date="2016-04-23">23</td></tr><tr><td class="selectable_day" date="2016-04-24">24</td><td class="selectable_day" date="2016-04-25">25</td><td class="selectable_day" date="2016-04-26">26</td><td class="selectable_day" date="2016-04-27">27</td><td class="selectable_day" date="2016-04-28">28</td><td class="selectable_day" date="2016-04-29">29</td><td class="selectable_day" date="2016-04-30">30</td></tr></tbody></table></div>
+                                    <i class="icon icon-date"></i>
+                                </div>
+                                <span class="mod-symbol col-xs-1 col-sm-1">
+                                -
+                                </span>
+                                <div class="col-xs-11 col-sm-5">
+                                    <input type="text" class="form-control mod-data" value="" name="end_date"><div class="date_selector" style="display: none; top: 34px;"><div class="nav"><p class="month_nav"><span class="buttonx prev" title="[Page-Up]">«</span> <span class="month_name">四月</span> <span class="buttonx next" title="[Page-Down]">»</span></p><p class="year_nav"><span class="buttonx prev" title="[Ctrl+Page-Up]">«</span> <span class="year_name">2016</span> <span class="buttonx next" title="[Ctrl+Page-Down]">»</span></p></div><table><thead><tr><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th><th>日</th></tr></thead><tbody><tr><td class="unselected_month" date="2016-03-27">27</td><td class="unselected_month" date="2016-03-28">28</td><td class="unselected_month" date="2016-03-29">29</td><td class="unselected_month" date="2016-03-30">30</td><td class="unselected_month" date="2016-03-31">31</td><td class="selectable_day" date="2016-04-01">1</td><td class="selectable_day" date="2016-04-02">2</td></tr><tr><td class="selectable_day" date="2016-04-03">3</td><td class="selectable_day" date="2016-04-04">4</td><td class="selectable_day" date="2016-04-05">5</td><td class="selectable_day" date="2016-04-06">6</td><td class="selectable_day" date="2016-04-07">7</td><td class="selectable_day" date="2016-04-08">8</td><td class="selectable_day" date="2016-04-09">9</td></tr><tr><td class="selectable_day" date="2016-04-10">10</td><td class="selectable_day" date="2016-04-11">11</td><td class="selectable_day" date="2016-04-12">12</td><td class="selectable_day" date="2016-04-13">13</td><td class="selectable_day" date="2016-04-14">14</td><td class="selectable_day" date="2016-04-15">15</td><td class="selectable_day today selected" date="2016-04-16">16</td></tr><tr><td class="selectable_day" date="2016-04-17">17</td><td class="selectable_day" date="2016-04-18">18</td><td class="selectable_day" date="2016-04-19">19</td><td class="selectable_day" date="2016-04-20">20</td><td class="selectable_day" date="2016-04-21">21</td><td class="selectable_day" date="2016-04-22">22</td><td class="selectable_day" date="2016-04-23">23</td></tr><tr><td class="selectable_day" date="2016-04-24">24</td><td class="selectable_day" date="2016-04-25">25</td><td class="selectable_day" date="2016-04-26">26</td><td class="selectable_day" date="2016-04-27">27</td><td class="selectable_day" date="2016-04-28">28</td><td class="selectable_day" date="2016-04-29">29</td><td class="selectable_day" date="2016-04-30">30</td></tr></tbody></table></div>
+                                    <i class="icon icon-date"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 col-xs-3 control-label">作者:</label>
+
+                        <div class="col-sm-5 col-xs-8">
+                            <input class="form-control" type="text" value="" name="user_name">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 col-xs-3 control-label">回复数:</label>
+
+                        <div class="col-sm-6 col-xs-9">
+                            <div class="row">
+                                <div class="col-xs-11  col-sm-5 mod-double">
+                                    <input type="text" class="form-control" name="answer_count_min" value="">
+                                </div>
+                                <span class="mod-symbol col-xs-1 col-sm-1">
+                                -
+                                </span>
+                                <div class="col-xs-11 col-sm-5">
+                                    <input type="text" class="form-control" name="answer_count_max" value="">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-2 col-xs-3 control-label">是否有最佳回复:</label>
+
+                        <div class="col-sm-5 col-xs-8">
+                            <div class="checkbox mod-padding">
+                                <label><div class="icheckbox_square-blue" style="position: relative;"><input type="checkbox" value="1" name="best_answer" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"><ins class="iCheck-helper" style="position: absolute; top: -20%; left: -20%; display: block; width: 140%; height: 140%; margin: 0px; padding: 0px; border: 0px; opacity: 0; background: rgb(255, 255, 255);"></ins></div> 有最佳回复</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-5 col-xs-8">
+                            <button type="button" onclick="AWS.ajax_post($('#search_form'));" class="btn btn-primary">搜索</button>
+                        </div>
+                    </div>
+                </form>
+        </div>
+    </div>
+
+</div>
+</block>

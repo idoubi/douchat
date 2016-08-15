@@ -1,0 +1,83 @@
+<extend name="Base/common" />
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <include file="Public/nav" />
+        </h3>
+    </div>
+    <div class="mod-body tab-content">
+        <if condition="$tip">
+        <div class="alert alert-info tip" role="alert">{$tip}</div>
+        </if>
+        <div class="tab-pane active" id="list">
+            <if condition="$subnav">
+            <ul class="nav nav-tabs">
+                <volist name="subnav" id="vo">
+                <li role="presentation" class="{$vo.class}"><a href="{$vo.url}">{$vo.title}</a></li>
+                </volist>
+            </ul> 
+            <br>
+            </if>
+            <div class="mod-table-head">
+                <if condition="$add_button"><a class="btn btn-primary" href="{:U('add')}">添加{$model['title']}</a></if>
+                <if condition="$del_button"><a class="btn btn-danger del-btn" href="javascript:;">删除{$model['title']}</a></if>
+                <volist name="btn" id="vo">
+                    <a class="{$vo.class}" href="{$vo.url}" {$vo.attr}>{$vo.title}</a>&nbsp;
+                </volist>
+            </div>
+            <br>
+            <form action="{:U('delete', array('addon'=>get_addon()))}" method="post">
+            <input type="hidden" name="model" value="{$model.name}" />
+            <input type="hidden" id="action" name="action" value="mass_delete">
+            <input type="hidden" name="mass_delete_key" value="{$lists['fields'][0]['name']}" />
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <if condition="$lists['fields']">
+                        <tr>
+                            <th><input type="checkbox" value="" class="checkall" onclick="alert(123);"></th>
+                            <volist name="lists.fields" key="k" id="vo">          
+                                <th <eq name="vo.format" value="hidden">style="display:none"</eq>>{$vo['title']}</th>                              
+                            </volist>
+                        </tr>
+                        </if>
+                    </thead>
+                    <tbody>
+                        <if condition="$lists['data']">
+                        <volist name="lists.data" id="vo">
+                        <tr>
+                            <td><input type="checkbox" name="{$lists['fields'][0]['name']}[]" class="single_checkbox" value="{$vo[0]}"></td>
+                            <volist name="vo" key="k" id="vv">
+                                <td <if condition="$lists['fields'][$k-1]['format'] eq 'hidden'">style="display:none"</if>>{$vv}</td>
+                            </volist>
+                        </tr>
+                        </volist>   
+                        </if>                                                     
+                    </tbody>
+                </table>
+            </div>
+            </form>
+            <div class="mod-table-foot">
+                {$pagination}
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).on('click', '.iCheck-helper,checkall', function() {
+        alert(123);
+    }).on('click', '.del-btn', function() {
+        var checkedboxs = $('.single_checkbox:checked');
+        var count = checkedboxs.length;
+        if (count == 0) {
+            alert('请选择要删除的数据');
+            return false;
+        }
+        if (confirm('是否确认删除')) {
+            $('form').submit();
+        }
+    });
+</script>
+</block>

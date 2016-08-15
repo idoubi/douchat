@@ -1,0 +1,170 @@
+<extend name="Base/common" />
+<block name="style">
+<style type="text/css">
+/* PIN BOARD */
+ul.notes{
+    margin-top: 10px;
+}
+ul.notes li,
+ul.tag-list li {
+  list-style: none;
+  cursor: pointer;
+}
+ul.notes li h4 {
+  margin-top: 20px;
+  font-size: 16px;
+}
+ul.notes li div {
+  text-decoration: none;
+  color: #000;
+  background: #ffc;
+  display: block;
+  height: 140px;
+  width: 140px;
+  padding: 1em;
+  position: relative;
+}
+ul.notes li div small {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  font-size: 14px;
+}
+ul.notes li div a {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  color: inherit;
+}
+ul.notes li {
+  margin: 10px 40px 50px 0px;
+  float: left;
+}
+ul.notes li div p {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 20px 0 !important;
+}
+ul.notes li div {
+  text-decoration: none;
+  color: #000;
+  background: #ffc;
+  display: block;
+  height: 140px;
+  width: 140px;
+  padding: 1em;
+  /* Firefox */
+  -moz-box-shadow: 5px 5px 2px #212121;
+  /* Safari+Chrome */
+  -webkit-box-shadow: 5px 5px 2px rgba(33, 33, 33, 0.7);
+  /* Opera */
+  box-shadow: 5px 5px 2px rgba(33, 33, 33, 0.7);
+}
+ul.notes li div {
+  -webkit-transform: rotate(-6deg);
+  -o-transform: rotate(-6deg);
+  -moz-transform: rotate(-6deg);
+}
+ul.notes li:nth-child(even) div {
+  -o-transform: rotate(4deg);
+  -webkit-transform: rotate(4deg);
+  -moz-transform: rotate(4deg);
+  position: relative;
+  top: 5px;
+}
+ul.notes li:nth-child(3n) div {
+  -o-transform: rotate(-3deg);
+  -webkit-transform: rotate(-3deg);
+  -moz-transform: rotate(-3deg);
+  position: relative;
+  top: -5px;
+}
+ul.notes li:nth-child(5n) div {
+  -o-transform: rotate(5deg);
+  -webkit-transform: rotate(5deg);
+  -moz-transform: rotate(5deg);
+  position: relative;
+  top: -10px;
+}
+ul.notes li div:hover,
+ul.notes li div:focus {
+  -webkit-transform: scale(1.1);
+  -moz-transform: scale(1.1);
+  -o-transform: scale(1.1);
+  position: relative;
+  z-index: 5;
+}
+ul.notes li div {
+  text-decoration: none;
+  color: #000;
+  background: #ffc;
+  display: block;
+  height: 210px;
+  width: 210px;
+  padding: 1em;
+  -moz-box-shadow: 5px 5px 7px #212121;
+  -webkit-box-shadow: 5px 5px 7px rgba(33, 33, 33, 0.7);
+  box-shadow: 5px 5px 7px rgba(33, 33, 33, 0.7);
+  -moz-transition: -moz-transform 0.15s linear;
+  -o-transition: -o-transform 0.15s linear;
+  -webkit-transition: -webkit-transform 0.15s linear;
+}
+</style>
+</block>
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <include file="Public/nav" />
+        </h3>
+    </div>
+    <div class="mod-body tab-content">
+        <div class="tab-pane active" id="list">
+            <if condition="$tip">
+                <div class="alert alert-info tip" role="alert">{$tip}</div>
+            </if>
+            <div class="mod-table-head">
+                <volist name="btn" id="vo">
+                    <a class="{$vo.class}" href="{$vo.url}" {$vo.attr}>{$vo.title}</a>&nbsp;
+                </volist>
+            </div>
+            <div class="table-responsive">
+                <div class="wrapper wrapper-content animated fadeInUp">
+                    <ul class="notes">
+                        <volist name="lists" id="vo">
+                        <li data-url="{:U('edit',array('id'=>$vo['id']))}">
+                            <div>
+                                <small>{$vo.create_time|date='Y-m-d H:i:s',###}</small>
+                                <p>{$vo.content}</p>
+                                <a href="{:U('delete',array('id'=>$vo['id']))}" class="del_material"><i class="fa fa-trash-o "></i></a>
+                            </div>
+                        </li>
+                        </volist>
+                    </ul>
+                </div>
+            </div>
+            <div class="mod-table-foot">
+                {$pagination}
+            </div>
+        </div>
+    </div>
+</div>
+</block>
+<block name="script">
+<script>
+    $(function(){
+        $('.notes li').on('click', function() {
+            window.location.href = $(this).attr('data-url');
+        });
+        $('.del_material').on('click', function() {
+            if (confirm('删除此素材，可能会导致引用了该素材的内容不可用，是否确认要删除？')) {
+                window.location.href = $(this).attr('href');
+                return false;
+            } else {
+                return false;
+            }
+        });
+    });
+</script>
+</block>

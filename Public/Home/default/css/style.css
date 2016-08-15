@@ -1,0 +1,32 @@
+.navbar{
+	min-height: 60px;
+}
+.navbar-inverse {
+    background-color: #2c3e50;
+    border-color: #202d3b;
+}
+.navbar-inverse .navbar-brand {
+    color: #fff;
+}
+.navbar-inverse .navbar-nav>li>a {
+        color: #fff;
+}
+.navbar-nav>li>a {
+    padding-top: 19.5px;
+    padding-bottom: 19.5px;
+    font-size: 18px;
+}
+.navbar-inverse .navbar-brand {
+    float: left;
+    padding: 19.5px 15px;
+    font-size: 24px;
+    line-height: 21px;
+
+    background: url("../img/logo-white.png") no-repeat scroll 0 0 transparent;
+    line-height: 600px;
+    overflow: hidden;
+    position: relative;
+    top: 8px;
+    width: 120px;
+    margin-right: 20px;
+}

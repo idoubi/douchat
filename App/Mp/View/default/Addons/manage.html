@@ -1,0 +1,111 @@
+<extend name="Base/common" />
+<block name="style">
+<style type="text/css">
+.main_apps ul{ overflow:hidden; zoom:1; background:#f5f5f5;}
+.main_apps li{ 
+	float: left;
+	width: 25%;
+	margin: 0;
+	height: auto;
+	overflow: hidden;
+	border: 0px solid #e7e7eb;
+	position: relative;
+}
+.main_apps li .app_wrap{
+	margin: 10px;
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	height: 120px;
+}
+.main_apps li .use_btn{
+	position: absolute;
+	right: 30px;
+	top: 50px;
+	line-height: 20px;
+	color: #5cb85c;
+}
+
+.main_apps li .detail{
+	top: 75px;
+	color: #d9534f;
+}
+
+.main_apps li .access {
+	background: ;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	display: inline-block;
+	position: absolute;
+	right: 10px;
+	top: 43px;
+}
+
+.main_apps li .img{float:left; width:100px; text-align:center}
+.main_apps li img{ border-radius:0px; width:100px; height:100px; margin:8px;}
+.main_apps li .desc{ padding: 8px 70px 10px 110px;margin:8px;}
+.main_apps li .name{ font-size:15px; font-weight:bold;margin-bottom: 5px}
+.main_apps li .intro{ font-size:14px; color:#888;height: 65px;overflow: hidden;}
+</style>
+</block>
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="main_apps">
+	<ul>
+		<volist name="addons" id="vo">
+		<li>
+			<div class="app_wrap">
+				<div class="img">
+					<a href="{:U('/addon/'.$vo['bzname'].'/web/index')}">
+						<img src="{$vo.logo}">
+					</a>
+				</div>
+				<div class="desc">
+					<p class="name">{$vo.name}</p>
+					<p class="intro">{$vo.desc}</p>
+					<a class="use_btn install" data-addon="{$vo.bzname}" data-status="1"><neq name="vo.forbidden" value="1">已启用<else /><button class="btn btn-sm btn-success" style="position:relative;top:-10px;">启用</button></neq></a>
+					<a class="use_btn detail" data-addon="{$vo.bzname}" data-status="2"><eq name="vo.forbidden" value="1">已禁用<else /><button class="btn btn-sm btn-danger">禁用</button></eq></a>
+					<i class="access"></i>
+				</div>
+			</div>
+		</li>
+		</volist>
+	</ul>
+</div>
+</block>
+<block name="script">
+<script>
+	$(function() {
+		$('.install,.detail').on('click', function() {
+			var addon = $(this).attr('data-addon');		// 当前操作的插件名称
+			var status = $(this).attr('data-status');		// 要设置为的插件状态
+			change_addon_status(addon, status);
+		});
+	});
+
+	// 改变插件启用/禁用状态
+	function change_addon_status(addon, status) {
+		var message = status == '2' ? '插件已禁用' : '插件已启用';
+		$.ajax({
+			url : "{:U('Addons/manage')}",
+			type : "post",
+			dataType : "json",
+			data : {
+				addon : addon,
+				status : status
+			},
+			success : function(result) {
+				if (result.errcode == 0) {
+					alert(message);
+					window.location.href = "";
+				} else {
+					alert('操作失败');
+				}
+			},
+			error : function() {
+				alert('发送请求失败');
+			}
+		});
+	}
+</script>
+</block>

@@ -1,0 +1,91 @@
+<extend name="Base/common" />
+<block name="main_content">
+<include file="Public/crumb" />
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+        	<include file="Public/nav" />
+        </h3>
+    </div>
+
+    <div class="tab-content mod-content">
+        <if condition="$subnav">
+        <ul class="nav nav-tabs">
+            <volist name="subnav" id="vo">
+            <li role="presentation" class="{$vo.class}"><a href="{$vo.url}">{$vo.title}</a></li>
+            </volist>
+        </ul> 
+        <br>
+        </if>
+        <if condition="$tip">
+            <div class="alert alert-info tip" role="alert">{$tip}</div>
+        </if>
+        <form method="post" action="" class="form-horizontal" role="form">
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">页面预览</label>
+                <div class="col-sm-9">
+                    <p class="form-control-static" style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;color:#08a5e0">{$entry.url}&nbsp;&nbsp;&nbsp;&nbsp;<a href="{:U('/addon/'.get_addon().'/web/preview', array('act'=>I('act')))}" class="btn btn-success" target="_blank">预览</a></p>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">触发关键字</label>
+                <div class="col-sm-6 col-xs-12">
+                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" name="keyword" placeholder="请输入触发关键字" value="{$entry.rule.keyword}">
+                    <input type="hidden" name="rule_id" value="{$entry.rule.id}" />
+                    <span class="help-block">多个关键词用英文逗号隔开</span>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">封面参数</label>
+                <div class="col-sm-9">
+                    <div class="panel panel-default reply-container" style="padding-top:2em;">
+                        <div ng-hide="entry.saved" class="">
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">图文标题</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <input type="text" class="form-control ng-pristine ng-untouched ng-valid" placeholder="标题" name="title" value="{$entry.title}">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">封面</label>
+                                <div class="col-sm-9 col-xs-12" ng-invoker="context.bind();">        
+                                    <div class="input-group ">
+                                        <input type="text" name="cover" class="form-control webuploader-input" value="{$entry.cover}">
+                                        <span class="input-group-btn">
+                                            <button class="btn btn-default webuploader-btn" type="button"  data-toggle="modal" data-target="#modal-wechat-webuploader">选择图片</button>
+                                        </span>
+                                    </div>
+                                    <div class="input-group " style="margin-top:.5em;">
+                                        <img src="<if condition="$entry['cover']">{$entry.cover}<else />__PUBLIC__/Mp/img/nopic.jpg</if>" data-nopic="__PUBLIC__/Mp/img/nopic.jpg" class="img-responsive img-thumbnail webuploader-picture" width="150">
+                                        <em class="close" style="position:absolute; top: 0px; right: -14px;" title="删除这张图片">×</em>
+                                    </div>                                  
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-sm-3 col-md-2 control-label">描述</label>
+                                <div class="col-sm-9 col-xs-12">
+                                    <textarea class="form-control ng-pristine ng-untouched ng-valid" placeholder="添加图文消息的简短描述" name="desc" rows="5">{$entry.desc}</textarea>
+                                </div>
+                            </div>
+            
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+            </div>  
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-5 col-xs-8">
+                        <input type="hidden" name="name" value="{$entry.name}" />
+                        <input type="hidden" name="act" value="{$entry.act}" />
+                        <input type="hidden" name="id" value="{$entry.id}" />
+                        <button type="submit" class="btn btn-primary ajax-post">确认提交</button>
+                    </div>
+                </div>
+            </form>
+    </div>
+</div>
+</block>
