@@ -7,7 +7,7 @@
 .radio-inline + .radio-inline,.checkbox-inline + .checkbox-inline{margin-left:0;}
 .nav > li > a:hover,.nav > li > a:focus{background-color:transparent;}
 .nav .open > a,.nav .open > a:hover,.nav .open > a:focus{background-color:#fff;}
-.table-striped > tbody > tr:nth-child(odd) > td,.table-striped > tbody > tr:nth-child(odd) > th{background-color:#F5F8FA; width:auto; height:60px !important;}
+.table-striped > tbody > tr:nth-child(odd) > td,.table-striped > tbody > tr:nth-child(odd) > th{background-color:#F5F8FA; }
 .alert{padding:5px 15px;}
 .dropdown-menu .divider{margin: 5px 0;}
 .aw-alert{position: absolute;top: 0;}
