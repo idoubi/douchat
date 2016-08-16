@@ -19,8 +19,12 @@ class BaseController extends CommonController {
 		$_G['mpid'] = get_mpid();
 		$_G['mp_info'] = get_mp_info();
 		if (!$_G['mpid'] || $_G['mpid'] < 0 || !$_G['mp_info']['origin_id']) {
-			if ($_G['controller_name'] != 'mp') {
-				$this->redirect('Mp/lists');
+			if ($_G['controller_name'] != 'mp' && $_G['controller_name'] != 'user') {
+				if ($_G['controller_name'] == 'material' && ($_G['action_name'] == 'upload' || $_G['action_name'] == 'get_image_list' || $_G['action_name'] == 'delete_attach')) {
+
+				} else {
+					$this->redirect('Mp/lists');
+				}
 			}
 		}
 		if ($this->user_access['mp']) {

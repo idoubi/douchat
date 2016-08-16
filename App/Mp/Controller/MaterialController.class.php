@@ -338,7 +338,7 @@ class MaterialController extends BaseController {
         }
     }
 
-// markdown图片上传
+    // markdown图片上传
     public function markdown_picupload(){
         import('Org.Util.UploadFile');
         $upload_time = time();
