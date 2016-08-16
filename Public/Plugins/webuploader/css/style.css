@@ -10,7 +10,8 @@ time, mark, audio, video, input  {
     border: none;
     outline: 0;
     font-size: 100%;
-    font: 15px/1.5em "microsoft yahei";;
+    font: inherit;
+	font-family: "microsoft yahei";
     vertical-align: baseline;
 }
 
@@ -23,7 +24,7 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
 }
 
 body { 
-    font:14px/1.5em "microsoft yahei";
+    font-family: "microsoft yahei";
 }
 
 ol, ul {
