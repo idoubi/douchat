@@ -7,7 +7,7 @@
 .radio-inline + .radio-inline,.checkbox-inline + .checkbox-inline{margin-left:0;}
 .nav > li > a:hover,.nav > li > a:focus{background-color:transparent;}
 .nav .open > a,.nav .open > a:hover,.nav .open > a:focus{background-color:#fff;}
-.table-striped > tbody > tr:nth-child(odd) > td,.table-striped > tbody > tr:nth-child(odd) > th{background-color:#F5F8FA;}
+.table-striped > tbody > tr:nth-child(odd) > td,.table-striped > tbody > tr:nth-child(odd) > th{background-color:#F5F8FA; width:auto; height:60px !important;}
 .alert{padding:5px 15px;}
 .dropdown-menu .divider{margin: 5px 0;}
 .aw-alert{position: absolute;top: 0;}
@@ -393,3 +393,70 @@ label,.aw-content-wrap .mod-title,.aw-article-list b,.aw-question-list b{font-we
 
 /* HiDPI support */
 @media (-o-min-device-pixel-ratio: 5/4), (-webkit-min-device-pixel-ratio: 1.25), (min-resolution: 120dpi) {.icheckbox_square-blue,.iradio_square-blue { background-image: url(../img/blue-2x.png);-webkit-background-size: 240px 24px; background-size: 240px 24px;}}
+
+/* 主界面UI */
+.btn-primary:hover {
+    color: #fff;
+    background-color: #3f556b; 
+    border-color: #2e3e4e;
+}
+.btn-primary  {
+    color: #fff;
+    background-color: #2e3e4e;
+    border-color: #25313e;
+}
+.btn-success:hover {
+    color: #fff;
+    background-color:#20d350;
+    border-color: #20d350;
+}
+.btn-success {
+    color: #fff;
+    background-color:#00b631;
+    border-color: #00b631;
+}
+.btn-danger {
+    color: #fff;
+    background-color: #ea4e4e;
+    border-color: #ea4e4e;
+}
+.btn-danger:hover {
+    color: #fff;
+    background-color:#ff5555;
+    border-color: #ff5555;
+}
+.btn-info {
+    color: #fff;
+    background-color:#2266ee;
+    border-color: #2266ee;
+}
+.btn-info:hover {
+    color: #fff;
+    background-color:#6699FF;
+    border-color: #6699FF;
+}
+.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: normal;
+    line-height: 1.42857143;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 4px;
+}
+
+.label-danger {
+    background-color: #ea4e4e;
+}
