@@ -460,3 +460,8 @@ label,.aw-content-wrap .mod-title,.aw-article-list b,.aw-question-list b{font-we
 .label-danger {
     background-color: #ea4e4e;
 }
+.alert-info {
+    color: #fff !important;
+    background-color: #ffc333;
+    border-color: #ffc333;
+}
