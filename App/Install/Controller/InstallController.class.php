@@ -68,8 +68,6 @@ class InstallController extends Controller{
                 $db  = Db::getInstance($DB);
                 if ($db->execute("SELECT * FROM information_schema.SCHEMATA where SCHEMA_NAME='".$dbname."'") && !$overcover) {
                     $this->error('数据库'.$dbname.'已存在');
-                } else {
-                    $db->execute("DROP DATABASE IF EXISTS `{$dbname}`");    // 删除同名数据库
                 }
                 $sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
                 $db->execute($sql) || $this->error($db->getError());
