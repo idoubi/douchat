@@ -22,8 +22,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
     display: block;
 }
 
-body {
-    font-family: arial, sans-serif;
+body { 
+    font:14px/1.5em "microsoft yahei";
 }
 
 ol, ul {
