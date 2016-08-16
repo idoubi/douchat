@@ -10,7 +10,7 @@ time, mark, audio, video, input  {
     border: none;
     outline: 0;
     font-size: 100%;
-    font: inherit;
+    font: 15px/1.5em "microsoft yahei";;
     vertical-align: baseline;
 }
 
