@@ -465,3 +465,29 @@ label,.aw-content-wrap .mod-title,.aw-article-list b,.aw-question-list b{font-we
     background-color: #ffc333;
     border-color: #ffc333;
 }
+
+
+#uploader .statusBar .btns .uploadBtn {
+    background: #2266ee;
+    color: #fff;
+    border-color: transparent;
+}
+.nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
+    color: #fff;
+    background-color: #2266ee;
+}
+#uploader .placeholder .webuploader-pick {
+    font-size: 18px;
+    background: #2266ee !important;
+    border-radius: 3px;
+    line-height: 44px;
+    padding: 0 30px;
+    color: #fff;
+    display: inline-block;
+    margin: 20px auto;
+    cursor: pointer;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+#uploader .placeholder .webuploader-pick-hover {
+	background: #438eff !important;
+}
