@@ -42,6 +42,9 @@
             <b>数据库名</b><input type="text" class="default_text" value="<defined name='SAE_MYSQL_DB'>{$Think.const.SAE_MYSQL_DB}</defined>" name="db[]" />
         </li>
         <li>
+            <b>覆盖安装</b><input type="checkbox" class="default_text" value="1" name="overcover" /><span>勾选此选项，如果同名数据库已存在，则会删除同名数据库。否则会提示数据库已存在并终止安装</span>
+        </li>
+        <li>
             <b>数据库用户名</b><input type="text" class="default_text" value="<defined name='SAE_MYSQL_USER'>{$Think.const.SAE_MYSQL_USER}</defined>" name="db[]" />
         </li>
         <li>

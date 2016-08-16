@@ -37,7 +37,7 @@ class InstallController extends Controller{
     }
 
     //安装第二步，创建数据库
-    public function step2($db = null, $admin = null){
+    public function step2($db = null, $admin = null, $overcover = 0){
         if(IS_POST){
             //检测管理员信息
             if(!is_array($admin) || empty($admin[0]) || empty($admin[1]) || empty($admin[3])){
@@ -66,8 +66,10 @@ class InstallController extends Controller{
                 $dbname = $DB['DB_NAME'];
                 unset($DB['DB_NAME']);
                 $db  = Db::getInstance($DB);
-                if ($db->execute("SELECT * FROM information_schema.SCHEMATA where SCHEMA_NAME='".$dbname."'")) {
+                if ($db->execute("SELECT * FROM information_schema.SCHEMATA where SCHEMA_NAME='".$dbname."'") && !$overcover) {
                     $this->error('数据库'.$dbname.'已存在');
+                } else {
+                    $db->execute("DROP DATABASE IF EXISTS `{$dbname}`");    // 删除同名数据库
                 }
                 $sql = "CREATE DATABASE IF NOT EXISTS `{$dbname}` DEFAULT CHARACTER SET utf8";
                 $db->execute($sql) || $this->error($db->getError());
