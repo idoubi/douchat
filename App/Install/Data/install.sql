@@ -273,6 +273,23 @@ CREATE TABLE IF NOT EXISTS `dc_mp_rule` (
 -- --------------------------------------------------------
 
 --
+-- 表的结构 `dc_mp_score_record`
+--
+
+CREATE TABLE IF NOT EXISTS `dc_mp_score_record` (
+  `id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增ID',
+  `mpid` int(10) NOT NULL COMMENT '公众号标识',
+  `openid` varchar(255) NOT NULL COMMENT '粉丝openid',
+  `type` varchar(50) DEFAULT 'score' COMMENT '积分类型，socre、money等',
+  `source` varchar(50) DEFAULT 'system' COMMENT '积分来源，system，addon',
+  `value` int(10) NOT NULL COMMENT '积分值',
+  `flag` varchar(50) DEFAULT NULL COMMENT '标识，fans_bind，IdouChat',
+  `remark` text COMMENT '积分说明'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='积分记录表';
+
+-- --------------------------------------------------------
+
+--
 -- 表的结构 `dc_mp_setting`
 --
 
