@@ -11,6 +11,7 @@ time, mark, audio, video, input  {
     outline: 0;
     font-size: 100%;
     font: inherit;
+	font-family: "microsoft yahei";
     vertical-align: baseline;
 }
 
@@ -22,8 +23,8 @@ article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, 
     display: block;
 }
 
-body {
-    font-family: arial, sans-serif;
+body { 
+    font-family: "microsoft yahei";
 }
 
 ol, ul {
