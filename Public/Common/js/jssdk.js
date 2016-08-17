@@ -1,9 +1,8 @@
-
 /**
  * 关闭微信浏览器
  * @author 艾逗笔<765532665@qq.com>
  */
-function close_window() {
+function closeWindow() {
   WeixinJSBridge.call('closeWindow');
 }
 
@@ -29,6 +28,13 @@ function onMenuShareAppMessage(share_data) {
  */
 function onMenuShareQQ(share_data) {
   wx.onMenuShareQQ(share_data);
+}
+
+/**
+ * 隐藏右上角菜单
+ */
+function hideOptionMenu() {
+  wx.hideOptionMenu();
 }
 
 /**
@@ -68,5 +74,27 @@ function pay(price, orderid, notify, extra, callback) {
       error : function() {
           alert('发送支付请求失败');
       }
+  });
+}
+
+/**
+ * ajax提交数据函数
+ * @param String url 处理数据的地址
+ * @param Array data 提交的数据
+ * @param String successMsg 提交数据成功的提示信息
+ * @param String errorMsg 提交数据失败的提示信息
+ */
+function ajax(url,data,successFunc,errorFunc){
+  $.ajax({
+    url:url,
+    type:"post",
+    dataType:"json",
+    data:data,
+    success:function(data){
+      successFunc(data);
+    },
+    error:function(){
+      errorFunc(data);
+    }
   });
 }

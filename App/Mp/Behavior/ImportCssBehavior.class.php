@@ -18,6 +18,9 @@ class ImportCssBehavior extends Behavior {
 						          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.min.css">
 						          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.example.css">';
 						break;
+					case 'frozen':
+						$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/frozen.css">';
+						break;
 					case 'bootstrap':
 						$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/bootstrap.css">';
 						break;
@@ -32,6 +35,9 @@ class ImportCssBehavior extends Behavior {
 					$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.css">
 					          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.min.css">
 					          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.example.css">';
+					break;
+				case 'frozen':
+					$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/frozen.css">';
 					break;
 				case 'bootstrap':
 					$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/bootstrap.css">';

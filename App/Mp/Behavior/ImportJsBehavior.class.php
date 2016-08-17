@@ -19,6 +19,12 @@ class ImportJsBehavior extends Behavior {
 					case 'jquery.min':
 						$res[] = "<script src='/Public/Common/js/jquery.min.js'></script>";
 						break;
+					case 'zepto.min':
+						$res[] = "<script src='/Public/Common/js/zepto.min.js'></script>";
+						break;
+					case 'frozen':
+						$res[] = "<script src='/Public/Common/js/frozen.js'></script>";
+						break;
 					default:
 						# code...
 						break;
@@ -31,6 +37,12 @@ class ImportJsBehavior extends Behavior {
 					break;
 				case 'jquery.min':
 					$res[] = "<script src='/Public/Common/js/jquery.min.js'></script>";
+					break;
+				case 'zepto.min':
+					$res[] = "<script src='/Public/Common/js/zepto.min.js'></script>";
+					break;
+				case 'frozen':
+					$res[] = "<script src='/Public/Common/js/frozen.js'></script>";
 					break;
 				default:
 					# code...
