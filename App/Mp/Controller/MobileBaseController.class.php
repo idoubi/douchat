@@ -60,6 +60,7 @@ class MobileBaseController extends Controller {
         }
         add_hook('jssdk', 'Mp\Behavior\JssdkBehavior');                     // 注册导入jssdk的钩子
         add_hook('import_js', 'Mp\Behavior\ImportJsBehavior');              // 注册导入js的钩子
+        add_hook('import_css', 'Mp\Behavior\ImportCssBehavior');              // 注册导入js的钩子
     }
 
     /**
