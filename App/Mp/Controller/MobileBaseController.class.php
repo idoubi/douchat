@@ -12,7 +12,7 @@ class MobileBaseController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     public function _initialize() {
-        if (!is_wechat_browser() && !get_user_id()) {
+        if (!is_wechat_browser() && !get_user_id() && !I('out_trade_no')) {
             $mp_info = get_mp_info();
             redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8dcd98079e13d33f&redirect_uri=&wxref=mp.weixin.qq.com&from=singlemessage&isappinstalled=0&response_type=code&scope=snsapi_base&state=&connect_redirect=1#wechat_redirect');
         }
@@ -44,8 +44,8 @@ class MobileBaseController extends Controller {
         $_G['addon'] = get_addon();
         $_G['addon_path'] = $_G['addons_path'] . $_G['addon'] . '/';
         $_G['addon_url'] = $_G['addons_url'] . $_G['addon'] . '/';
-        $_G['addon_public_path'] = $_G['addons_path'] . 'View/Public/';
-        $_G['addon_public_url'] = $_G['addons_url'] . 'View/Public/';
+        $_G['addon_public_path'] = $_G['addon_path'] . 'View/Public/';
+        $_G['addon_public_url'] = $_G['addon_url'] . 'View/Public/';
         $_G['current_url'] = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF'].'?'.$_SERVER['QUERY_STRING'];
         $_G['fans_info'] = get_fans_info();
         $_G['mp_info'] = get_mp_info();
@@ -61,6 +61,7 @@ class MobileBaseController extends Controller {
         add_hook('jssdk', 'Mp\Behavior\JssdkBehavior');                     // 注册导入jssdk的钩子
         add_hook('import_js', 'Mp\Behavior\ImportJsBehavior');              // 注册导入js的钩子
         add_hook('import_css', 'Mp\Behavior\ImportCssBehavior');              // 注册导入js的钩子
+        $this->assign('_G', $_G);
     }
 
     /**
