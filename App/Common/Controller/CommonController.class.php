@@ -322,6 +322,15 @@ class CommonController extends Controller {
 	}
 
 	/**
+	 * 设置表单提交方式
+	 * @author 艾逗笔<765532665@qq.com>
+	 */
+	public function setSubmitType($submit_type) {
+		$this->model['submit_type'] = $submit_type;
+		return $this;
+	}
+
+	/**
 	 * 设置模型
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
@@ -665,13 +674,14 @@ class CommonController extends Controller {
 		$this->model['subnav'] || $this->model['subnav'] = $this->subnav;
 		$this->model['btn'] || $this->model['btn'] = $this->btn;
 		$this->model['tip'] || $this->model['tip'] = $this->tip;
-
+		$this->model['submit_type'] || $this->model['submit_type'] = $this->submit_type;
 		$this->model['crumb'] && $this->assign('crumb', $this->model['crumb']);
 		$this->model['nav'] && $this->assign('nav', $this->model['nav']);
 		$this->model['sidenav'] && $this->assign('sidenav', $this->model['sidenav']);
 		$this->model['subnav'] && $this->assign('subnav', $this->model['subnav']);
 		$this->model['btn'] && $this->assign('btn', $this->model['btn']);
 		$this->model['tip'] && $this->assign('tip', $this->model['tip']);
+		$this->model['submit_type'] && $this->assign('submit_type', $this->model['submit_type']);
 		parent::display($templateFile,$charset,$contentType,$content,$prefix);
 	}
 }
