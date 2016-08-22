@@ -54,9 +54,6 @@ class ApiController extends Controller {
         get_mpid($this->mpid);                                  // 缓存当前公众号id
         get_openid($this->openid);                              // 缓存用户openid
         
-    	D('MpFans')->save_fans_info($this->openid);			    // 保存粉丝信息
-     	D('MpMessage')->save_message($this->message);		    // 保存消息
-
         $this->fans_info = get_fans_info($this->openid);        // 获取粉丝表内的粉丝信息
         $this->mp_settings = D('MpSetting')->get_settings();    // 获取公众号全局设置
 
@@ -122,6 +119,12 @@ class ApiController extends Controller {
                 # code...
                 break;
         }
+
+        if ($this->event != 'unsubscribe') {
+            D('MpFans')->save_fans_info($this->openid);             // 保存粉丝信息
+            D('MpMessage')->save_message($this->message);           // 保存消息
+        }
+    
 	}
 
     /**
