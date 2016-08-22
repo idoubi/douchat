@@ -36,7 +36,7 @@
 			
 			function moz_redirect()
 			{
-				var url_bit     = "./";
+				var url_bit     = "{$jumpUrl}";
 				
 				window.location = url_bit.replace( new RegExp( "&amp;", "g" ) , '&' );
 			}
