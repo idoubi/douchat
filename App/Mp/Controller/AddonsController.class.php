@@ -21,7 +21,7 @@ class AddonsController extends BaseController {
 	public function _initialize() {
 		parent::_initialize();
 		global $_G;	
-		$_G['addon'] = get_addon();
+		$_G['addon'] = $this->addon = get_addon();
 		$_G['addon_info'] = D('Addons')->get_addon_info($this->addon);		// 获取插件信息
 		$_G['addon_config'] = $_G['addon_info']['config'];					// 获取插件配置
 		$_G['addon_path'] = $_G['addons_path'] . $_G['addon'] . '/';
