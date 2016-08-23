@@ -280,7 +280,7 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
-		if ($this->addon && ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME != 'entry') {
+		if ($this->addon && ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME != 'entry' && ACTION_NAME != 'preview') {
 			if (empty($templateFile)) {
 				$templateFile = ADDON_PATH . $this->addon . '/View/' . CONTROLLER_NAME . '/' . ACTION_NAME . C('TMPL_TEMPLATE_SUFFIX');
 			} else {
