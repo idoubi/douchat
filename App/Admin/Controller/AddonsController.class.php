@@ -308,13 +308,13 @@ str;
 <?php
 
 namespace Addons\\{$data['bzname']}\Controller;
-use Mp\Controller\AddonsController;
+use Mp\Controller\MobileBaseController;
 
 /**
  * {$data['name']}移动端控制器
  * @author {$data['author']}
  */
-class MobileController extends AddonsController {
+class MobileController extends MobileBaseController {
 
 }
 
