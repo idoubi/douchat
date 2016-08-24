@@ -52,7 +52,7 @@ class MobileBaseController extends Controller {
         $_G['openid'] = get_openid();
         $_G['mpid'] = get_mpid();
         // 感谢 @苍竹先生<593485230@qq.com> 提供的处理浏览器openid问题的解决方案
-        preg_match('/\/openid[\/|=]([_0-9A-Za-z]*+)/', $_G['current_url'], $m);		// 带上openid的参数字符串
+        preg_match('/\/openid[\/|=]([_\-0-9A-Za-z]*+)/', $_G['current_url'], $m);		// 带上openid的参数字符串
         if (isset($m[0]) && !empty($m[0])) {
             get_openid($m[1]);                                              // 设置当前用户标识
         	$redirect_url = str_replace($m[0], '', $_G['current_url']);			// 去除openid的重定向访问链接
