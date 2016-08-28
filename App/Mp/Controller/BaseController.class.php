@@ -45,6 +45,7 @@ class BaseController extends CommonController {
 		$this->assign('system_settings', $_G['system_settings']);
 		$addons = D('Admin/Addons')->get_installed_addons();
 		add_hook('sidenav', 'Mp\Behavior\SidenavBehavior');				// 添加生成侧边栏导航的钩子
+		add_hook('editor', 'Mp\Behavior\EditorBehavior');
 		$sidenav = hook('sidenav');										// 执行钩子，获取侧边栏数据
 		$this->assign('sidenav', $sidenav);
 		$this->assign('addons', $addons);

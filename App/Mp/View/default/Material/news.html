@@ -53,7 +53,7 @@
 	                    		<h6 class="ellipsis">{$vo.title}</h6>
                                 <p class="title"></p>
 	                            <div class="main_img">
-	                                <a href="{$vo.url}" target="_blank"><img src="{$vo.picurl}"></a>
+	                                <a href="{:U('/news/'.$vo['id'])}" target="_blank"><img src="{$vo.picurl}"></a>
 	                            </div>
 	                            <p class="desc ellipsis">{$vo.description}</p>
 	                            <div class="appmsg_action">

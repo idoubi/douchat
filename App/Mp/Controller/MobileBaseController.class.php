@@ -102,6 +102,18 @@ class MobileBaseController extends Controller {
     }
 
     /**
+     * 图文详情
+     * @author 艾逗笔<765532665@qq.com>
+     */
+    public function detail() {
+        $detail = M('mp_material')->find(I('id'));
+        $mp_info = M('mp')->find($detail['mpid']);
+        $this->assign('mp', $mp_info);
+        $this->assign('detail', $detail);
+        parent::display('Material/detail');
+    }
+
+    /**
      * 重写模板显示方法
      * @author 艾逗笔<765532665@qq.com>
      */

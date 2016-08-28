@@ -94,17 +94,9 @@
                             </div>
                         </div>
                     </case> 
-                    <case value="markdown">
-                        <div class="form-group">
-                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
-                            <div class="col-sm-9 col-xs-12">
-                                <div id="test-editormd">
-                                    <textarea style="display:none;" name="content">{$vo['value']}</textarea>
-                                </div>
-                                <span class="help-block">{$vo.tip}</span>
-                            </div>
-                        </div>
-                    </case>                    
+                    <case value="editor">
+                        {:hook('editor', $vo)}
+                    </case>                  
                     <case value="select">
                         <div class="form-group">
                             <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>

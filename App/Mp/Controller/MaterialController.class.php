@@ -98,6 +98,7 @@ class MaterialController extends BaseController {
                 $this->addFormField('title', '图文标题', 'text')
                      ->addFormField('picurl', '图文封面', 'image')
                      ->addFormField('description', '图文描述', 'textarea')
+                     ->addFormField('detail', '图文详情', 'editor')
                      ->addFormField('url', '图文链接', 'text');
                 break;
             default:
@@ -141,6 +142,7 @@ class MaterialController extends BaseController {
                 $this->addFormField('title', '图文标题', 'text')
                      ->addFormField('picurl', '图文封面', 'image')
                      ->addFormField('description', '图文描述', 'textarea')
+                     ->addFormField('detail', '图文详情', 'editor')
                      ->addFormField('url', '图文链接', 'text');
                 break;
             default:
@@ -340,6 +342,7 @@ class MaterialController extends BaseController {
 
     // markdown图片上传
     public function markdown_picupload(){
+        global $_G;
         import('Org.Util.UploadFile');
         $upload_time = time();
         $upload_path = './Uploads/Pictures/' . date('Ymd', $upload_time) . '/';
@@ -357,8 +360,6 @@ class MaterialController extends BaseController {
         $upload->maxSize  = 1024*20*1000;
         $upload->allowExts  = array('jpg', 'gif', 'png', 'jpeg');
         $upload->savePath = $upload_path;
-
-
         if(!$upload->upload()) {
             $result['success']=0;
             $result['message']="图片上传失败！";
@@ -379,7 +380,8 @@ class MaterialController extends BaseController {
             $Attach = D('Attach');
             $attach_id = $Attach->add($data);
             
-            $imgUrl=$info[0]['savepath'] . $info[0]['savename'];
+            $imgUrl = $info[0]['savepath'] . $info[0]['savename'];
+            $imgUrl = tomedia($imgUrl);
             $result['success']=1;
             $result['message']="图片上传成功！";
             $result['url']=$imgUrl;
