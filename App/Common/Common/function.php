@@ -25,7 +25,7 @@ function hook($tag, $params=NULL) {
  */
 function create_addon_url($url, $param = array()){
     if (!$param['mpid']) {
-        $param['mpid'] = get_mpid();
+       // $param['mpid'] = get_mpid();
     }
     if (CONTROLLER_NAME == 'Mobile') {
         $act = 'mobile';

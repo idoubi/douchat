@@ -313,10 +313,10 @@ class AddonsController extends BaseController {
 	 * 页面预览
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function preview($act){
-		$url = U('/addon/'.get_addon().'/mobile/'.$act.'@'.C('HTTP_HOST'));
+	public function preview($act, $params=array()){
+		$url = U('/addon/'.get_addon().'/mobile/'.$act.'@'.C('HTTP_HOST'), $params);
 	    $this->assign('url',$url);
-	    $this->display ("Base/preview");
+	    parent::display ("Base/preview");
 	}
 
 	private function parse_children($type) {
