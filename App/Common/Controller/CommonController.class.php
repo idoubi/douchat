@@ -191,6 +191,11 @@ class CommonController extends Controller {
 			}
 			!empty($this->model['info']) && $info = $this->model['info'];
 			foreach ($this->model['fields'] as $k => &$v) {
+				foreach ($v['extra'] as $m => $n) {
+					if (!isset($v[$m])) {
+						$v[$m] = $n;
+					}
+				}
 				if (!$v['name']) {
 					$v['name'] = $k;
 				}
@@ -255,6 +260,11 @@ class CommonController extends Controller {
 			}
 			!empty($this->model['info']) && $info = $this->model['info'];
 			foreach ($this->model['fields'] as $k => &$v) {
+				foreach ($v['extra'] as $m => $n) {
+					if (!isset($v[$m])) {
+						$v[$m] = $n;
+					}
+				}
 				if (!$v['name']) {
 					$v['name'] = $k;
 				}
