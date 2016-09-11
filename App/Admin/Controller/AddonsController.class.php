@@ -14,13 +14,32 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function lists() {
+		$install_addons = D('Addons')->get_installed_addons();
 		$this->addCrumb('系统管理', U('Index/index'), '')
 			 ->addCrumb('插件管理', u('Addons/lists'), '')
 			 ->addCrumb('已安装插件', '', 'active')
-			 ->addNav('已安装插件', '', 'active');
-		$addons = D('Addons')->get_installed_addons();
-		$this->assign('addons', $addons);
-		$this->display();
+			 ->addNav('已安装插件', '', 'active')
+			 ->addNav('未安装插件', U('Addons/not_install'), '')
+			 ->addNav('设计新插件', U('Addons/add'), '')
+			 ->addListItem('logo', '插件LOGO', 'image', array('attr'=>'width=80,height=80'))
+			 ->addListItem('name', '插件名称')
+			 ->addListItem('bzname', '插件标识名')
+			 ->addListItem('desc', '插件描述')
+			 ->addListItem('version', '当前版本')
+			 ->addListItem('last_version', '最新版本')
+			 ->addListItem('author', '作者')
+			 ->addListItem('id', '操作', 'custom', array(
+			 	'options' => array(
+			 		array(
+			 			'title' => '卸载插件',
+			 			'url' => U('uninstall_addon', array('_addon'=>'{bzname}')),
+			 			'class' => 'btn btn-danger btn-sm icon-delete'
+			 		)
+			 	)
+			 ))
+			 ->setListPer(20)
+			 ->setListData($install_addons)
+			 ->common_lists();
 	}
 
 	/**
@@ -28,10 +47,6 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function not_install() {
-		$this->addCrumb('系统管理', U('Index/index'), '')
-			 ->addCrumb('插件管理', u('Addons/lists'), '')
-			 ->addCrumb('未安装插件', '', 'active')
-			 ->addNav('未安装插件', '', 'active');
 		$dir_arr = array();
 		$scan_dir = ADDON_PATH;			// 文件夹遍历目标
 		$handle = opendir($scan_dir);			// 打开文件目录
@@ -47,9 +62,34 @@ class AddonsController extends BaseController {
 					} 
 				}
 			}
+		} else {
+			$addons = array();
 		}
-		$this->assign('addons', $addons);
-		$this->display();
+		$this->addCrumb('系统管理', U('Index/index'), '')
+			 ->addCrumb('插件管理', u('Addons/lists'), '')
+			 ->addCrumb('未安装插件', '', 'active')
+			 ->addNav('已安装插件', U('Addons/lists'), '')
+			 ->addNav('未安装插件', '', 'active')
+			 ->addNav('设计新插件', U('Addons/add'), '')
+			 ->addListItem('logo', '插件LOGO', 'image', array('attr'=>'width=80,height=80'))
+			 ->addListItem('name', '插件名称')
+			 ->addListItem('bzname', '插件标识名')
+			 ->addListItem('desc', '插件描述')
+			 ->addListItem('version', '当前版本')
+			 ->addListItem('last_version', '最新版本')
+			 ->addListItem('author', '作者')
+			 ->addListItem('id', '操作', 'custom', array(
+			 	'options' => array(
+			 		array(
+			 			'title' => '安装插件',
+			 			'url' => U('install_addon', array('_addon'=>'{bzname}')),
+			 			'class' => 'btn btn-success btn-sm icon-edit'
+			 		)
+			 	)
+			 ))
+			 ->setListPer(20)
+			 ->setListData($addons)
+			 ->common_lists();
 	}
 
 	/**
@@ -342,6 +382,16 @@ str;
 				)
 			);
 			$nav = array(
+				array(
+					'title' => '已安装插件',
+					'url' => U('Addons/lists'),
+					'class' => ''
+				),
+				array(
+					'title' => '未安装插件',
+					'url' => U('Addons/not_install'),
+					'class' => ''
+				),
 				array(
 					'title' => '设计新插件',
 					'url' => '',

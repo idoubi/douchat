@@ -37,7 +37,7 @@ class CustomMenuController extends BaseController {
 			 ->setTip('由于微信端缓存的原因，发布的菜单不会立马在微信端生效，可以尝试重新关注关注查看效果')
 			 ->addNav('发布菜单', '', 'active')
 			 ->assign('menu', $menu['menu'])
-			 ->display('add');
+			 ->display();
 	}
 
 	public function get_menu() {

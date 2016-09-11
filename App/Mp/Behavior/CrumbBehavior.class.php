@@ -20,7 +20,7 @@ class CrumbBehavior extends Behavior {
 			);
 			$crumb[1] = array(
 				'title' => $addon_info['name'],
-				'url' => U('Mp/Web/index', array('addon'=>$addon)),
+				'url' => U('/addon/'.$addon.'/index'),
 				'class' => ''
 			);
 			if (ACTION_NAME == 'index') {

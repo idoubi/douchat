@@ -138,8 +138,8 @@ class AddonsController extends BaseController {
 				 ->setNav($this->nav)
 				 ->setSubNav($this->subnav)
 				 ->setTip($this->tip)
-				 ->assign('rule', $rule);
-			$this->display('Addons/rule');
+				 ->assign('rule', $rule)
+				 ->display('Addons/rule');
 		}		
 	}
 
@@ -280,7 +280,7 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
-		if ($this->addon && ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME != 'entry' && ACTION_NAME != 'preview') {
+		if ($this->addon && ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME != 'entry' && ACTION_NAME != 'preview' && ACTION_NAME != 'index') {
 			if (empty($templateFile)) {
 				$templateFile = ADDON_PATH . $this->addon . '/View/' . CONTROLLER_NAME . '/' . ACTION_NAME . C('TMPL_TEMPLATE_SUFFIX');
 			} else {

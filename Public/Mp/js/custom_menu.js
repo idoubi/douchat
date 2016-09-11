@@ -1,220 +1,3 @@
-<extend name="Base/common" />
-<block name="main_content">
-    <link rel="stylesheet" type="text/css" href="__PUBLIC__/Mp/css/app.css" />
-    <include file="Public/crumb" />
-    <div class="mod">
-        <div class="mod-head">
-            <h3>
-                <include file="Public/nav" />
-            </h3>
-        </div>
-        <div class="mod-body tab-content">
-            <div class="tab-pane active" id="list">
-            <if condition="$tip">
-            <div class="alert alert-info tip" role="alert">{$tip}</div>
-            </if>
-            <if condition="$subnav">
-            <ul class="nav nav-tabs">
-                <volist name="subnav" id="vo">
-                <li role="presentation" class="{$vo.class}"><a href="{$vo.url}">{$vo.title}</a></li>
-                </volist>
-            </ul> 
-            <br>
-            </if>
-            <div class="mod-table-head">
-                <if condition="$add_button"><a class="btn btn-primary" href="{:U('add')}">添加{$model['title']}</a></if>
-                <if condition="$del_button"><a class="btn btn-danger del-btn" href="javascript:;">删除{$model['title']}</a></if>
-                <volist name="btn" id="vo">
-                    <a class="{$vo.class}" href="{$vo.url}" {$vo.attr}>{$vo.title}</a>&nbsp;
-                </volist>
-            </div>
-                <div class="conditionMenu" id="conditionMenuDesigner">
-                    <div class="app clearfix">
-                        <div class="app-preview">
-                            <div class="app-header"></div>
-                            <div class="app-content">
-                                <div class="inner">
-                                    <div class="title">
-                                        <h1><span class="ng-binding">默认菜单</span></h1>
-                                    </div>
-                                </div>
-                                <div class="nav-menu">
-                                    <div class="js-quickmenu nav-menu-wx clearfix has-nav-1">
-                                    <ul class="nav-group designer-x ui-sortable">
-                                        <li class="nav-group-item js-not-sortable ng-scope add-button">
-                                            <a href="javascript:void(0);" title="拖动排序" class="ng-binding">
-                                                <i class="fa fa-plus-circle"></i>
-                                                添加菜单
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="app-side">
-                        <div class="menu app-conditionMenu-edit">
-                            <div class="arrow-left"></div>
-                            <div class="inner">
-                                <div class="panel panel-default">
-                                    <div class="panel-body form-horizontal">
-                                        <div class="conditionMenu-wx">
-                                            <div class="card">
-                                                <div class="nav-region">
-                                                    <div class="first-nav">
-                                                        <h3>基本设置</h3>
-                                                        <div class="alert">
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2">菜单标题</label>
-                                                                <div class="col-xs-10">
-                                                                    <input type="text" class="form-control" value="默认菜单" name="menu_name" disabled="true">
-                                                                    <span class="help-block"></span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="conditionMenu-wx" style="display:none">
-                                            <div class="card">
-                                                <div class="nav-region">
-                                                    <div class="first-nav">
-                                                        <h3>个性化</h3>
-                                                        <div class="alert">
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2">性别</label>
-                                                                <div class="col-xs-10">
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="0" class="ng-pristine ng-untouched ng-valid" name="sex" checked> 不限
-                                                                    </label>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="1" class="ng-pristine ng-untouched ng-valid" name="sex"> 男
-                                                                    </label>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="2" class="ng-pristine ng-untouched ng-valid" name="sex"> 女
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group fans-group">
-                                                                <label class="control-label col-xs-2">粉丝分组</label>
-                                                                <div class="col-xs-10">
-                                                                    <label class="radio-inline"><input type="radio" name="group" value="-1" class="ng-pristine ng-untouched ng-valid" checked> 不限</label>
-                                                                    <label class="radio-inline"><input type="radio" name="group" value="0" class="ng-pristine ng-untouched ng-valid"> 未分组</label>
-                                                                    <label class="radio-inline"><input type="radio" name="group" value="1" class="ng-pristine ng-untouched ng-valid"> 黑名单</label>
-                                                                    <label class="radio-inline"><input type="radio" name="group" value="2" class="ng-pristine ng-untouched ng-valid"> 星标组</label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2">客户端</label>
-                                                                <div class="col-xs-10">
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="0" class="ng-pristine ng-untouched ng-valid" name="client_platform_type" checked> 不限
-                                                                    </label>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="1" class="ng-pristine ng-untouched ng-valid" name="client_platform_type"> IOS(苹果)
-                                                                    </label>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="2" class="ng-pristine ng-untouched ng-valid" name="client_platform_type"> Android(安卓)
-                                                                    </label>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" value="3" class="ng-pristine ng-untouched ng-valid" name="client_platform_type"> Others(其他)
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="form-group">
-                                                                <label class="control-label col-xs-2">地区限制</label>
-                                                                <div class="col-xs-10">
-                                                                    <div style="margin-top:15px">
-                                                                    <div class="row row-fix tpl-district-container">
-                                                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                                                            <select name="country" class="form-control tpl-province ng-pristine ng-untouched ng-valid">
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                                                            <select name="province" class="form-control tpl-city ng-pristine ng-untouched ng-valid">
-                                                                            </select>
-                                                                        </div>
-                                                                        <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-                                                                            <select name="city" class="form-control tpl-city ng-pristine ng-untouched ng-valid">
-                                                                            </select>
-                                                                        </div>
-                                                                    </div>
-                                                                </div style="margin-top:15px"></div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="card ng-scope" id="menu_info" data-id="">
-                                            <div class="btns">
-                                                <a id="deleteMenu" href="javascript:;"><i class="fa fa-times"></i></a>
-                                            </div>
-                                            <div class="nav-region">
-                                                <div class="first-nav">
-                                                    <h3>菜单设置</h3>
-                                                    <div class="alert">
-                                                        <div class="form-group">
-                                                            <label class="control-label col-xs-2">菜单名称</label>
-                                                            <div class="col-xs-10">
-                                                                <div class="input-group">
-                                                                    <input type="text" class="form-control" value="" name="menu_name">
-                                                                    <!-- <div class="input-group-btn">
-                                                                        <span class="btn btn-primary"><i class="fa fa-github-alt"></i> 添加表情</span>
-                                                                    </div> -->
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="form-group ng-scope extra">
-                                                            <label class="control-label col-xs-2">菜单动作</label>
-                                                            <div class="col-xs-10 menu-action">
-                                                                <span>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" name="menu_type" value="view" class="ng-pristine ng-untouched ng-valid"> 链接
-                                                                    </label>
-                                                                    <label class="radio-inline">
-                                                                        <input type="radio" name="menu_type" value="click" class="ng-pristine ng-untouched ng-valid"> 触发关键字
-                                                                    </label>
-                                                                   
-                                                                </span>
-                                                               
-                                                                <div class="menu_act" style="display:none">
-                                                                    <hr>
-                                                                    <div class="input-group">
-                                                                        <input class="form-control" type="text">
-                                                                        <!-- <div class="input-group-btn">
-                                                                            <button class="btn btn-primary"><i class="fa fa-external-link"></i>操作</button>
-                                                                        </div> -->
-                                                                    </div>
-                                                                    <span class="help-block"></span>
-                                                                </div>
-                                                                
-                                                            </div>
-                                                        </div><!-- end ngIf: context.activeType == 2 || (context.activeType == 1 && context.activeItem.sub_button.length == 0) -->
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div><!-- end ngIf: context.group.button.length > 0 -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="shop-preview col-xs-12 col-sm-9 col-lg-10">
-                    <div class="text-center alert alert-warning" style="background:#faebcc;margin-top:-40px;">
-                        <span class="btn btn-primary ng-binding" id="btn-submit">发布菜单</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script type="text/javascript">
 var hash = 2;
 var menu = {
     button : {
@@ -224,7 +7,7 @@ var menu = {
 
 $(function() {
     $.ajax({
-        url : "{:U('get_menu')}",
+        url : get_menu_url,
         type : 'post',
         dataType : 'json',
         data : {
@@ -254,7 +37,7 @@ $(function() {
 
     $('#btn-submit').on('click', function() {
         $.ajax({
-            url : "{:U('create_menu')}",
+            url : create_menu_url,
             type : 'post',
             dataType : 'json',
             data : {
@@ -319,7 +102,7 @@ $(function() {
     // 拉取菜单
     $('.pull_menu').on('click', function() {
         $.ajax({
-            url : "{:U('get_menu')}",
+            url : get_menu_url,
             type : 'post',
             dataType : 'json',
             data : {
@@ -342,7 +125,7 @@ $(function() {
     $('.delete_menu').on('click', function() {
         if (confirm('此操作将会删除微信端已经生效的自定义菜单，是否确认要删除？')) {
             $.ajax({
-                url : "{:U('delete_menu')}",
+                url : delete_menu_url,
                 type : 'post',
                 dataType : 'json',
                 data : {
@@ -432,8 +215,39 @@ $(function() {
         $('.menu_act input').val('');
         if (type == 'view') {
             $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
+            $('.menu_act .help-block').html('格式例如：http://baidu.com/');
         } else if (type == 'click') {
             $('.menu_act input').attr('placeholder', '请填写关键词').val(menu_key);
+            $('.menu_act .help-block').html('');
+        }
+        $('.menu_act').show();
+
+    });
+
+    $('.iCheck-helper').on('click', function() {
+        var _this = $(this);
+        var data_id = $('#menu_info').attr('data-id');
+        var data_type = $('#menu_info').attr('data-type');
+        var type = _this.siblings('input[name=menu_type]').val();
+        if (data_type == 'sub_button') {
+            var sub_button = $('.sub-button[data-id="'+data_id+'"]');
+            button = sub_button.parent().parent();
+            var parent_id = button.attr('data-id');
+            menu['button'][parent_id]['sub_button'][data_id]['type'] = type;
+            var menu_key = menu['button'][parent_id]['sub_button'][data_id]['key'];
+            var menu_url = menu['button'][parent_id]['sub_button'][data_id]['url'];
+        } else {
+            menu['button'][data_id]['type'] = type; 
+            var menu_key = menu['button'][data_id]['key'];
+            var menu_url = menu['button'][data_id]['url'];
+        }
+        $('.menu_act input').val('');
+        if (type == 'view') {
+            $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
+            $('.menu_act .help-block').html('格式例如：http://baidu.com/');
+        } else if (type == 'click') {
+            $('.menu_act input').attr('placeholder', '请填写关键词').val(menu_key);
+            $('.menu_act .help-block').html('');
         }
         $('.menu_act').show();
 
@@ -709,6 +523,3 @@ function selectMenu(ele) {
     _this.parent().addClass('active');
 }
 
-
-</script>
-</block>

@@ -1,4 +1,4 @@
-<extend name="Base/common" />
+<extend name="./App/Common/View/default/Base/common.html" />
 <block name="style">
 <style type="text/css">
 .main_apps ul{ overflow:hidden; zoom:1; background:#f5f5f5;}
@@ -49,7 +49,7 @@
 </style>
 </block>
 <block name="main_content">
-<include file="Public/crumb" />
+<include file="./App/Common/View/default/Public/crumb.html" />
 <div class="main_apps">
 	<ul>
 		<volist name="addons" id="vo">
