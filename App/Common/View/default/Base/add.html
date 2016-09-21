@@ -59,6 +59,60 @@
                             </div>
                         </div>
                     </case>
+                    <case value="time">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="text" id="time" name="{$vo.name}" placeholder="{$vo.placeholder}" value="" />
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                        <link href="__PUBLIC__/Plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+                        <link href="__PUBLIC__/Plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css">
+                        <style type="text/css">
+                            .datetimepicker {
+                                top:616px !important;
+                            }
+                        </style>
+                        <script type="text/javascript" src="__PUBLIC__/Plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script> 
+                        <script type="text/javascript" src="__PUBLIC__/Plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script> 
+                        <script type="text/javascript">
+                            $('#time').datetimepicker({
+                                 format: 'yyyy-mm-dd hh:ii:ss',
+                                 language:"zh-CN",
+                                 minView:0,
+                                 autoclose:true,
+                                 pickerPosition: "top"
+                             });
+                        </script>
+                    </case>
+                    <case value="date">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="text" id="time" name="{$vo.name}" placeholder="{$vo.placeholder}" value="" />
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                        <link href="__PUBLIC__/Plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.min.css" rel="stylesheet" type="text/css">
+                        <link href="__PUBLIC__/Plugins/bootstrap-datetimepicker/css/bootstrap-datetimepicker.css" rel="stylesheet" type="text/css">
+                        <style type="text/css">
+                            .datetimepicker {
+                                top:616px !important;
+                            }
+                        </style>
+                        <script type="text/javascript" src="__PUBLIC__/Plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.min.js"></script> 
+                        <script type="text/javascript" src="__PUBLIC__/Plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script> 
+                        <script type="text/javascript">
+                            $('#time').datetimepicker({
+                                 format: 'yyyy-mm-dd',
+                                 language:"zh-CN",
+                                 minView:0,
+                                 autoclose:true,
+                                 pickerPosition: "top"
+                             });
+                        </script>
+                    </case>
                     <case value="image">
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$vo.title}</label>

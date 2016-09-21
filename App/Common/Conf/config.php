@@ -39,6 +39,7 @@ return array(
     'TMPL_ACTION_ERROR' => './App/Common/View/default/Public/error.html',
 
     'DEFAULT_FILTER' => 'trim,htmlspecialchars',    // 默认输入过滤  
+    'DEFAULT_THEME'=> 'default',
 
     'RBAC_SUPERADMIN' => 'admin',               //超级管理员名称
     'ADMIN_AUTH_KEY' => 'superadmin',           //超级管理员识别号
