@@ -354,6 +354,14 @@ class CommonController extends Controller {
 	}
 
 	/**
+	 * 设置浏览器标题
+	 */
+	public function setMetaTitle($meta_title) {
+		$this->model['meta_title'] = $meta_title;
+		return $this;
+	}
+
+	/**
 	 * 设置表单提交方式
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
@@ -711,6 +719,7 @@ class CommonController extends Controller {
 	 */
 	public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
 		global $_G;
+		$this->model['meta_title'] || $this->model['meta_title'] = $this->meta_title;
 		$this->model['crumb'] || $this->model['crumb'] = $this->crumb;
 		$this->model['nav'] || $this->model['nav'] = $this->nav;
 		$this->model['sidenav'] || $this->model['sidenav'] = $this->sidenav;
@@ -718,6 +727,8 @@ class CommonController extends Controller {
 		$this->model['btn'] || $this->model['btn'] = $this->btn;
 		$this->model['tip'] || $this->model['tip'] = $this->tip;
 		$this->model['submit_type'] || $this->model['submit_type'] = $this->submit_type;
+
+		$this->model['meta_title'] && $this->assign('meta_title', $this->model['meta_title']);
 		$this->model['crumb'] && $this->assign('crumb', $this->model['crumb']);
 		$this->model['nav'] && $this->assign('nav', $this->model['nav']);
 		$this->model['sidenav'] && $this->assign('sidenav', $this->model['sidenav']);

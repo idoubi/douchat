@@ -207,6 +207,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_material` (
   `picurl` varchar(255) DEFAULT NULL COMMENT '图文素材封面',
   `url` varchar(255) DEFAULT NULL COMMENT '图文链接',
   `description` text COMMENT '图文素材描述',
+  `detail` text COMMENT '图文素材详情',
   `create_time` int(10) DEFAULT NULL COMMENT '素材创建时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号素材表';
 
@@ -369,7 +370,8 @@ CREATE TABLE IF NOT EXISTS `dc_rbac_role` (
 INSERT INTO `dc_rbac_role` (`id`, `name`, `pid`, `status`, `remark`, `type`) VALUES
 (1, '超级管理员', 0, 1, '拥有系统管理和公众号管理权限', 'system_manager'),
 (2, '系统管理员', 0, 1, '拥有系统后台管理权限', 'admin_manager'),
-(3, '公众号管理员', 0, 1, '拥有公众号管理权限', 'mp_manager');
+(3, '公众号管理员', 0, 1, '拥有公众号管理权限', 'mp_manager') 
+ON DUPLICATE KEY UPDATE name=VALUES(`name`);
 
 --
 -- 表的结构 `dc_rbac_role_user`
@@ -480,7 +482,8 @@ INSERT INTO `dc_system_setting` (`id`, `name`, `value`) VALUES
 (4, 'site_copyright', ''),
 (5, 'site_icp_beian', ''),
 (6, 'register_on', '0'),
-(7, 'register_default_role_id', '3');
+(7, 'register_default_role_id', '3') 
+ON DUPLICATE KEY UPDATE value=VALUES(`value`);
 --
 -- 表的结构 `dc_user`
 --

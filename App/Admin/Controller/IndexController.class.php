@@ -14,6 +14,7 @@ class IndexController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function index() {
+        $this->assign('meta_title', '后台首页');
 		$this->display();
 	}
 }

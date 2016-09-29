@@ -22,6 +22,7 @@ return array(
         'addon/:addon/setting' => 'Mp/Web/setting',
         'addon/:addon/web/:act' => 'Mp/Web/:2',
         'addon/:addon/mobile/:act' => 'Mp/Mobile/:2',
+        'news/:id' => 'Mp/MobileBase/detail'
     ),
     
     'TOKEN_ON'      =>    true,            // 是否开启令牌验证 默认关闭
@@ -34,8 +35,11 @@ return array(
     ),
 
     'URL_HTML_SUFFIX' => '',                 // 模板后缀
+    'TMPL_ACTION_SUCCESS' => './App/Common/View/default/Public/success.html',
+    'TMPL_ACTION_ERROR' => './App/Common/View/default/Public/error.html',
 
     'DEFAULT_FILTER' => 'trim,htmlspecialchars',    // 默认输入过滤  
+    'DEFAULT_THEME'=> 'default',
 
     'RBAC_SUPERADMIN' => '[admin_username]',               //超级管理员名称
     'ADMIN_AUTH_KEY' => 'superadmin',           //超级管理员识别号

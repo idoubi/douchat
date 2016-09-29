@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="blank" />
 <meta name="format-detection" content="telephone=no" />
-<title>{$system_settings['site_name']}</title>
+<title>{$meta_title}-{$system_settings['site_name']}</title>
 <meta name="keywords" content="{$settings['site_keywords']}" />
 <meta name="description" content="{$settings['site_intro']}" />
 <script type="text/javascript">
@@ -118,7 +118,11 @@
                 <else />
                 <a href="#" class="dropdown-toggle mod-bell" data-toggle="">
                     <img src="__PUBLIC__/Admin/img/noname.jpg" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
+                    <if condition="$_G['module_name'] eq 'admin'">
+                    系统管理后台
+                    <else />
                     请先选择公众号
+                    </if>
                 </a>
                 </if>
                 <ul class="dropdown-menu mod-user">

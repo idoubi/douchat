@@ -3,7 +3,6 @@
 /**
  * 应用入口文件
  */
-
 if (version_compare(PHP_VERSION,'5.3.0','<')) {				// 检测环境
 	die('require PHP > 5.3.0 !');
 }  

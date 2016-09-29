@@ -17,7 +17,8 @@ class SettingController extends BaseController {
 		if (IS_POST) {
 			$this->save_settings('siteinfo');
 		} else {
-			$this->addCrumb('系统管理', U('Index/index'), '')
+			$this->setMetaTitle('站点信息-全局设置')
+				 ->addCrumb('系统管理', U('Index/index'), '')
 				 ->addCrumb('全局设置', U('Setting/siteinfo'), '')
 				 ->addCrumb('站点信息', '', 'active')
 				 ->addNav('站点信息', '', 'active')
