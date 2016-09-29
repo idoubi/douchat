@@ -14,15 +14,17 @@ class ImportCssBehavior extends Behavior {
 			foreach ($params as $k => $v) {
 				switch ($v) {
 					case 'weui':
-						$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.css">
-						          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.min.css">
-						          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.example.css">';
+						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/style/weui.css">
+						          <link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/example/example.css">';
 						break;
 					case 'frozen':
-						$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/frozen.css">';
+						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/frozen.css">';
 						break;
 					case 'bootstrap':
-						$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/bootstrap.css">';
+						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/bootstrap.css">';
+						break;
+					case 'font-awesome':
+						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/font-awesome-4.6.3/css/font-awesome.min.css">';
 						break;
 					default:
 						# code...
@@ -32,16 +34,18 @@ class ImportCssBehavior extends Behavior {
 		} else {
 			switch ($params) {
 				case 'weui':
-					$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.css">
-					          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.min.css">
-					          <link rel="stylesheet" type="text/css" href="/Public/Common/css/weui.example.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/style/weui.css">
+						      <link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/example/example.css">';
 					break;
 				case 'frozen':
-					$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/frozen.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/frozen.css">';
 					break;
 				case 'bootstrap':
-					$res[] = '<link rel="stylesheet" type="text/css" href="/Public/Common/css/bootstrap.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/bootstrap.css">';
 					break;
+				case 'font-awesome':
+						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/font-awesome-4.6.3/css/font-awesome.min.css">';
+						break;
 				default:
 					# code...
 					break;

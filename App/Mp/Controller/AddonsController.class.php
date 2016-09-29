@@ -314,9 +314,12 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function preview($act, $params=array()){
+		if (!$params['mpid']) {
+			$params['mpid'] = get_mpid();
+		}
 		$url = U('/addon/'.get_addon().'/mobile/'.$act.'@'.C('HTTP_HOST'), $params);
 	    $this->assign('url',$url);
-	    parent::display ("Base/preview");
+	    parent::display ("Addons/preview");
 	}
 
 	private function parse_children($type) {
