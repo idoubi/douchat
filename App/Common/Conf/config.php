@@ -4,15 +4,13 @@ return array(
 	
     'DB_TYPE'   => 'mysql', // 数据库类型
     'DB_HOST'   => '127.0.0.1', // 服务器地址
-    'DB_NAME'   => 'douchat_dev', // 数据库名
-    'DB_USER'   => 'idouly', // 用户名
-    'DB_PWD'    => 'idoulytest',  // 密码
+    'DB_NAME'   => 'douchat', // 数据库名
+    'DB_USER'   => 'root', // 用户名
+    'DB_PWD'    => 'psw960516',  // 密码
     'DB_PORT'   => '3306', // 端口
     'DB_PREFIX' => 'dc_', // 数据库表前缀
-
-    'HTTP_HOST' => $_SERVER['HTTP_HOST'],   // 当前域名
-
-    'URL_MODEL' => 2,                       // URL模式
+    'HTTP_HOST' => $_SERVER['HTTP_HOST'],   // 当前域名    
+    'URL_MODEL' => 3,                       // URL模式
     'URL_ROUTER_ON' => 1,
     'URL_ROUTE_RULES' => array(
         'interface/:id'    => 'Mp/Api/index',
