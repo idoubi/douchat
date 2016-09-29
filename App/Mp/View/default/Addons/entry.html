@@ -1,13 +1,12 @@
-<extend name="Base/common" />
+<extend name="./App/Common/View/default/Base/common.html" />
 <block name="main_content">
-<include file="Public/crumb" />
+<include file="./App/Common/View/default/Public/crumb.html" />
 <div class="mod">
     <div class="mod-head">
         <h3>
-        	<include file="Public/nav" />
+        	<include file="./App/Common/View/default/Public/nav.html" />
         </h3>
     </div>
-
     <div class="tab-content mod-content">
         <if condition="$subnav">
         <ul class="nav nav-tabs">

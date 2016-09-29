@@ -49,6 +49,7 @@ class MaterialController extends BaseController {
              ->addNav('图片素材', '', 'active')
              ->addNav('图文素材', U('Material/news'), '')
              ->addButton('添加图片素材', U('Material/add?type=image'), 'btn btn-primary')
+             ->addButton('一键拉取公众号图片素材', U('Material/pull?type=image'), 'btn btn-success', 'target="_blank"')
              ->assign('lists', $lists)
              ->assign('pagination', $pagination)
              ->display();
@@ -387,6 +388,13 @@ class MaterialController extends BaseController {
             $result['url']=$imgUrl;
             echo json_encode($result);
         }
+    }
+
+    /**
+     * 拉取公众号素材
+     */
+    public function pull() {
+        $this->success('正在拉取中。。。');
     }
 }
 

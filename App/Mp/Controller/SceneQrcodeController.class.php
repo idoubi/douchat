@@ -31,7 +31,34 @@ class SceneQrcodeController extends BaseController {
 			 ->addListItem('scene_str', '场景字符串', '', array('placeholder'=>'无'))
 			 ->addListItem('short_url', '二维码', 'image', array('attr'=>'width=100,height=100'))
 			 ->addListItem('ctime', '二维码创建时间', 'function', array('function_name'=>'date','params'=>'Y-m-d H:i:s,###'))
+			 ->addListItem('id', '扫码总人数', 'callback', array('callback_name'=>'get_scan_count','params'=>'###'))
+			 ->addListItem('id', '扫码总次数', 'callback', array('callback_name'=>'get_scan_times','params'=>'###'))
+			 ->addListItem('id', '操作', 'custom', array(
+			 	'options' => array(
+			 		array(
+			 			'title' => '查看扫码结果',
+			 			'url' => U('statistics', array('qrcode_id'=>'{id}')),
+			 			'class' => 'btn btn-primary btn-sm icon-ul'
+			 		)
+			 	)
+			 ))
 			 ->common_lists();
+	}
+
+	/**
+	 * 获取扫码总人数
+	 */
+	public function get_scan_count($id) {
+		$results = M('scene_qrcode_statistics')->distinct(true)->field('openid')->where(array('mpid'=>get_mpid(),'qrcode_id'=>$id))->select();
+		return count($results);
+	}
+
+	/**
+	 * 获取扫码总次数
+	 */
+	public function get_scan_times($id) {
+		$count = M('scene_qrcode_statistics')->where(array('mpid'=>get_mpid(),'qrcode_id'=>$id))->count();
+		return $count;
 	}
 
 	/**
@@ -116,13 +143,17 @@ class SceneQrcodeController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function statistics() {
+		if (I('get.qrcode_id')) {
+			$this->setListMap(array('mpid'=>get_mpid(),'qrcode_id'=>I('get.qrcode_id')));
+		} else {
+			$this->setListMap(array('mpid'=>get_mpid()));
+		}
 		$this->addCrumb('公众号管理', U('Index/index'), '')
 			 ->addCrumb('场景二维码', U('SceneQrcode/lists'), '')
 			 ->addCrumb('扫码统计', '', 'active')
 			 ->addNav('二维码管理', U('lists'), '')
 			 ->addNav('扫码统计', U('statistics'), 'active')
 			 ->setModel('scene_qrcode_statistics')
-			 ->setListMap(array('mpid'=>get_mpid()))
 			 ->setListOrder('ctime desc')
 			 ->addListItem('openid', '扫码者头像', 'function', array('function_name'=>'get_fans_headimg'))
 			 ->addListItem('openid', '扫码者昵称', 'function', array('function_name'=>'get_fans_nickname'))

@@ -19,13 +19,21 @@ class SidenavBehavior extends Behavior {
 					'class' => 'icon icon-ul active'
 				)
 			);
+		} elseif (CONTROLLER_NAME == 'Addons' || get_addon()) {
+			$sidenav[] = array(
+				'title' => '扩展功能',
+				'url' => 'javascript:;',
+				'class' => 'icon icon-ul active',
+				'attr' => 'data="icon"',
+				'children' => $access_addons
+			);
 		} else {
 			$sidenav = array(
-				// array(
-				// 	'title' => '首页',
-				// 	'url' => U('Index/index'),
-				// 	'class' => 'icon icon-home'
-				// ),
+				array(
+					'title' => '首页',
+					'url' => U('Index/index'),
+					'class' => 'icon icon-home'
+				),
 				array(
 					'title' => '基础设置',
 					'url' => 'javascript:;',
@@ -35,11 +43,6 @@ class SidenavBehavior extends Behavior {
 						array(
 							'title' => '微信支付',
 							'url' => U('Payment/wechat'),
-							'class' => ''
-						),
-						array(
-							'title' => '插件管理',
-							'url' => U('Addons/manage'),
 							'class' => ''
 						)
 					)
@@ -89,13 +92,6 @@ class SidenavBehavior extends Behavior {
 							'class' => ''
 						)
 					)
-				),
-				array(
-					'title' => '扩展功能',
-					'url' => 'javascript:;',
-					'class' => 'icon icon-ul',
-					'attr' => 'data="icon"',
-					'children' => $access_addons
 				)
 			);
 		}

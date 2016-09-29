@@ -35,9 +35,20 @@ class IndexController extends BaseController {
 		$this->assign('info', $info);
 		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
 			 ->addCrumb('首页', '', 'active')
-			 ->addNav('首页', '', 'active')
+			 ->addNav('接口配置', '', 'active')
+			 ->addNav('清除缓存', U('clear_cache'), '')
 			 ->assign('api_url', U('/interface/'.$info['token'].'@'.C('HTTP_HOST')))
 			 ->display();
+	}
+
+	/**
+	 * 清除缓存
+	 */
+	public function clear_cache() {
+		$mp_info = get_mp_info();
+		$flag = 'wechat_access_token'.$mp_info['appid'];
+		S($flag, null);
+		$this->success('清除缓存成功');
 	}
 }
 

@@ -4,15 +4,17 @@ return array(
 	
     'DB_TYPE'   => 'mysql', // 数据库类型
     'DB_HOST'   => '127.0.0.1', // 服务器地址
+
     'DB_NAME'   => 'douchat', // 数据库名
     'DB_USER'   => 'root', // 用户名
     'DB_PWD'    => 'psw960516',  // 密码
+
     'DB_PORT'   => '3306', // 端口
     'DB_PREFIX' => 'dc_', // 数据库表前缀
 
     'HTTP_HOST' => $_SERVER['HTTP_HOST'],   // 当前域名
 
-    'URL_MODEL' => 3,                       // URL模式
+    'URL_MODEL' => 2,                       // URL模式
     'URL_ROUTER_ON' => 1,
     'URL_ROUTE_RULES' => array(
         'interface/:id'    => 'Mp/Api/index',
@@ -22,6 +24,7 @@ return array(
         'addon/:addon/setting' => 'Mp/Web/setting',
         'addon/:addon/web/:act' => 'Mp/Web/:2',
         'addon/:addon/mobile/:act' => 'Mp/Mobile/:2',
+        'news/:id' => 'Mp/MobileBase/detail'
     ),
     
     'TOKEN_ON'      =>    true,            // 是否开启令牌验证 默认关闭
@@ -34,8 +37,11 @@ return array(
     ),
 
     'URL_HTML_SUFFIX' => '',                 // 模板后缀
+    'TMPL_ACTION_SUCCESS' => './App/Common/View/default/Public/success.html',
+    'TMPL_ACTION_ERROR' => './App/Common/View/default/Public/error.html',
 
     'DEFAULT_FILTER' => 'trim,htmlspecialchars',    // 默认输入过滤  
+    'DEFAULT_THEME'=> 'default',
 
     'RBAC_SUPERADMIN' => 'admin',               //超级管理员名称
     'ADMIN_AUTH_KEY' => 'superadmin',           //超级管理员识别号

@@ -31,7 +31,12 @@ class BaseController extends CommonController {
 			$topmenu[] = array(
 				'title' => '公众号管理',
 				'url' => U('Mp/Index/index'),
-				'class' => 'active'
+				'class' => get_addon() || $_G['controller_name'] == 'addons' ? '' : 'active'
+			);
+			$topmenu[] = array(
+				'title' => '插件管理',
+				'url' => U('Mp/Addons/manage'),
+				'class' => get_addon() || $_G['controller_name'] == 'addons' ? 'active' : ''
 			);
 		}
 		if ($this->user_access['admin']) {

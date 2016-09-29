@@ -48,108 +48,124 @@ class CommonController extends Controller {
 		$fields = implode(',', $fields_arr);
 		$lists['fields'] = $this->model['lists'];
 
+		$page = max(1, intval(I('p')));
+		$per = $this->model['per'] ? $this->model['per'] : 20;
 		if ($this->model['name']) {
-			$page = max(1, intval(I('p')));
-			$per = $this->model['per'] ? $this->model['per'] : 20;
 			$count = M($this->model['name'])->where($this->model['list_map'])->count();
 			$results = M($this->model['name'])->where($this->model['list_map'])->field($fields)->order($this->model['list_order'])->page($page.','.$per)->select();
-			foreach ($results as $k => &$v) {
-				foreach ($this->model['lists'] as $m => $n) {
-					if (!$n['name']) {
-						$n['name'] = $m;
+		} else {
+			$list_data = isset($this->model['list_data']) ? $this->model['list_data'] : array();
+			$count = count($list_data);
+			$per = min($count,$per);
+			$results = array();
+			$begin = ($page-1)*$per;
+			$end = $begin+$per;
+			$n = 0;
+			for($i=$begin;$i<$end;$i++) {
+				$results[$n] = $list_data[$i];
+				$n++;
+			}
+		}	
+		foreach ($results as $k => &$v) {
+			foreach ($this->model['lists'] as $m => $n) {
+				if (!$n['name']) {
+					$n['name'] = $m;
+				}
+				if ($n['format'] == 'image') {
+					$src = $v[$n['name']] ? $v[$n['name']] : $n['extra']['placeholder'];
+					$data[$k][$m] = "<img src='".$src."' ".$n['extra']['attr']." />";
+				} elseif ($n['format'] == 'enum') {
+					$options = $n['extra']['options'];
+					$data[$k][$m] = $options[$v[$n['name']]];
+				} elseif ($n['format'] == 'function') {													// 使用函数进行格式化
+					$function = $n['extra']['function_name'];												// 用来对数据进行格式化的函数名称
+					if (!$n['extra']['params']) {													// 如果参数不存在或者只有一个参数，则直接使用函数进行格式化
+						$data[$k][$m] = $function($v[$n['name']]);									// 对数据进行格式化																// 跳出本次循环
+					} else {																		// 存在两个及以上参数
+						$params_str = str_replace('###', $v[$n['name']], $n['extra']['params']);
+						$params_arr = explode(',', $params_str);
+						switch (count($params_arr)) {
+							case 1:
+								$data[$k][$m] = $function($params_arr[0]);
+								break;
+							case 2:
+								$data[$k][$m] = $function($params_arr[0], $params_arr[1]);
+								break;
+							case 3:
+								$data[$k][$m] = $function($params_arr[0], $params_arr[1], $params_arr[2]);
+								break;
+							case 4:
+								$data[$k][$m] = $function($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+								break;
+							default:
+								$data[$k][$m] = $function($v[$n['name']]);
+								break;
+						}
 					}
-					if ($n['format'] == 'image') {
-						$src = $v[$n['name']] ? $v[$n['name']] : $n['extra']['placeholder'];
-						$data[$k][$m] = "<img src='".$src."' ".$n['extra']['attr']." />";
-					} elseif ($n['format'] == 'enum') {
-						$options = $n['extra']['options'];
-						$data[$k][$m] = $options[$v[$n['name']]];
-					} elseif ($n['format'] == 'function') {													// 使用函数进行格式化
-						$function = $n['extra']['function_name'];												// 用来对数据进行格式化的函数名称
-						if (!$n['extra']['params']) {													// 如果参数不存在或者只有一个参数，则直接使用函数进行格式化
-							$data[$k][$m] = $function($v[$n['name']]);									// 对数据进行格式化																// 跳出本次循环
-						} else {																		// 存在两个及以上参数
-							$params_str = str_replace('###', $v[$n['name']], $n['extra']['params']);
-							$params_arr = explode(',', $params_str);
-							switch (count($params_arr)) {
-								case 1:
-									$data[$k][$m] = $function($params_arr[0]);
-									break;
-								case 2:
-									$data[$k][$m] = $function($params_arr[0], $params_arr[1]);
-									break;
-								case 3:
-									$data[$k][$m] = $function($params_arr[0], $params_arr[1], $params_arr[2]);
-									break;
-								case 4:
-									$data[$k][$m] = $function($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
-									break;
-								default:
-									$data[$k][$m] = $function($v[$n['name']]);
-									break;
+				} elseif ($n['format'] == 'callback') {													// 使用回调函数进行格式化
+					$callback = $n['extra']['callback_name'];												// 用来对数据进行格式化的回调函数名称
+					if (!$n['extra']['params']) {	// 如果参数不存在或者只有一个参数，则直接使用回调函数进行格式化
+						$data[$k][$m] = $this->$callback($v[$n['name']]);									// 对数据进行格式化																// 跳出本次循环
+					} else {																		// 存在两个及以上参数
+						$params_str = str_replace('###', $n['name'], $n['extra']['params']);
+						$params_arr = explode(',', $params_str);
+						switch (count($params_arr)) {
+							case 1:
+								$data[$k][$m] = $this->$callback($v[$params_arr[0]]);
+								break;
+							case 2:
+								$data[$k][$m] = $this->$callback($v[$params_arr[0]], $v[$params_arr[1]]);
+								break;
+							case 3:
+								$data[$k][$m] = $this->$callback($v[$params_arr[0]], $v[$params_arr[1]], $v[$params_arr[2]]);
+								break;
+							case 4:
+								$data[$k][$m] = $this->$callback($v[$params_arr[0]], $v[$params_arr[1]], $v[$params_arr[2]], $v[$params_arr[3]]);
+								break;
+							default:
+								$data[$k][$m] = $this->$callback($v[$n['name']]);
+								break;
+						}
+					}
+				} elseif ($n['format'] == 'custom') {
+					$format = '';
+					foreach ($n['extra']['options'] as $p => $q) {
+						$q[0] || $q[0] = $q['title'];
+						$q[1] || $q[1] = $q['url'];
+						$q[2] || $q[2] = $q['class'];
+						$q[3] || $q[3] = $q['attr'];
+						preg_match_all('/%7B(.*?)%7D/', $q[1], $match);
+						if ($match[1]) {
+							foreach($match[1] as $mm) {
+								$search[] = '%7B'.$mm.'%7D';
+								$replace[] = $v[$mm];
 							}
 						}
-					} elseif ($n['format'] == 'callback') {													// 使用回调函数进行格式化
-						$callback = $n['extra']['callback_name'];												// 用来对数据进行格式化的回调函数名称
-						if (!$n['extra']['params']) {	// 如果参数不存在或者只有一个参数，则直接使用回调函数进行格式化
-							$data[$k][$m] = $this->$callback($v[$n['name']]);									// 对数据进行格式化																// 跳出本次循环
-						} else {																		// 存在两个及以上参数
-							$params_str = str_replace('###', $n['name'], $n['extra']['params']);
-							$params_arr = explode(',', $params_str);
-							switch (count($params_arr)) {
-								case 1:
-									$data[$k][$m] = $this->$callback($v[$params_arr[0]]);
-									break;
-								case 2:
-									$data[$k][$m] = $this->$callback($v[$params_arr[0]], $v[$params_arr[1]]);
-									break;
-								case 3:
-									$data[$k][$m] = $this->$callback($v[$params_arr[0]], $v[$params_arr[1]], $v[$params_arr[2]]);
-									break;
-								case 4:
-									$data[$k][$m] = $this->$callback($v[$params_arr[0]], $v[$params_arr[1]], $v[$params_arr[2]], $v[$params_arr[3]]);
-									break;
-								default:
-									$data[$k][$m] = $this->$callback($v[$n['name']]);
-									break;
-							}
-						}
-					} elseif ($n['format'] == 'custom') {
-						$format = '';
-						foreach ($n['extra']['options'] as $p => $q) {
-							$q[0] || $q[0] = $q['title'];
-							$q[1] || $q[1] = $q['url'];
-							$q[2] || $q[2] = $q['class'];
-							$q[3] || $q[3] = $q['attr'];
-							preg_match_all('/%7B(.*?)%7D/', $q[1], $match);
-							if ($match[1]) {
-								foreach($match[1] as $mm) {
-									$search[] = '%7B'.$mm.'%7D';
-									$replace[] = $v[$mm];
-								}
-							}
-							$q[1] = str_replace($search, $replace, $q[1]);
-							unset($search);
-							unset($replace);
-							$format .= '<a href="'.$q[1].'" class="'.$q[2].'" '.$q[3].'>'.$q[0].'</a>&nbsp;';
-						}
-					
-						$data[$k][$m] = $format;
-					} else {
-						$data[$k][$m] = $v[$n['name']] !== '' ? $v[$n['name']] : $n['extra']['placeholder'];
+						$q[1] = str_replace($search, $replace, $q[1]);
+						unset($search);
+						unset($replace);
+						$format .= '<a href="'.$q[1].'" class="'.$q[2].'" '.$q[3].'>'.$q[0].'</a>&nbsp;';
 					}
-					if ($data[$k][$m] == '') {
-						$data[$k][$m] = $n['extra']['placeholder'];
-					}
+				
+					$data[$k][$m] = $format;
+				} else {
+					$data[$k][$m] = $v[$n['name']] !== '' ? $v[$n['name']] : $n['extra']['placeholder'];
+				}
+				if ($data[$k][$m] == '') {
+					$data[$k][$m] = $n['extra']['placeholder'];
 				}
 			}
-			$lists['data'] = $data;
-			$pagination = pagination($count, $per);
-			$this->assign('pagination', $pagination);
 		}
+		$lists['data'] = $data;
+		$pagination = pagination($count, $per);
+		$this->assign('pagination', $pagination);
+		$this->assign('count', $count);
 		$this->assign('model', $this->model);
 		$this->assign('lists', $lists);
 		$templateFile = APP_PATH . MODULE_NAME . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'lists' . C('TMPL_TEMPLATE_SUFFIX');
+		if (!is_file($templateFile)) {
+			$templateFile = APP_PATH . 'Common' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'lists' . C('TMPL_TEMPLATE_SUFFIX');
+		}
 		$this->display($templateFile);
 	}
 
@@ -191,6 +207,11 @@ class CommonController extends Controller {
 			}
 			!empty($this->model['info']) && $info = $this->model['info'];
 			foreach ($this->model['fields'] as $k => &$v) {
+				foreach ($v['extra'] as $m => $n) {
+					if (!isset($v[$m])) {
+						$v[$m] = $n;
+					}
+				}
 				if (!$v['name']) {
 					$v['name'] = $k;
 				}
@@ -207,6 +228,9 @@ class CommonController extends Controller {
 			$this->assign('fields', $fields);
 			$this->assign('model', $this->model);
 			$templateFile = APP_PATH . MODULE_NAME . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'add' . C('TMPL_TEMPLATE_SUFFIX');
+			if (!is_file($templateFile)) {
+				$templateFile = APP_PATH . 'Common' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'add' . C('TMPL_TEMPLATE_SUFFIX');
+			}
 			$this->display($templateFile);
 		}	
 	}
@@ -255,6 +279,11 @@ class CommonController extends Controller {
 			}
 			!empty($this->model['info']) && $info = $this->model['info'];
 			foreach ($this->model['fields'] as $k => &$v) {
+				foreach ($v['extra'] as $m => $n) {
+					if (!isset($v[$m])) {
+						$v[$m] = $n;
+					}
+				}
 				if (!$v['name']) {
 					$v['name'] = $k;
 				}
@@ -272,6 +301,9 @@ class CommonController extends Controller {
 			$this->assign('fields', $fields);
 			$this->assign('model', $this->model);
 			$templateFile = APP_PATH . MODULE_NAME . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'edit' . C('TMPL_TEMPLATE_SUFFIX');
+			if (!is_file($templateFile)) {
+				$templateFile = APP_PATH . 'Common' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'edit' . C('TMPL_TEMPLATE_SUFFIX');
+			}
 			$this->display($templateFile);
 		}	
 	}
@@ -358,6 +390,11 @@ class CommonController extends Controller {
 	 */
 	public function setListOrder($order) {
 		$this->model['list_order'] = $order;
+		return $this;
+	}
+
+	public function setListPer($per) {
+		$this->model['per'] = intval($per);
 		return $this;
 	}
 
@@ -461,6 +498,11 @@ class CommonController extends Controller {
 	 */
 	public function setFormData($data) {
 		$this->model['info'] = $data;
+		return $this;
+	}
+
+	public function setListData($data) {
+		$this->model['list_data'] = $data;
 		return $this;
 	}
 
@@ -668,6 +710,7 @@ class CommonController extends Controller {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
+		global $_G;
 		$this->model['crumb'] || $this->model['crumb'] = $this->crumb;
 		$this->model['nav'] || $this->model['nav'] = $this->nav;
 		$this->model['sidenav'] || $this->model['sidenav'] = $this->sidenav;
@@ -682,6 +725,7 @@ class CommonController extends Controller {
 		$this->model['btn'] && $this->assign('btn', $this->model['btn']);
 		$this->model['tip'] && $this->assign('tip', $this->model['tip']);
 		$this->model['submit_type'] && $this->assign('submit_type', $this->model['submit_type']);
+		$this->assign('_G', $_G);
 		parent::display($templateFile,$charset,$contentType,$content,$prefix);
 	}
 }

@@ -25,7 +25,7 @@ function hook($tag, $params=NULL) {
  */
 function create_addon_url($url, $param = array()){
     if (!$param['mpid']) {
-        $param['mpid'] = get_mpid();
+       // $param['mpid'] = get_mpid();
     }
     if (CONTROLLER_NAME == 'Mobile') {
         $act = 'mobile';
@@ -140,6 +140,7 @@ function init_fans() {
                             M('mp_fans')->where(array('mpid'=>get_mpid(),'openid'=>$result['openid']))->save($update);
                         }
                     } else {
+                        $insert['mpid'] = get_mpid();
                         $insert['openid'] = $result['openid'];
                         $insert['is_subscribe'] = 0;
                         $insert['nickname'] = $user_info['nickname'];
@@ -730,6 +731,29 @@ function get_addon() {
     }
     return $m[1];
 }
+
+function get_agent() {
+    $agent = $_SERVER ['HTTP_USER_AGENT']; 
+    return $agent;
+}
+
+function get_ip(){
+    if (isset($_SERVER['HTTP_CLIENT_IP']) and !empty($_SERVER['HTTP_CLIENT_IP'])){
+        return $_SERVER['HTTP_CLIENT_IP'];
+    }
+    if (isset($_SERVER['HTTP_X_FORWARDED_FOR']) and !empty($_SERVER['HTTP_X_FORWARDED_FOR'])){
+        return strtok($_SERVER['HTTP_X_FORWARDED_FOR'], ',');
+    }
+    if (isset($_SERVER['HTTP_PROXY_USER']) and !empty($_SERVER['HTTP_PROXY_USER'])){
+        return $_SERVER['HTTP_PROXY_USER'];
+    }
+    if (isset($_SERVER['REMOTE_ADDR']) and !empty($_SERVER['REMOTE_ADDR'])){
+        return $_SERVER['REMOTE_ADDR'];
+    } else {
+        return "0.0.0.0";
+    }
+}
+
 
 
 
