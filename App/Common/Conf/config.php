@@ -10,7 +10,6 @@ return array(
     'DB_PORT'   => '3306', // 端口
     'DB_PREFIX' => 'dc_', // 数据库表前缀
     'HTTP_HOST' => $_SERVER['HTTP_HOST'],   // 当前域名
-
     'URL_MODEL' => 3,                       // URL模式
     'URL_ROUTER_ON' => 1,
     'URL_ROUTE_RULES' => array(

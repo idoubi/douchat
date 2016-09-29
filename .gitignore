@@ -1,5 +1,5 @@
 /Runtime/*
 /Uploads/*
-/App/Common/Conf/*
+/App/Common/Conf/config.php
 /Addons/*
 /Data/*
