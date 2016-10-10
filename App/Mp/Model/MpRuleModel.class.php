@@ -64,6 +64,22 @@ class MpRuleModel extends Model {
 			$map['keyword'] = $keyword;
 		}
 		$rule = $this->where($map)->order('id desc')->find();
+		if ($type == 'respond' && !$rule) {
+			$Addons = D('Addons');
+			$installed_addons = $Addons->get_installed_addons();
+			foreach ($installed_addons as $k => $v) {
+				$addon_info = $Addons->get_addon_info($v['bzname']);
+				if ($addon_info && isset($addon_info['keywords'])) {
+					if (in_array($keyword, $addon_info['keywords'])) {
+						$rule['mpid'] = get_mpid();
+						$rule['addon'] = $v['bzname'];
+						$rule['keyword'] = $keyword;
+						$rule['type'] = 'respond';
+						return $rule;
+					}
+				}
+			}
+		}
 		return $rule;
 	}
 
