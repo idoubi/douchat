@@ -32,6 +32,7 @@ class AutoReplyController extends BaseController {
 			 ->addNav('关键词回复', '', 'active')
 			 ->addNav('特殊消息回复', U('special'), '')
 			 ->addNav('事件回复', U('event'), '')
+			 ->addNav('未识别回复', U('unrecognize'), '')
 			 ->addButton('添加文本回复', U('add?type=text'), 'btn btn-primary')
 			 ->addButton('添加图片回复', U('add?type=image'), 'btn btn-info')
 			 ->addButton('添加图文回复', U('add?type=news'), 'btn btn-success')
@@ -277,6 +278,11 @@ class AutoReplyController extends BaseController {
 					'title' => '事件回复',
 					'url' => U('event'),
 					'class' => ''
+				),
+				array(
+					'title' => '未识别回复',
+					'url' => U('unrecognize'),
+					'class' => ''
 				)
 			);
 			$tip = '当用户在公众号发送以下几种类型消息时，如果选择了响应插件，系统会把消息分发到指定的插件进行处理。如果绑定了关键词，系统会根据关键词回复中设置的内容直接回复。';
@@ -384,8 +390,13 @@ class AutoReplyController extends BaseController {
 				),
 				array(
 					'title' => '事件回复',
-					'url' => U('special'),
+					'url' => U('event'),
 					'class' => 'active'
+				),
+				array(
+					'title' => '未识别回复',
+					'url' => U('unrecognize'),
+					'class' => ''
 				)
 			);
 			$tip = '当用户在公众号触发以下几种类型事件时，如果选择了响应插件，系统会把消息分发到指定的插件进行处理。如果绑定了关键词，系统会根据关键词回复中设置的内容直接回复。';
@@ -393,6 +404,95 @@ class AutoReplyController extends BaseController {
 			$this->assign('crumb', $crumb);
 			$this->assign('nav', $nav);
 			$this->display('special');
+		}
+	}
+
+	// 未识别回复
+	public function unrecognize() {
+		if (IS_POST) {
+			C('TOKEN_ON', false);
+			if (!I('type') || count(I('type')) == 0) {
+				$this->error('无法设置非关键词回复');
+			}
+			$types = I('type');
+			$AutoReply = D('MpAutoReply');
+			$data['mpid'] = get_mpid();
+			foreach ($types as $k => $v) {
+				$data['type'] = $v;
+				$data['reply_type'] = I($v);
+				$data['keyword'] = I($v.'_keyword');
+				$data['addon'] = I($v.'_addon');
+				if (!$AutoReply->create($data)) {
+					$this->error($AutoReply->getError());
+				} else {
+					$res = $AutoReply->get_auto_reply_by_type($v);
+					if ($res) {
+						$data['id'] = $res['id'];
+						$AutoReply->save($data);
+					} else {
+						unset($data['id']);
+						$AutoReply->add($data);
+					}
+				}
+			}
+			
+			$this->success('保存未识别回复成功');
+		} else {
+			$AutoReply = D('MpAutoReply');
+			$show = array(
+				array(
+					'name' => 'unrecognize',
+					'title' => '未识别回复',
+					'value' => $AutoReply->get_auto_reply_by_type('unrecognize')
+				)
+			);
+			$this->assign('show', $show);
+			$addons = D('Addons')->get_installed_addons();
+			$this->assign('addons', $addons);
+			$crumb = array(
+				array(
+					'title' => '公众号管理',
+					'url' => U('Index/index'),
+					'class' => ''
+				),
+				array(
+					'title' => '自动回复',
+					'url' => U('AutoReply/keyword'),
+					'class' => ''
+				),
+				array(
+					'title' => '未识别回复',
+					'url' => '',
+					'class' => 'active'
+				)
+			);
+			$nav = array(
+				array(
+					'title' => '关键词回复',
+					'url' => U('keyword'),
+					'class' => ''
+				),
+				array(
+					'title' => '特殊消息回复',
+					'url' => U('special'),
+					'class' => ''
+				),
+				array(
+					'title' => '事件回复',
+					'url' => U('event'),
+					'class' => ''
+				),
+				array(
+					'title' => '未识别回复',
+					'url' => U('unrecognize'),
+					'class' => 'active'
+				)
+			);
+			$tip = '当用户在公众号发送的消息未触发关键词回复、特殊消息回复、事件回复几种回复规则时，如果有设置未识别回复规则，则按此处设置的规则进行回复。';
+			$this->assign('tip', $tip);
+			$this->assign('crumb', $crumb);
+			$this->assign('nav', $nav);
+			$this->display();
 		}
 	}
 

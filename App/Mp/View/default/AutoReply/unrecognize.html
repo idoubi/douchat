@@ -1,0 +1,88 @@
+<extend name="./App/Common/View/default/Base/common.html" />
+<block name="main_content">
+<include file="./App/Common/View/default/Public/crumb.html" />
+<style type="text/css">
+    .control-label {
+        margin-top: 12px;
+    }
+</style>
+<div class="mod">
+    <div class="mod-head">
+        <h3>
+            <include file="./App/Common/View/default/Public/nav.html" />
+        </h3>
+    </div>
+
+    <div class="tab-content mod-content">
+        <if condition="$tip">
+        <div class="alert alert-info tip" role="alert">{$tip}</div>
+        </if>
+        <form method="post" action="" class="form-horizontal" role="form">
+            <volist name="show" id="vo">
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$vo.title}</label>
+                <div class="col-sm-6 col-xs-12">
+                    <span class="help-block">
+                        <label class="radio-inline">
+                          <input type="radio" name="{$vo.name}" value="nodeal" <php>if ($vo['value']['reply_type'] != 'addon' && $vo['value']['reply_type'] != 'keyword') echo 'checked';</php>> 不处理
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="{$vo.name}" value="keyword" <eq name="vo.value.reply_type" value="keyword">checked</eq>> 关键词
+                        </label>
+                        <label class="radio-inline">
+                          <input type="radio" name="{$vo.name}" value="addon" <eq name="vo.value.reply_type" value="addon">checked</eq>> 插件
+                        </label>
+                        
+                    </span>
+                    <input type="text" class="form-control" name="{$vo.name}_keyword" placeholder="请输入触发关键字" value="{$vo['value']['keyword']}" <eq name="vo.value.reply_type" value="keyword">style="display:block"<else />style="display:none"</eq>>
+                    <select class="form-control" name="{$vo.name}_addon" <eq name="vo.value.reply_type" value="addon">style="display:block"<else />style="display:none"</eq>>
+                        <if condition="$addons">
+                            <volist name="addons" id="vv">
+                                <option value="{$vv.bzname}" <if condition="$vv['bzname'] eq $vo['value']['addon']">selected</if>>{$vv.name}</option>
+                            </volist>
+                        <else />
+                            <option value="">暂无可以处理此类型消息的插件</option>
+                        </if>
+                    </select>
+                    <input name="type[]" type="hidden" value="{$vo.name}" />
+                    <span class="help-block">
+                        <if condition="$vo['tip']">
+                            {$vo.tip}
+                        <else />
+                        绑定关键词进行处理，则公众号给用户回复关键词对应的回复内容；选择插件响应，则把用户消息分发到指定的插件进行处理。
+                        </if>
+                    </span>
+                </div>
+            </div>
+            </volist>
+
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-5 col-xs-8">
+                    <button type="submit" class="btn btn-primary ajax-post">确认提交</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        $('.radio-inline').click(function() {
+            var type = $(this).find('input').attr('name');
+            var reply_type = $(this).find('input').val();
+            var show_ele = type+'_'+reply_type;
+            $(this).parent('.help-block').siblings('[name]').hide();
+            $(this).parent('.help-block').siblings('[name='+show_ele+']').show();
+        });
+
+        $('.radio-inline .iCheck-helper').click(function() {
+            var type = $(this).siblings('input').attr('name');
+            var reply_type = $(this).siblings('input').val();
+            var show_ele = type+'_'+reply_type;
+            $(this).parent('div').parent('.radio-inline').parent('.help-block').siblings('[name]').hide();
+            $(this).parent('div').parent('.radio-inline').parent('.help-block').siblings('[name='+show_ele+']').show();
+        });
+
+    });
+</script>
+</block>

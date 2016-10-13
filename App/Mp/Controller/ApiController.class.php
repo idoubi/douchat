@@ -120,6 +120,9 @@ class ApiController extends Controller {
                 break;
         }
 
+        // 触发未识别回复
+        $this->respond_special('unrecognize', $this->message);
+
         if ($this->event != 'unsubscribe') {
             D('MpFans')->save_fans_info($this->openid);             // 保存粉丝信息
             D('MpMessage')->save_message($this->message);           // 保存消息
