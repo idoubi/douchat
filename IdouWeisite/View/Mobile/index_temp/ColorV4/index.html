@@ -1,0 +1,49 @@
+<include file="Public/mobile_head"/>
+<title>{$webinfo['title']}</title>
+<link href="{$currentpath}/main.css" rel="stylesheet" type="text/css">
+
+<body id="weisite" style="background:#eee; background-size:100% 100%">
+<div class="container">
+    <if condition="!empty($slideshow)">
+    <section class="banner" style="height:320px;">
+    	<ul>
+        <volist name="slideshow" id="vo">
+        	<li>
+            	<a href="{$vo.url}"><img src="{$vo.img}"/></a>
+            	<span class="title">{$vo.title}</span>
+            </li>
+         </volist>
+        </ul>
+        <if condition="count(slideshow) gt 1">
+        <span class="identify">
+        <volist name="slideshow" id="vo">
+        	<em></em>
+         </volist>        
+        </span>
+        </if>
+    </section>
+    </if>
+    <if condition="!empty($category)">
+    <section>
+    	<div class="icon_lists">
+            <volist name="category" id="vo">
+                <a class="item" href="{$vo.url}">
+                    <span class="icon"><img src="{$vo.icon}"/></span>
+                    <span class="click_item_txt">{$vo.title}</span>
+                </a>
+            </volist>
+        </div>
+    </section>
+    </if>
+</div>
+<!-- 底部导航 -->
+{$footer_html}
+
+</body>
+<script type="text/javascript">
+$(function(){
+	banner(true,5000);
+})
+
+</script>
+</html>

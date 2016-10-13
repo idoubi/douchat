@@ -1,0 +1,230 @@
+<include file="Public/mobile_head"/>
+<title>{$info.title}-{$webinfo['title']}</title>
+<link href="{$currentpath}/main.css" rel="stylesheet" type="text/css">
+
+<style type="text/css">
+.banner{ width:100%; overflow:hidden; position:relative;}
+.banner ul{ position:absolute; left:0; top:0; z-index:10; -webkit-animation:}
+.banner ul li{ float:left; display:table-cell; position:relative}
+.banner li a{ width:100%; height:100%; display:block;}
+.banner li .title{background-color:RGBA(0,0,0,.5); height:30px; color:#fff; line-height:30px; padding-left:10px; position:absolute; left:0; bottom:0; width:100%; z-index:1000;}
+.identify{text-align:right; position:absolute; bottom:0; right:0; z-index:100; height:30px;}
+.identify em{ display:inline-block; margin:10px 5px;-webkit-border-radius: 6px;-moz-border-radius: 6px;
+border-radius: 6px;margin-left: 5px;width: 12px;height: 12px;background: #fff;}
+.identify em.cur{ background-color:#090}
+.identify .fl{ float:left}
+.identify .fr{ float:right}
+.small_pic_list li{ border-top:1px solid #fff; border-bottom:1px solid #ccc; height:80px; overflow:hidden}
+/*.small_pic_list li a{ display:block; padding:10px 10px 10px 80px; position:relative; min-height:60px; color:#333}*/
+.small_pic_list li a:active{ background-color:#CCC}
+.small_pic_list li a img{ position:absolute; left:10px; top:10px; width:60px; height:60px;}
+.small_pic_list li a h6{ font-size:18px; font-weight:normal; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.small_pic_list li a p{ color:#999; font-size:13px; line-height:22px;}
+
+#weisite .mainmenu {
+    display: block;
+    margin: 0 auto;
+    padding:0 0 5px 5px;
+   
+}
+#weisite .mainmenu li {
+    width:50%;
+    float:left;
+    display: block;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+}
+#weisite .mainmenu li .menubtn {
+    display: block;
+    overflow: hidden;
+    text-decoration:none;
+    color:#000;
+    background-color: #ffffff;
+    border-radius: 5px;
+    margin: 5px 5px 0 0;
+    box-shadow: 0 1px 3px #bebebe;-moz-box-shadow:0 1px 3px #bebebe;-webkit-box-shadow:0 1px 3px #bebebe;
+}
+
+#weisite .mainmenu li a {
+    display:block;
+    padding:0px;
+    font-size:14px;
+    color: #000000;
+    text-decoration: none;
+    -moz-user-select:none;
+    -webkit-user-select:none;
+    -ms-user-select:none;
+}
+#weisite .mainmenu li .menubtn .menumesg {
+    padding:0px
+}
+#weisite .mainmenu li .menubtn .menuimg {
+    /*max-height:106px;*/
+    overflow:hidden;
+    
+}
+#weisite .mainmenu li div img {
+    border:0;
+    width:100%;
+}
+#weisite .mainmenu li .menutitle {
+    text-align:center;
+    line-height: 25px;
+    text-decoration: none;
+    color:#000;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.artic_lists{
+    max-width: 640px;
+    margin: auto;
+}
+
+</style>
+<body id="weisite">
+<div class="container" style="min-height: 0px;">
+<if condition="!empty($list_data)">
+    <section class="banner">
+        <ul>
+        <volist name="bannerlist" id="vo">
+            <li>
+                <a href="{:U('detail', 'id='.$vo[id])}"><img src="{$vo.cover|get_cover_url}"/></a>
+                <span class="title">{$vo.title}</span>
+            </li>
+        </volist>
+        </ul>
+        <div class="identify">
+            <volist name="bannerlist" id="vo">
+                <em></em>
+            </volist>
+        </div>
+    </section>
+</if>
+    <if condition="!empty($category)">
+
+<ul class="mainmenu">
+            <volist name="category" id="vo">
+                <li>
+                    <div class="menubtn">
+                       <a href="{$vo.url}">
+                            <div class="menumesg">
+                                <div class="menuimg"><img src="{$vo.icon}"></div>
+                                <div class="menutitle">{$vo.title}</div>
+                            </div>
+                        </a>
+                    </div>
+
+                </li>
+            </volist>
+
+            <div class="clr"></div>
+        </ul>
+    </if>
+
+</div>
+
+<div class="artic_lists">
+    <ul class="small_pic_list">
+    <volist name="list_data" id="vo">
+        <li>
+            <a href="{:U('detail', 'id='.$vo[id])}"
+				<if condition="$vo['cover']">
+				style="display:block; padding:10px 10px 10px 80px; position:relative; min-height:60px; color:#333"
+				<else />
+				style="display:block; padding:10px 10px 10px 10px; position:relative; min-height:60px; color:#333"
+				</if>
+            >
+                <notempty name="vo.cover"><img src="{$vo.cover|get_cover_url}"/></notempty>
+                <h6>[{$vo.catename}]{$vo.title}</h6>
+                <p>{$vo.intro}</p>
+                <span class="colorless">{$vo.cTime|time_format}</span>
+            </a>
+        </li>
+        </volist>
+    </ul>
+</div>
+<!-- 底部导航 -->
+{$footer_html}
+
+</body>
+<script type="text/javascript">
+$(function(){
+    initBanner(true,5000);
+    setRandomColor('.random_color');
+})
+</script>
+
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <title>{pigcms:$tpl.wxname}</title>
+        <base href="." />
+        <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <link href="{pigcms::RES}/css/allcss/cate{pigcms:$tpl.tpltypeid}_{pigcms:$tpl.color_id}.css" rel="stylesheet" type="text/css" />
+    </head>
+
+    <body id="cate1">    
+        <ul class="mainmenu">
+            <volist name="info" id="vo">
+                <li>
+                    <div class="menubtn">
+                       <a href="<if condition="$vo['url'] eq ''">{pigcms::U('Home/Addons/execute?_addons=WeiSite&_controller=WeiSite&_action=lists',array('classid'=>$vo['id'],'token'=>$vo['token']))}<else/>{pigcms:$vo.url|htmlspecialchars_decode}</if>">
+                            <div class="menumesg">
+                                <div class="menuimg"><img src="{pigcms:$vo.img}"></div>
+                                <div class="menutitle">{pigcms:$vo.name}</div>
+                            </div>
+                        </a>
+                    </div>
+
+                </li>
+            </volist>
+
+            <div class="clr"></div>
+        </ul>
+
+
+        <div id="insert2"></div>
+        <div style="display:none"> </div>
+
+
+    </body></html>

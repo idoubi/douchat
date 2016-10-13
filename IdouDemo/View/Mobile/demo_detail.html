@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>豆信功能演示</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=0">
+    {:hook('import_css', array('weui','font-awesome'))}
+</head>
+<body>
+  <div class="container" id="container">
+    <div class="home">
+      <div class="hd">
+          <h1 class="page_title">豆信</h1>
+          <p class="page_desc">功能演示</p>
+      </div>
+      <div class="bd">
+          <div class="weui_cells_title">回复文本</div>
+          <article class="weui_article">
+            <h1>操作说明</h1>
+            <section>
+              <p>
+                在微信对话框发送关键词“回复文本”
+              </p>
+            </section>
+            <h1>代码实现</h1>
+            <section>
+                <pre>reply_text('这是一条图文消息');</pre>
+            </section>
+            <h1>说明</h1>
+            <section>
+                <p>该方法用于当用户在微信端发送消息时，被动的给用户回复一条文本消息。</p>
+            </section>
+        </article>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
