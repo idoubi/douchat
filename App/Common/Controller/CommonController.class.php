@@ -55,7 +55,7 @@ class CommonController extends Controller {
 			$results = M($this->model['name'])->where($this->model['list_map'])->field($fields)->order($this->model['list_order'])->page($page.','.$per)->select();
 		} else {
 			$list_data = isset($this->model['list_data']) ? $this->model['list_data'] : array();
-			$count = count($list_data);
+			$count = $list_data ? count($list_data) : 0;
 			$per = min($count,$per);
 			$results = array();
 			$begin = ($page-1)*$per;
