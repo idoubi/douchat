@@ -1,0 +1,54 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>捐赠成功</title>
+    {:hook('jssdk', false)}
+    {:hook('import_css', 'weui')}
+</head>
+<body>
+
+	<div class="page msg">
+        <div class="hd">
+            <h1 class="page_title">Msg</h1>
+        </div>
+        <div class="bd">
+            <div class="weui_msg">
+                <div class="weui_icon_area"><i class="weui_icon_success weui_icon_msg"></i></div>
+                <div class="weui_text_area">
+                    <h2 class="weui_msg_title">捐赠成功</h2>
+                    <p class="weui_msg_desc">感谢您对我们的支持</p>
+                </div>
+                <div class="weui_opr_area">
+                    <p class="weui_btn_area">
+                        <a href="javascript:;" class="weui_btn weui_btn_primary" id="donate">继续捐赠</a>
+                        <a href="javascript:;" class="weui_btn weui_btn_default" id="next">下次再捐</a>
+                    </p>
+                </div>
+                <div class="weui_extra_area">
+                    <a href="{:create_addon_url('donate_list')}">查看捐赠列表</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script type="text/javascript">
+        $(function(){
+            $("#donate").click(function(){
+                var url = "{:create_addon_url('index')}";
+                window.location.href = url;
+            });
+
+            $("#next").click(function(){
+                closeWindow();
+            });
+        });
+    </script>
+
+</body>
+
+</html>
+</block>

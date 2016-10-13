@@ -1,0 +1,18 @@
+@charset "utf-8";
+/* CSS Document by jacy use in weisite */
+.container{ background:none}
+header{ text-align:center}
+.banner{ width:100%; overflow:hidden; position:relative; margin:0;}
+.banner ul{ position:absolute; left:0; top:0; z-index:10; -webkit-animation:}
+.banner ul li{ float:left; display:table-cell; position:relative}
+.banner li a{ width:100%; height:100%; display:block;}
+.banner li .title{background-color:RGBA(0,0,0,.5); height:30px; color:#fff; line-height:30px; padding-left:10px; position:absolute; left:0; bottom:0; width:100%; z-index:1000;}
+.identify{text-align:center; position:absolute; bottom:0; right:0; z-index:100; height:30px;}
+.identify em{ display:inline-block; margin:10px;-webkit-border-radius: 6px;-moz-border-radius: 6px;
+border-radius: 6px;margin-left: 5px;width: 12px;height: 12px;background: #fff;}
+.identify em.cur{ background-color:#090}
+
+.icon_lists{ text-align:center; margin:20px 0}
+.icon_lists .item{ width:33.3%; float:left; margin-bottom:20px; color:#333}
+.icon_lists .item .icon{ border-radius:40px; padding:20px; width:40px; height:40px; display:block; margin:0 auto 10px;}
+.icon_lists .item img{ width:40px; height:40px;}
