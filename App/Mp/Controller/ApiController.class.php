@@ -237,6 +237,7 @@ class ApiController extends Controller {
                         break;
                 }
             }
+            exit();
         }
 
         $entry_rule = $MpRule->get_keyword_rule($keyword, 'entry');
@@ -252,6 +253,7 @@ class ApiController extends Controller {
                     'Url' => U('/addon/'.$this->addon.'/mobile/'.$entry['act'].'@'.C('HTTP_HOST'), array('mpid'=>$this->mpid, 'openid'=>$this->openid))
                 );
                 reply_news($articles);
+                exit();
             }
         }
 
@@ -259,6 +261,7 @@ class ApiController extends Controller {
         if ($respond_rule) {        // 分发消息到插件进行处理
             $this->addon = $respond_rule['addon'];
             $this->respond_addon($this->addon, $this->message);
+            exit();
         }
     }
 
