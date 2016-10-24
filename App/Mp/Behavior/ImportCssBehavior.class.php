@@ -18,7 +18,7 @@ class ImportCssBehavior extends Behavior {
 						          <link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/example/example.css">';
 						break;
 					case 'frozen':
-						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/frozen.css">';
+						$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/1.3.0/css/frozen.css">';
 						break;
 					case 'bootstrap':
 						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/bootstrap.css">';
@@ -38,7 +38,7 @@ class ImportCssBehavior extends Behavior {
 						      <link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/example/example.css">';
 					break;
 				case 'frozen':
-					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/frozen.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/1.3.0/css/frozen.css">';
 					break;
 				case 'bootstrap':
 					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/bootstrap.css">';

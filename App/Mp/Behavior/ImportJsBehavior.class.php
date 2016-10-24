@@ -14,16 +14,16 @@ class ImportJsBehavior extends Behavior {
 			foreach ($params as $k => $v) {
 				switch ($v) {
 					case 'jquery':
-						$res[] = "<script src='/Public/Common/js/jquery.js'></script>";
+						$res[] = '<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>';
 						break;
 					case 'jquery.min':
-						$res[] = "<script src='/Public/Common/js/jquery.min.js'></script>";
+						$res[] = '<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>';
 						break;
 					case 'zepto.min':
-						$res[] = "<script src='/Public/Common/js/zepto.min.js'></script>";
+						$res[] = '<script src="//cdn.bootcss.com/FrozenUI/1.3.0/lib/zepto.min.js"></script>';
 						break;
 					case 'frozen':
-						$res[] = "<script src='/Public/Common/js/frozen.js'></script>";
+						$res[] = '<script src="//cdn.bootcss.com/FrozenUI/1.3.0/js/frozen.js"></script>';
 						break;
 					default:
 						# code...
@@ -33,16 +33,16 @@ class ImportJsBehavior extends Behavior {
 		} else {
 			switch ($params) {
 				case 'jquery':
-					$res[] = "<script src='/Public/Common/js/jquery.js'></script>";
+					$res[] = '<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.js"></script>';
 					break;
 				case 'jquery.min':
-					$res[] = "<script src='/Public/Common/js/jquery.min.js'></script>";
+					$res[] = '<script src="//cdn.bootcss.com/jquery/3.1.1/jquery.min.js"></script>';
 					break;
 				case 'zepto.min':
-					$res[] = "<script src='/Public/Common/js/zepto.min.js'></script>";
+					$res[] = '<script src="//cdn.bootcss.com/FrozenUI/1.3.0/lib/zepto.min.js"></script>';
 					break;
 				case 'frozen':
-					$res[] = "<script src='/Public/Common/js/frozen.js'></script>";
+					$res[] = '<script src="//cdn.bootcss.com/FrozenUI/1.3.0/js/frozen.js"></script>';
 					break;
 				default:
 					# code...
