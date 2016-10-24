@@ -38,7 +38,7 @@ class AddonsController extends BaseController {
 		$this->crumb = hook('crumb');										// 执行钩子，获取面包屑
 		add_hook('nav', 'Mp\Behavior\NavBehavior');							// 添加生成插件导航的钩子
 		$this->nav = hook('nav');											// 执行钩子，获取插件导航数据
-
+		$this->meta_title = '业务导航';
 		if ($_G['action_name'] == 'entry') {										// 获取子导航					
 			$this->subnav = $this->nav['entry']['children'];
 		} elseif ($_G['action_name'] == 'setting') {
@@ -195,6 +195,7 @@ class AddonsController extends BaseController {
 				$fields = $addon_config['setting_list'];
 			}
 			$this->setCrumb($this->crumb)
+				 ->setMetaTitle('配置参数')
 				 ->setNav($this->nav)
 				 ->setSubNav($this->subnav)
 				 ->setTip($this->tip)
@@ -267,6 +268,7 @@ class AddonsController extends BaseController {
 				}
 			}
 			$this->setCrumb($this->crumb)
+				 ->setMetaTitle($addon_entry['name'])
 				 ->setNav($this->nav)
 				 ->setSubNav($this->subnav)
 				 ->setTip($this->tip)
