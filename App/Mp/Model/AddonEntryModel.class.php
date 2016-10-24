@@ -77,7 +77,7 @@ class AddonEntryModel extends Model {
 				$entry['rule'] = D('MpRule')->get_entry_rule($entry['id']);
 				$entry['act'] = $act;
 				$entry['name'] = $v;
-				$entry['url'] = U('/addon/'.$addon.'/mobile/'.$k.'@'.C('HTTP_HOST'));
+				$entry['url'] = U('/addon/'.$addon.'/mobile/'.$k.'/mpid/'.$mpid.'@'.C('HTTP_HOST'));
 				break;
 			}
 		}
