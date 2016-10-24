@@ -18,7 +18,8 @@ class AddonsModel extends Model {
 				continue;
 			}
 			$arr['title'] = $v['name'];
-			$arr['url'] = $v['index_url'];
+			$arr['bzname'] = $v['bzname'];
+			$arr['url'] = str_replace('/index.php', SITE_URL.'index.php', $v['index_url']);
 			$arr['class'] = '';
 			$access_addons[] = $arr;
 		}
