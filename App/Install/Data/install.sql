@@ -156,7 +156,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_fans` (
   `mpid` int(10) NOT NULL COMMENT '公众号标识',
   `openid` varchar(255) NOT NULL COMMENT '粉丝标识',
   `is_subscribe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否关注',
-  `subscribe_time` int(10) NOT NULL COMMENT '关注时间',
+  `subscribe_time` int(10) DEFAULT NULL COMMENT '关注时间',
   `unsubscribe_time` int(10) DEFAULT NULL COMMENT '取消关注时间',
   `nickname` varchar(50) DEFAULT NULL COMMENT '粉丝昵称',
   `sex` tinyint(1) DEFAULT NULL COMMENT '粉丝性别',
@@ -466,7 +466,8 @@ CREATE TABLE IF NOT EXISTS `dc_scene_qrcode_statistics` (
 CREATE TABLE IF NOT EXISTS `dc_system_setting` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增ID',
   `name` varchar(255) NOT NULL COMMENT '配置项',
-  `value` text COMMENT '配置值'
+  `value` text DEFAULT NULL COMMENT '配置值',
+  `type` varchar(50) DEFAULT NULL COMMENT '配置类型'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='全局配置表';
 
 -- --------------------------------------------------------
