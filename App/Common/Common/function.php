@@ -37,6 +37,13 @@ function create_addon_url($url, $param = array()){
     return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
 }
 
+/**
+ * 生成移动端访问链接
+ */
+function create_mobile_url($url, $param = array()) {
+    return U('/addon/'.get_addon().'/mobile/'.$url.'@'.C('HTTP_HOST'), $param);
+}
+
 
 /**
  * 设置/获取当前公众号标识
