@@ -1,0 +1,256 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" href="./Addons/SvenClass/View/Mobile/css/weui.css">
+<link rel="stylesheet" href="./Addons/SvenClass/View/Mobile/css/weui.example.css">
+<link rel="stylesheet" href="./Addons/SvenClass/View/Mobile/css/weui.min.css">
+<link rel="stylesheet" href="./Addons/SvenClass/View/Mobile/css/bootstrap.css">
+<link rel="stylesheet" href="./Addons/SvenClass/View/Mobile/css/bootstrap.min.css">
+ <script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+ <script type="text/javascript" src="./Addons/SvenClass/View/Mobile/js/bootstrap.js"></script>
+ <script type="text/javascript" src="./Addons/SvenClass/View/Mobile/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="./Addons/SvenClass/View/Mobile/js/jquery.js"></script>
+ <script type="text/javascript" src="./Addons/SvenClass/View/Mobile/js/jquery.min.js"></script>
+
+ <style type="text/css">
+ *{
+ 	font-family: 微软雅黑;
+
+ }
+   th{
+    width: 20%;
+   }
+   caption{
+    font-size: 20px;
+    font-family: 微软雅黑;
+    text-align: center;
+    color: black;
+   }
+   caption a{
+   	text-decoration: none;
+   	outline: none;
+   	 color: black;
+   }
+   footer{
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 20px;
+   }
+   .notice{
+   	margin:0 10px;
+   	margin-bottom: 10px;
+   	color: #BEBEBE; 
+   }
+   #detail{
+      text-decoration: none;
+    outline: none;
+     color: black;
+
+   } 
+ </style>
+<script type="text/javascript">
+
+//加载函数
+function load(ytime,classname,classroom){           
+    var url ="{:create_addon_url('loadlist')}";
+    var classname = "."+classname;   
+    //console.log(classname); 
+    var data = {ytime:ytime,classroom:classroom}; 
+    //console.log(data); 
+    $.ajax({
+        'url' : url,
+        'type' : 'post',
+        'dataType' : 'json',
+        'data' : data,  
+         beforeSend : function() {                    
+                    $('#loadingToast').show();
+                },  
+        success : function(data) { 
+             // console.log(data); 
+          for (var i = 0; i < data.data.length; i++) {
+            var id=  data.data[i].id;
+            var url = "{:create_addon_url('detail')}";       
+            var url = url+"/id/"+id;
+            //console.log(id);
+             var html="<a href='"+url+"' id='detail'>"+data.data[i].name+"</br>●"+data.data[i].classroom+"</br>●"+data.data[i].timeline+"<\hr></div>";
+            // console.log(html);
+            $(classname).append(html);
+          } 
+         
+                 
+        },
+        error : function() {
+            alert('数据请求失败');
+        },
+        complete : function() {
+                    $('#loadingToast').hide();                              
+                }
+               
+    });
+};
+
+
+   var oDate=new Date();
+   var ttt=new Date().getTime();
+  
+   var year=oDate.getFullYear();   //获取系统的年；
+   var month=oDate.getMonth()+1;   //获取系统月份，由于月份是从0开始计算，所以要加1
+   var day=oDate.getDate(); // 获取第一系统日，   
+  
+   var fDate=new Date(ttt+1*24000*3600);   
+   var fday=fDate.getDate(); // 获取第二系统日，
+   var fmonth=fDate.getMonth()+1;
+   var fyear=fDate.getFullYear();   //获取系统的年；
+
+   var sDate=new Date(ttt+2*24000*3600);   
+   var sday=sDate.getDate(); // 获取第三系统日，
+   var smonth=sDate.getMonth()+1;
+   var syear=sDate.getFullYear();   //获取系统的年；
+
+   var tDate=new Date(ttt+3*24000*3600);   
+   var tday=tDate.getDate(); // 获取第四系统日，
+   var tmonth=tDate.getMonth()+1;
+   var tyear=tDate.getFullYear();   //获取系统的年；
+
+   var foDate=new Date(ttt+4*24000*3600);   
+   var foday=foDate.getDate(); // 获取第五系统日，
+   var fomonth=foDate.getMonth()+1;
+   var foyear=foDate.getFullYear();   //获取系统的年；
+
+   var sixDate=new Date(ttt+5*24000*3600);   
+   var sixday=sixDate.getDate(); // 获取第六系统日，
+   var sixmonth=sixDate.getMonth()+1;
+   var sixyear=sixDate.getFullYear();   //获取系统的年；
+
+   //组合日期
+   var compday=year+"-"+month+"-"+day;
+   var compfday=fyear+"-"+fmonth+"-"+fday;
+   var compsday=syear+"-"+smonth+"-"+sday;
+   var comptday=tyear+"-"+tmonth+"-"+tday;
+   var compfoday=foyear+"-"+fomonth+"-"+foday;
+    var compsixday=sixyear+"-"+sixmonth+"-"+sixday;
+  
+   //console.log(year);
+   //  console.log(month);
+     //console.log(compsixday);
+     $(document).ready(function(){ 
+       $(".day").html(month+"/"+day);
+       $(".day1").html(fmonth+"/"+fday);
+       $(".day2").html(smonth+"/"+sday);
+       $(".day3").html(tmonth+"/"+tday);
+       $(".day4").html(fomonth+"/"+foday);
+       $(".day5").html(sixmonth+"/"+sixday);
+     });
+
+     //加载对应格子数据
+      $(document).ready(load(compday,"a1",'1415'));  //加载第一天第一格子
+      $(document).ready(load(compfday,"a2",'1415'));  //加载第一天第二格子
+      $(document).ready(load(compsday,"a3",'1415'));  //加载第一天第三格子
+      $(document).ready(load(comptday,"a4",'1415'));  //加载第一天第四格子
+      $(document).ready(load(compfoday,"a5",'1415'));  //加载第一天第五格子
+       $(document).ready(load(compsixday,"a6",'1415'));  //加载第一天第五格子
+
+       $(document).ready(load(compday,"b1",'1419'));  //加载第一天第一格子
+      $(document).ready(load(compfday,"b2",'1419'));  //加载第一天第二格子
+      $(document).ready(load(compsday,"b3",'1419'));  //加载第一天第三格子
+      $(document).ready(load(comptday,"b4",'1419'));  //加载第一天第四格子
+      $(document).ready(load(compfoday,"b5",'1419'));  //加载第一天第五格子
+       $(document).ready(load(compsixday,"b6",'1419'));  //加载第一天第五格子
+
+        $(document).on('click', '#tap1', function() {
+          $("#tap1").addClass("btn-primary");
+          $("#tap2").removeClass("btn-primary");
+
+           $("#tap1415").show();
+           $("#tap1419").hide();
+    });
+        $(document).on('click', '#tap2', function() {
+        	$("#tap2").addClass("btn-primary");
+           $("#tap1").removeClass("btn-primary");
+           $("#tap1415").hide();
+           $("#tap1419").show();
+    });
+
+
+ </script>
+<title>能动学院-借用教室</title>
+</head>
+<body>
+
+  <table class="table table-bordered">
+  <caption>
+  <div class="btn-group" style="float: right;margin-right:10px;">
+    <button type="button" class="btn btn-default btn-primary" id="tap1">1415</button>   
+    <button type="button" class="btn btn-default" id="tap2">1419</button>
+   </div>
+
+<a href="{:create_addon_url('login')}">教室借用情况</a></caption>
+  <thead>
+    <tr>
+      <th class="day"></th>
+       <th class="day1"></th>
+       <th class="day2"></th>
+       <th class="day3"></th>
+       <th class="day4"></th>
+    </tr>
+  </thead>
+  <tbody> 
+    <tr id="tap1415">
+      <td class="a1"></td>
+      <td class="a2"></td>
+      <td class="a3"></td>
+      <td class="a4"></td>
+      <td class="a5"></td>     
+    </tr>  
+      <tr id="tap1419" style="display:none;">
+      <td class="b1"></td>
+      <td class="b2"></td>
+      <td class="b3"></td>
+      <td class="b4"></td>
+      <td class="b5"></td>     
+    </tr> 
+  </tbody>
+     
+</table>
+
+<div class="notice">点击姓名可以进入预约详情页查看详细信息！晚上和中午借教室提前到郑礼月老师处拿申请单，到楼管借钥匙，白天直接向郑礼月老师借钥匙。任何问题请联系团委助理<a href="tel:158xxxxxxxx">某人</a>(158******),有任何系统漏洞请及时微博私信<a href="http://weibo.com/u/5285244109">彭思文</a></div> 
+          <div class="weui_cell">
+          <a href="{:create_addon_url('yuyue')}"><button type="button" class="btn btn-primary btn-lg btn-block">预约</button></a>
+          </div>
+          <div class="weui_cell">
+          <a href="{:create_addon_url('my_lists')}"><button type="button" class="btn btn-primary btn-lg btn-block">我的申请</button></a>
+          </div>
+	
+
+
+       
+       
+<footer>&copy;技术支持：<a href="http://weibo.com/u/5285244109/" style="text-decoration: none;color:black;">彭思文</a></footer> 
+
+  <div id="loadingToast" class="weui_loading_toast" style="display:none;">
+    <div class="weui_mask_transparent"></div>
+    <div class="weui_toast">
+        <div class="weui_loading">
+            <div class="weui_loading_leaf weui_loading_leaf_0"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_1"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_2"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_3"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_4"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_5"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_6"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_7"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_8"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_9"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_10"></div>
+            <div class="weui_loading_leaf weui_loading_leaf_11"></div>
+        </div>
+        <p class="weui_toast_content">数据加载中</p>
+    </div>
+   </div>
+
+</body>
+</html>
