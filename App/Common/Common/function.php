@@ -596,6 +596,13 @@ function add_score($value,$remark='',$type='score',$flag='',$source='addon') {
 }
 
 /**
+ * 获取积分
+ */
+function get_score($type='', $source='', $flag='', $openid='') {
+    return D('MpScoreRecord')->get_score($type, $source, $flag, $openid);
+}
+
+/**
  * 创建目录或文件
  * @author 艾逗笔<765532665@qq.com>
  */
