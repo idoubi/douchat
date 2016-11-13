@@ -38,6 +38,20 @@ class CommonController extends Controller {
 	public function common_lists($model = array()) {
 		cookie('__forward__', $_SERVER['HTTP_REFERER']);
 		!empty($model) && $this->model = $model;
+		if (IS_POST) {
+			$target = I('target');
+			$keyword = I('keyword');
+			// if (!$target) {
+			// 	$this->error('请选择搜索项');
+			// }
+			// if (!$keyword) {
+			// 	$this->error('请输入搜素内容');
+			// }
+			$this->model['list_map'][$target] =  array('like', '%'.$keyword.'%');
+			$this->assign('search_tip', $this->model['list_search'][$target].'为“'.$keyword.'”的搜索结果');
+			$this->assign('keyword', $keyword);
+			$this->assign('target', $target);
+		}
 		$fields_arr = array();
 		foreach ($this->model['lists'] as $k => $v) {
 			if (!$v['name']) {
@@ -393,6 +407,14 @@ class CommonController extends Controller {
 	}
 
 	/**
+	 * 设置搜索条件
+	 */
+	public function setListSearch($search) {
+		$this->model['list_search'] = $search;
+		return $this;
+	}
+
+	/**
 	 * 设置数据排序
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
@@ -726,6 +748,7 @@ class CommonController extends Controller {
 		$this->model['subnav'] || $this->model['subnav'] = $this->subnav;
 		$this->model['btn'] || $this->model['btn'] = $this->btn;
 		$this->model['tip'] || $this->model['tip'] = $this->tip;
+		$this->model['list_search'] || $this->model['list_search'] = $this->list_search;
 		$this->model['submit_type'] || $this->model['submit_type'] = $this->submit_type;
 
 		$this->model['meta_title'] && $this->assign('meta_title', $this->model['meta_title']);
@@ -735,6 +758,7 @@ class CommonController extends Controller {
 		$this->model['subnav'] && $this->assign('subnav', $this->model['subnav']);
 		$this->model['btn'] && $this->assign('btn', $this->model['btn']);
 		$this->model['tip'] && $this->assign('tip', $this->model['tip']);
+		$this->model['list_search'] && $this->assign('list_search', $this->model['list_search']);
 		$this->model['submit_type'] && $this->assign('submit_type', $this->model['submit_type']);
 		$this->assign('_G', $_G);
 		parent::display($templateFile,$charset,$contentType,$content,$prefix);

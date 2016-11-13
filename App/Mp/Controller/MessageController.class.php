@@ -35,6 +35,10 @@ class MessageController extends BaseController {
 			 ->setModel('mp_message')
 			 ->setListMap(array('mpid'=>get_mpid()))
 			 ->setListOrder('create_time desc')
+			 ->setListSearch(array(
+			 	'msgtype' => '消息类型',
+			 	'content' => '消息内容'
+			 ))
 			 ->addListItem('msgtype', '消息类型', 'enum', array('options'=>array('text'=>'文本消息','image'=>'图片消息','voice'=>'语音消息','shortvideo'=>'短视频消息','location'=>'地理位置消息','link'=>'链接消息')))
 			 ->addListItem('msgid', '消息内容', 'callback', array('callback_name'=>'get_message_content'))
 			 ->addListItem('create_time', '消息发送时间', 'function', array('function_name'=>'date','params'=>'Y-m-d H:i:s,###'))
