@@ -27,6 +27,16 @@ class SidenavBehavior extends Behavior {
 				'attr' => 'data="icon"',
 				'children' => $access_addons
 			);
+			foreach ($access_addons as $k => $v) {
+				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
+					if (isset($v['config']['sidebar_list']['addon'])) {
+						$mp_sidebar = $v['config']['sidebar_list']['mp'];
+						foreach ($mp_sidebar as $kk => $vv) {
+							$sidenav[] = $vv;
+						}
+					}
+				}
+			}
 		} else {
 			$sidenav = array(
 				array(
@@ -94,6 +104,16 @@ class SidenavBehavior extends Behavior {
 					)
 				)
 			);
+			foreach ($access_addons as $k => $v) {
+				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
+					if (isset($v['config']['sidebar_list']['mp'])) {
+						$mp_sidebar = $v['config']['sidebar_list']['mp'];
+						foreach ($mp_sidebar as $kk => $vv) {
+							$sidenav[] = $vv;
+						}
+					}
+				}
+			}
 		}
 		return $sidenav;
 	}
