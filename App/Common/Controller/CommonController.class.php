@@ -171,7 +171,7 @@ class CommonController extends Controller {
 			}
 		}
 		$lists['data'] = $data;
-		$pagination = pagination($count, $per);
+		$pagination = pagination($count, $per, $this->model['list_map']);
 		$this->assign('pagination', $pagination);
 		$this->assign('count', $count);
 		$this->assign('model', $this->model);
