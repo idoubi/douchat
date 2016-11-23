@@ -1,0 +1,148 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <meta name="format-detection" content="telephone=no" />
+        <title>个人信息绑定</title>
+        {:hook('jssdk', false)}
+        {:hook('import_js', 'jquery')}
+        {:hook('import_css', 'weui')}
+        <style>
+            .weui_cells {
+                margin: 0px;
+            }
+            .weui_cells_access{
+                margin-bottom: 10px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="page cell">
+            <form action="{:U('MobileBase/fans_bind')}" method="post">
+            <div class="weui_cells weui_cells_access">
+                <a class="weui_cell" href="javascript:;">
+                    <div class="weui_cell_hd"><img src="<if condition="$fans_info['headimgurl']">{$fans_info['headimgurl']}<else />__PUBLIC__/Admin/img/noname.jpg</if>" alt="" style="width:80px;margin-right:5px;display:block"></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        &nbsp;&nbsp;头像
+                    </div>
+                    <div class="weui_cell_ft">
+                    </div>
+                </a>
+            </div>
+
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">昵称</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input class="weui_input" name="nickname" type="text" placeholder="请输入你的昵称" value="{$fans_info.nickname}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">姓名</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input class="weui_input" name="relname" type="text" placeholder="请输入你的真实姓名" value="{$fans_info.relname}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui_cells">
+                <div class="weui_cell weui_cell_select weui_select_after">
+                    <div class="weui_cell_hd">
+                        <label for="" class="weui_label">性别</label>
+                    </div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <select class="weui_select" name="sex">
+                            <option value="0" >保密</option>
+                            <option value="1" <if condition="$fans_info['sex'] eq 1">selected</if>>男</option>
+                            <option value="2" <if condition="$fans_info['sex'] eq 2">selected</if>>女</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_hd"><label class="weui_label">手机号</label></div>
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <input class="weui_input" name="mobile" type="text" placeholder="请输入你的手机号" value="{$fans_info.mobile}">
+                    </div>
+                </div>
+            </div>
+
+            <div class="weui_cells weui_cells_form">
+                <div class="weui_cell">
+                    <div class="weui_cell_bd weui_cell_primary">
+                        <textarea rows="4" name="signature" class="weui_textarea" placeholder="个性签名">{$fans_info.signature}</textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bd spacing" style="margin-top:20px;">
+               
+                <div class="button_sp_area">
+                   
+                    <a href="javascript:;" class="weui_btn weui_btn_plain_primary" id="save">保存</a>
+            
+                </div>
+            </div>
+            </form>
+        </div>  
+
+    <div id="loadingToast" class="weui_loading_toast" style="display: none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+            <div class="weui_loading">
+                <div class="weui_loading_leaf weui_loading_leaf_0"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_1"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_2"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_3"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_4"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_5"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_6"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_7"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_8"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_9"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_10"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_11"></div>
+            </div>
+            <p class="weui_toast_content">数据加载中</p>
+        </div>
+    </div>      
+ 
+    <script type="text/javascript">
+        $(document).on('click', '#save', function() {
+            var data = $('form').serialize();
+            var url = $('form').attr('action');
+            $.ajax({
+                'url' : url,
+                'type' : 'post',
+                'dataType' : 'json',
+                'data' : data,
+                beforeSend : function() {
+                    $('#loadingToast').show();
+                },
+                success : function(data) {
+                    if (data.errcode == 1) {
+                        alert(data.errmsg);
+                        window.location.href = data.url;
+                    } else {
+                        alert(data.errmsg);
+                    }
+                },
+                error : function() {
+                    alert('提交保存数据请求失败');
+                },
+                complete : function() {
+                    $('#loadingToast').hide();
+                }
+            });
+        });
+    </script>
+    </body>
+</html>
