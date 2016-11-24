@@ -112,7 +112,8 @@ class MpController extends BaseController {
 		if ($this->user_access['mp_count'] !== 0 && $mp_count >= $this->user_access['mp_count']) {
 			$this->error('你最多只能创建'.$this->user_access['mp_count'].'个公众号');
 		}
-		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
+		$this->setMetaTitle('添加公众号')
+			 ->addCrumb('公众号管理', U('Mp/Index/index'), '')
 			 ->addCrumb('公众号列表', U('Mp/Mp/lists'))
 			 ->addCrumb('添加公众号', '', 'active')
 			 ->addNav('添加公众号', '', 'active')
@@ -140,6 +141,7 @@ class MpController extends BaseController {
 					array('encodingaeskey', 'get_nonce', 1, 'function', '43'),
 					array('user_id', 'get_user_id', 1, 'function')
 			   ))
+			 ->setAddSuccessUrl(U('Index/index', array('mpid'=>'{pk}')))
 			 ->common_add();
 	}
 

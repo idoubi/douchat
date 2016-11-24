@@ -206,6 +206,7 @@ class CommonController extends Controller {
 				if (!$res) {
 					$this->error($add_error_info);
 				} else {
+					$add_success_url = str_replace('%7Bpk%7D', $res, $add_success_url);
 					$this->success($add_success_info, $add_success_url);
 				}
 			}
