@@ -22,7 +22,9 @@ class AddonsModel extends Model {
 			preg_match('/.*index.php/', $v['index_url'], $m);
 			$arr['url'] = str_replace($m[0], SITE_URL.'index.php', $v['index_url']);
 			$arr['class'] = '';
-			$arr['config'] = $this->get_addon_info($v['bzname'])['config'];
+			
+			$addon_info = $this->get_addon_info($v['bzname']);
+			$arr['config'] = $addon_info['config'];
 			$access_addons[] = $arr;
 		}
 		return $access_addons;
