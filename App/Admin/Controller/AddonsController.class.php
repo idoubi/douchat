@@ -279,6 +279,18 @@ class AddonsController extends BaseController {
 				$files[] = "{$addon_dir}View/Mobile/";
 			}
 			$res = create_dir_or_files($files);			// 生成插件文件夹及文件
+
+            // 上传插件logo
+            $logofile = $_FILES['logo'];
+            $logo = '';
+            if ($logofile['name'] != '') {      // 上传了logo文件
+                if ($logofile['error'] == 0 && $logofile['size'] < 5*1024*1000 && in_array($logofile['type'], array('image/png','image/gif','image/jpg','image/jpeg'))) {
+                    $logoname = 'logo.' . substr($logofile['type'], 6);
+                    $logopath = $addon_dir . $logoname;
+                    move_uploaded_file($logofile['tmp_name'], $logopath);
+                    $logo = $logoname;
+                }
+            }
 			$info_file = <<<str
 <?php
 
@@ -288,6 +300,7 @@ return array(
 	'desc' => '{$data['desc']}',
 	'version' => '{$data['version']}',
 	'author' => '{$data['author']}',
+    'logo' => '{$logo}',
 	'config' => array(
 		'respond_rule' => {$data['respond_rule']},
 		'setting' => {$data['setting']},
@@ -431,6 +444,11 @@ str;
 					'placeholder' => '一个好用的商城插件',
 					'tip' => '请输入插件描述，描述越详细，越容易受到关注'
 				),
+                'logo' => array(
+                    'title' => '插件logo',
+                    'type' => 'file',
+                    'tip' => '请上传一张插件的logo'
+                ),
 				'respond_rule' => array(
 					'title' => '是否需要响应规则',
 					'type' => 'radio',
@@ -472,6 +490,8 @@ str;
 					'tip' => '如果选择需要业务导航，则可以通过编辑业务导航菜单来进行插件后台开发'
 				)
 			);
+            $model['submit_type'] = 'post';
+            $model['meta_title'] = '创建插件';
 			parent::common_add($model);
 		}
 	}
