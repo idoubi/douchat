@@ -20,7 +20,7 @@
             <br>
         </if>
         <if condition="$fields">
-        <form method="post" action="" class="form-horizontal" role="form">
+        <form method="post" action="" class="form-horizontal" role="form" enctype="multipart/form-data">
             <volist name="fields" id="vo"> 
                 <switch name="vo.type">
                     <case value="text">
@@ -190,6 +190,15 @@
                             </div>
                         </div>
                     </case>
+                    <case value="file">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="file" name="{$vo.name}" placeholder="{$vo.placeholder}" value="{$vo.value}" />
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
                     <case value="hidden">
                         <input type="hidden" name="{$vo.name}" value="{$vo.value}" />
                     </case>
@@ -202,7 +211,7 @@
                     <input type="hidden" name="{$key}" value="{$vo}" />
                     </volist>
 
-                    <input type="submit" value="确认提交" class="btn btn-primary center-block ajax-post" />
+                    <input type="submit" value="确认提交" class="btn btn-primary center-block <if condition="$submit_type">{$submit_type}<else />ajax-post</if>" />
                 </div>
             </div>
         </form>

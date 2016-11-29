@@ -20,7 +20,7 @@
             <br>
         </if>
         <if condition="$fields">
-        <form method="post" action="" class="form-horizontal" role="form">
+        <form method="post" action="" class="form-horizontal" role="form" enctype="multipart/form-data">
         	<volist name="fields" id="vo"> 
         		<switch name="vo.type">
         			<case value="text">
@@ -186,6 +186,15 @@
                                   <input type="checkbox" name="{$vo.name}[]" value="{$key}" <php> if (in_array($key, json_decode($vo['value'], true))) { echo 'checked'; } </php>> {$vv}
                                 </label>
                                 </volist>
+                                <span class="help-block">{$vo.tip}</span>
+                            </div>
+                        </div>
+                    </case>
+                    <case value="file">
+                        <div class="form-group">
+                            <label class="col-sm-2 col-xs-3 control-label">{$vo.title}:</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input class="form-control" type="file" name="{$vo.name}" placeholder="{$vo.placeholder}" value="{$vo.value}" />
                                 <span class="help-block">{$vo.tip}</span>
                             </div>
                         </div>
