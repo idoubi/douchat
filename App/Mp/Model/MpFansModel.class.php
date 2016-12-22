@@ -52,6 +52,19 @@ class MpFansModel extends Model {
 			$this->where($map)->save($data);				// 如果粉丝信息存在，则保存粉丝信息
 		} else {					// 如果粉丝不存在
 			$this->add($data);
+			/*
+			 * @baoshu
+			 * 初始化用户积分/金钱
+			 */
+			$this->mp_settings = D('MpSetting')->get_settings();    // 获取公众号全局设置
+			$mp_fans = D('mp_fans');
+			$where['openid'] = $openid;
+			$where['mpid'] = $mpid;
+			$data['score'] = $this->mp_settings['fans_init_integral'];
+			$data['money'] = $this->mp_settings['fans_init_money'];
+			$mp_fans->where($where)->save($data);
+			// end
+			
 		}
 		return $data;
 	}
