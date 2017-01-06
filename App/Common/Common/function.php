@@ -25,25 +25,61 @@ function hook($tag, $params=NULL) {
  */
 function create_addon_url($url, $param = array()){
     if (!$param['mpid']) {
-       // $param['mpid'] = get_mpid();
+       $param['mpid'] = get_mpid();
     }
-    if (CONTROLLER_NAME == 'Mobile') {
-        $act = 'mobile';
-    } elseif (CONTROLLER_NAME == 'Web') {
-        $act = 'web';
-    } else {
-        $act = strtolower(CONTROLLER_NAME);
+    $urlArr = explode('/', $url);
+    switch (count($urlArr)) {
+        case 1:
+            if (in_array(CONTROLLER_NAME, array('Mobile', 'Web'))) {
+                $act = strtolower(CONTROLLER_NAME);
+                return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
+            } else {
+                $param['addon'] = get_addon();
+                return U('Mp/'.CONTROLLER_NAME.'/'.$url.'@'.C('HTTP_HOST'), $param);
+            }
+            break;
+        case 2:
+            if (in_array($urlArr[0], array('Mobile', 'Web'))) {
+                $act = strtolower($urlArr[0]);
+                return U('/addon/'.get_addon().'/'.$act.'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
+            } else {
+                $param['addon'] = get_addon();
+                return U('Mp/'.$urlArr[0].'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
+            }
+            break;
+        case 3:
+            if (in_array($urlArr[1], array('Mobile', 'Web'))) {
+                return U('/addon/'.$urlArr[0].'/'.strtolower($urlArr[1]).'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
+            } else {
+                $param['addon'] = $urlArr[0];
+                return U('Mp/'.$urlArr[1].'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
+            }
+            break;
+        default:
+            return '';
+            break;
     }
-    return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
 }
 
 /**
  * 生成移动端访问链接
  */
 function create_mobile_url($url, $param = array()) {
+    if (!$param['mpid']) {
+       $param['mpid'] = get_mpid();
+    }
     return U('/addon/'.get_addon().'/mobile/'.$url.'@'.C('HTTP_HOST'), $param);
 }
 
+/**
+ * 生成插件后台访问链接
+ */
+function create_web_url($url, $param = array()) {
+    if (!$param['mpid']) {
+       $param['mpid'] = get_mpid();
+    }
+    return U('/addon/'.get_addon().'/web/'.$url.'@'.C('HTTP_HOST'), $param);
+}
 
 /**
  * 设置/获取当前公众号标识
