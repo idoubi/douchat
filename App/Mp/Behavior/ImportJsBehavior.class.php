@@ -42,7 +42,12 @@ class ImportJsBehavior extends Behavior {
 						}
 						break;
 					default:
-						# code...
+						if (strpos($v, '.js') === false) {
+							$res[] = '<script src="//cdn.bootcss.com/'.$v.'/'.$k.'/'.$v.'.min.js"></script>';
+						} else {
+							$mv = str_replace('.js', '.min.js', $v);
+							$res[] = '<script src="//cdn.bootcss.com/'.$v.'/'.$k.'/'.$mv.'"></script>';
+						}
 						break;
 				}
 			}
