@@ -193,6 +193,63 @@ class CommonController extends Controller {
 		$add_success_info = $this->model['add_success_info'] ? $this->model['add_success_info'] : '新增成功';
 		$add_error_info = $this->model['add_error_info'] ? $this->model['add_error_info'] : '新增失败';
 		if (IS_POST) {
+			$fields = (json_decode($_POST['fields'], true));
+			foreach ($fields as $k => $v) {
+				if (isset($v['pre_type']) && isset($v['pre_name']) && isset($v['name'])) {
+					if ($v['pre_type'] == 'function') {
+						$function = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $function($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $function($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $function($_POST[$v['name']]);
+									break;
+							}
+						}
+					} elseif ($v['pre_type'] == 'callback') {
+						$callback = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $this->$callback($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);
+									break;
+							}
+						}
+					}
+				}
+			}
+			unset($_POST['fields']);
 			$Model = M($this->model['name']);
 			$_validate = $this->model['validate'];
 			$_auto = $this->model['auto'];
@@ -260,6 +317,63 @@ class CommonController extends Controller {
 		$edit_success_info = $this->model['edit_success_info'] ? $this->model['edit_success_info'] : '编辑成功';
 		$edit_error_info = $this->model['edit_error_info'] ? $this->model['edit_error_info'] : '编辑失败';
 		if (IS_POST) {
+			$fields = (json_decode($_POST['fields'], true));
+			foreach ($fields as $k => $v) {
+				if (isset($v['pre_type']) && isset($v['pre_name']) && isset($v['name'])) {
+					if ($v['pre_type'] == 'function') {
+						$function = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $function($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $function($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $function($_POST[$v['name']]);
+									break;
+							}
+						}
+					} elseif ($v['pre_type'] == 'callback') {
+						$callback = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $this->$callback($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);
+									break;
+							}
+						}
+					}
+				}
+			}
+			unset($_POST['fields']);
 			$Model = M($this->model['name']);
 			$_validate = $this->model['validate'];
 			$_auto = $this->model['auto'];
