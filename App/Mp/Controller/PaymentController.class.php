@@ -49,7 +49,8 @@ class PaymentController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function record() {
-		$this->addCrumb('公众号管理', U('Index/index'), '')
+		$this->setMetaTitle('交易记录')
+             ->addCrumb('公众号管理', U('Index/index'), '')
 			 ->addCrumb('微信支付', U('Payment/wechat'), '')
 			 ->addCrumb('支付记录', '', 'active')
 			 ->addNav('支付配置', U('Payment/wechat'), '')
