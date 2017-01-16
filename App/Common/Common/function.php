@@ -243,6 +243,84 @@ function get_jsapi_parameters($data) {
     return $jsApiParameters;
 }
 
+/**
+ * 企业付款
+ */
+function mch_pay($params = array()) {
+    vendor('WechatPaySdk.WxPayPubHelper');
+    $mpid = get_mpid();
+    $mp_info = get_mp_info();
+    $openid = get_openid();
+    $settings = D('MpSetting')->get_settings();
+    $sslcert = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_cert.pem';
+    $sslkey = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_key.pem';
+    file_put_contents($sslcert, isset($settings['sslcert']) ? $settings['sslcert'] : '');
+    file_put_contents($sslkey, isset($settings['sslkey']) ? $settings['sslkey'] : '');
+    $orderid = isset($params['partner_trade_no']) ? $params['partner_trade_no'] : $mpid.time();
+    $total_amount = isset($params['amount']) ? $params['amount']*100 : '';
+    $mchpay = new MchPay_pub($settings['appid'], $settings['mchid'], $settings['paysignkey'], $settings['appsecret']);
+    $mchpay->setParameter('partner_trade_no', $orderid);
+    $mchpay->setParameter('openid', isset($params['openid']) ? $params['openid'] : $openid);
+    $mchpay->setParameter('amount', $total_amount);
+    $mchpay->setParameter('check_name', isset($params['check_name']) ? $params['check_name'] : 'NO_CHECK');
+    $mchpay->setParameter('desc', isset($params['desc']) ? $params['desc'] : '');
+    $result = $mchpay->getResult($sslcert, $sslkey);
+    if (isset($result['return_code']) && isset($result['result_code']) && $result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+        if (!M('mp_payment')->where(array('orderid'=>$orderid))->find()) {
+            $data['mpid'] = $mpid;
+            $data['openid'] = isset($params['openid']) ? $params['openid'] : $openid;
+            $data['orderid'] = $orderid;
+            $data['create_time'] = time();
+            $result['total_fee'] = $total_amount;
+            $data['detail'] = json_encode($result);
+            M('mp_payment')->add($data);
+        } 
+    }
+    unlink($sslcert);
+    unlink($sslkey);
+    return $result;
+}
+
+/**
+ * 现金红包
+ */
+function redpack_pay($params = array()) {
+    vendor('WechatPaySdk.WxPayPubHelper');
+    $mpid = get_mpid();
+    $mp_info = get_mp_info();
+    $openid = get_openid();
+    $settings = D('MpSetting')->get_settings();
+    $sslcert = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_cert.pem';
+    $sslkey = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_key.pem';
+    file_put_contents($sslcert, isset($settings['sslcert']) ? $settings['sslcert'] : '');
+    file_put_contents($sslkey, isset($settings['sslkey']) ? $settings['sslkey'] : '');
+    $orderid = isset($params['mch_billno']) ? $params['mch_billno'] : $mpid.time();
+    $total_amount = isset($params['total_amount']) ? $params['total_amount']*100 : '';
+    $mchpay = new Redpack_pub($settings['appid'], $settings['mchid'], $settings['paysignkey'], $settings['appsecret']);
+    $mchpay->setParameter('mch_billno', $orderid);
+    $mchpay->setParameter('send_name', isset($params['send_name']) ? $params['send_name'] : $mp_info['name']);
+    $mchpay->setParameter('re_openid', isset($params['re_openid']) ? $params['re_openid'] : $openid);
+    $mchpay->setParameter('total_amount', $total_amount);
+    $mchpay->setParameter('total_num', isset($params['total_num']) ? $params['total_num'] : 1);
+    $mchpay->setParameter('wishing', isset($params['wishing']) ? $params['wishing'] : '');
+    $mchpay->setParameter('act_name', isset($params['act_name']) ? $params['act_name'] : '');
+    $mchpay->setParameter('remark', isset($params['remark']) ? $params['remark'] : '');
+    $result = $mchpay->getResult($sslcert, $sslkey);
+    if (isset($result['return_code']) && isset($result['result_code']) && $result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+        if (!M('mp_payment')->where(array('orderid'=>$orderid))->find()) {
+            $data['mpid'] = $mpid;
+            $data['openid'] = $result['re_openid'];
+            $data['orderid'] = $orderid;
+            $data['create_time'] = time();
+            $result['total_fee'] = $total_amount;
+            $data['detail'] = json_encode($result);
+            M('mp_payment')->add($data);
+        } 
+    }
+    unlink($sslcert);
+    unlink($sslkey);
+    return $result;
+}
 
 /**
  * 获取插件模型

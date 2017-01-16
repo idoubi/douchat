@@ -37,6 +37,8 @@ class PaymentController extends BaseController {
 				 ->addFormField('appsecret', '公众号APPSECRET', 'text', array('value'=>$mp_info['appsecret']))
 				 ->addFormField('mchid', '微信商户号', 'text')
 				 ->addFormField('paysignkey', '微信支付秘钥', 'text')
+				 ->addFormField('sslcert', '支付证书cert', 'textarea', array('tip'=>'请在微信商户后台下载支付证书，用记事本打开apiclient_cert.pem，并复制里面的内容粘贴到这里'))
+				 ->addFormField('sslkey', '支付证书key', 'textarea', array('tip'=>'请在微信商户后台下载支付证书，用记事本打开apiclient_key.pem，并复制里面的内容粘贴到这里'))
 				 ->setFormData($MpSetting->get_settings())
 				 ->common_edit();
 		}
@@ -54,6 +56,7 @@ class PaymentController extends BaseController {
 			 ->addNav('支付记录', '', 'active')
 			 ->setModel('mp_payment')
 			 ->setListOrder('create_time desc')
+             ->setListMap(array('mpid'=>get_mpid()))
 			 ->addListItem('orderid', '商户订单号')
 			 ->addListItem('id', '微信支付订单号', 'callback', array('callback_name'=>'get_transaction_id','params'=>'###'))
 			 ->addListItem('create_time', '支付时间', 'function', array('function_name'=>'date','params'=>'Y-m-d H:i:s,###'))
@@ -69,10 +72,10 @@ class PaymentController extends BaseController {
 	 * 获取支付信息详情
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_payment_detail($id, $field) {
+	public function get_payment_detail($id, $field = '') {
 		$payment = M('mp_payment')->find($id);
 		$detail = json_decode($payment['detail'], true);
-		return $detail[$field];
+		return $field ? $detail[$field] : $detail;
 	} 
 
 	/**
@@ -89,7 +92,16 @@ class PaymentController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function get_transaction_id($id) {
-		return $this->get_payment_detail($id, 'transaction_id');
+        $detail = $this->get_payment_detail($id);
+        if (isset($detail['transaction_id'])) {                 // JSAPI支付
+            return $detail['transaction_id'];       
+        } elseif (isset($detail['payment_no'])) {         // 企业付款
+            return $detail['payment_no'];
+        } elseif (isset($detail['send_listid'])) {               // 现金红包
+            return $detail['send_listid'];           
+        } else {
+            return '';
+        }
 	}
 
 	/**
@@ -97,7 +109,16 @@ class PaymentController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function get_trade_type($id) {
-		return $this->get_payment_detail($id, 'trade_type');
+		$detail = $this->get_payment_detail($id);
+        if (isset($detail['transaction_id'])) {                 // JSAPI支付
+            return $detail['trade_type'];       
+        } elseif (isset($detail['payment_no'])) {         // 企业付款
+            return '企业付款';
+        } elseif (isset($detail['send_listid'])) {               // 现金红包
+            return '现金红包';           
+        } else {
+            return '';
+        }
 	}
 
 	/**
