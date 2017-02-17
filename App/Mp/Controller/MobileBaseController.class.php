@@ -12,9 +12,13 @@ class MobileBaseController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     public function _initialize() {
-        if (!is_wechat_browser() && !get_user_id() && !I('out_trade_no')) {
+        if (!is_wechat_browser() && !get_user_id() && !I('out_trade_no') && $this->wechat_only) {
             $mp_info = get_mp_info();
-            redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8dcd98079e13d33f&redirect_uri=&wxref=mp.weixin.qq.com&from=singlemessage&isappinstalled=0&response_type=code&scope=snsapi_base&state=&connect_redirect=1#wechat_redirect');
+            if (isset($mp_info['appid'])) {
+                redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='.$mp_info['appid'].'&redirect_uri=&wxref=mp.weixin.qq.com&from=singlemessage&isappinstalled=0&response_type=code&scope=snsapi_base&state=&connect_redirect=1#wechat_redirect');
+            } else {
+                redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8dcd98079e13d33f&redirect_uri=&wxref=mp.weixin.qq.com&from=singlemessage&isappinstalled=0&response_type=code&scope=snsapi_base&state=&connect_redirect=1#wechat_redirect');
+            }
         }
         if (I('out_trade_no')) {
             $payment = I('post.');
@@ -128,7 +132,7 @@ class MobileBaseController extends Controller {
                     $templateFile = $_G['addon_path'] . 'View/' . CONTROLLER_NAME . '/' . $tempArr[0] . C('TMPL_TEMPLATE_SUFFIX');
                     break;
                 case 2:
-                    $templateFile = $_G['addon_path'] . 'View/' . $tempArr[0] . '/' . $tempArr[1] . C('TMPL_TEMPLATE_SUFFIX');
+                    $templateFile = $_G['addon_path'] . 'View/' . CONTROLLER_NAME . '/' . $tempArr[0] . '/' . $tempArr[1] . C('TMPL_TEMPLATE_SUFFIX');
                     break;
                 default:
                     break;

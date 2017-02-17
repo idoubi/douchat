@@ -14,17 +14,32 @@ class ImportCssBehavior extends Behavior {
 			foreach ($params as $k => $v) {
 				switch ($v) {
 					case 'weui':
-						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/style/weui.css">
-						          <link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/example/example.css">';
+						if (strpos($k, '.') === false) {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/weui/1.1.0/style/weui.min.css">';
+						} else {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/weui/'.$k.'/style/weui.min.css">';
+						}
 						break;
 					case 'frozen':
-						$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/1.3.0/css/frozen.css">';
+						if (strpos($k, '.') === false) {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/1.3.0/css/frozen-min.css">';
+						} else {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/'.$k.'/css/frozen-min.css">';
+						}
 						break;
 					case 'bootstrap':
-						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/bootstrap.css">';
+						if (strpos($k, '.') === false) {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css">';
+						} else {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/bootstrap/'.$k.'/css/bootstrap.min.css">';
+						}
 						break;
 					case 'font-awesome':
-						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/font-awesome-4.6.3/css/font-awesome.min.css">';
+						if (strpos($k, '.') === false) {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">';
+						} else {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/'.$k.'/css/font-awesome.min.css">';
+						}
 						break;
 					default:
 						# code...
@@ -34,17 +49,16 @@ class ImportCssBehavior extends Behavior {
 		} else {
 			switch ($params) {
 				case 'weui':
-					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/style/weui.css">
-						      <link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/weui-master/dist/example/example.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/weui/1.1.0/style/weui.min.css">';
 					break;
 				case 'frozen':
-					$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/1.3.0/css/frozen.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/FrozenUI/1.3.0/css/frozen-min.css">';
 					break;
 				case 'bootstrap':
-					$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Common/css/bootstrap.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/bootstrap/4.0.0-alpha.5/css/bootstrap.min.css">';
 					break;
 				case 'font-awesome':
-						$res[] = '<link rel="stylesheet" type="text/css" href="'.SITE_URL.'Public/Plugins/font-awesome-4.6.3/css/font-awesome.min.css">';
+					$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/font-awesome/4.7.0/css/font-awesome.min.css">';
 						break;
 				default:
 					# code...

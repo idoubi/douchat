@@ -57,6 +57,11 @@ class ApiController extends Controller {
         $this->fans_info = get_fans_info($this->openid);        // 获取粉丝表内的粉丝信息
         $this->mp_settings = D('MpSetting')->get_settings();    // 获取公众号全局设置
 
+        if ($this->event != 'unsubscribe') {
+            D('MpFans')->save_fans_info($this->openid);             // 保存粉丝信息
+            D('MpMessage')->save_message($this->message);           // 保存消息
+        }
+        
         if (!empty($this->mp_settings['fans_bind_on']) && !$this->fans_info['is_bind']) {         // 开启了用户绑定且用户还未绑定
             $bind_url = U('Mp/MobileBase/fans_bind@'.C('HTTP_HOST'), array('openid'=>$this->openid, 'mpid'=>$this->mpid));
             reply_text('你需要先<a href="'.$bind_url.'">绑定个人信息</a>才能继续使用其他功能');
@@ -122,11 +127,6 @@ class ApiController extends Controller {
 
         // 触发未识别回复
         $this->respond_special('unrecognize', $this->message);
-
-        if ($this->event != 'unsubscribe') {
-            D('MpFans')->save_fans_info($this->openid);             // 保存粉丝信息
-            D('MpMessage')->save_message($this->message);           // 保存消息
-        }
     
 	}
 
@@ -135,9 +135,7 @@ class ApiController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     protected function begin_context($expire = 300, $context=array()) {
-        if (empty($context)) {
-            $context['addon'] = $this->addon;
-        }
+        $context['addon'] = $this->addon;
         S('context_'.get_openid(), $this->addon, $expire);
         if (count($context) > 0) {
             S('context_'.get_openid().'_context', $context, $expire);       // 缓存上下文消息内容
@@ -149,6 +147,7 @@ class ApiController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     protected function keep_context($expire = 300, $context=array()) {
+        $context['addon'] = $this->addon;
         S('context_'.get_openid(), $this->addon, $expire);
         if (count($context) > 0) {
             S('context_'.get_openid().'_context', $context, $expire);       // 缓存上下文消息内容
@@ -161,6 +160,7 @@ class ApiController extends Controller {
      */
     protected function end_context() {
         S('context_'.get_openid(), NULL);
+        S('context_'.get_openid().'_context', NULL); 
     }
 
     /**

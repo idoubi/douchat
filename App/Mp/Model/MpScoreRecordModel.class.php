@@ -41,6 +41,32 @@ class MpScoreRecordModel extends Model {
 			return true;
 		}
 	}
+
+	/**
+	 * 获取积分总数
+	 */
+	public function get_score($type='', $source='', $flag='', $openid='') {
+		$mpid = get_mpid();
+		if (!$openid) {
+			$openid = get_openid();
+		}
+		if (!$mpid || !$openid) {
+			return false;
+		}
+		$map['mpid'] = $mpid;
+		$map['openid'] = $openid;
+		if ($type) {
+			$map['type'] = $type;
+		}
+		if ($source) {
+			$map['source'] = $source;
+		}
+		if ($flag) {
+			$map['flag'] = $flag;
+		}
+		$score_record = M('mp_score_record')->where($map)->sum('value');
+		return $score_record;
+	}
 }
 
 ?>

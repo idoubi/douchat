@@ -186,7 +186,7 @@ class CustomMenuController extends BaseController {
 			$this->ajaxReturn($return);
 		} else {
 			$return['errcode'] = 1008;
-			$return['errmsg'] = '发布菜单失败，错误说明：'.$result;
+			$return['errmsg'] = '发布菜单失败，错误说明：'.$result['errmsg'];
 			$return['data'] = $custom_menu;
 			$this->ajaxReturn($return);
 		}

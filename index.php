@@ -12,7 +12,7 @@ define('APP_PATH', './App/');								// 定义应用目录
 define('RUNTIME_PATH', './Runtime/');						// 定义缓存目录
 define('ADDON_PATH', './Addons/'); 							// 定义插件目录
 define('SITE_PATH', dirname(__FILE__));						// 定义网站物理路径
-define('SITE_URL', str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']));
+define('SITE_URL', str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']));
 define('APP_DEBUG', true);									// 开启调试模式
 define('NOW_TIME', time());									// 定义脚本执行时间
 

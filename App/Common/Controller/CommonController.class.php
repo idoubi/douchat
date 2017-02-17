@@ -38,6 +38,20 @@ class CommonController extends Controller {
 	public function common_lists($model = array()) {
 		cookie('__forward__', $_SERVER['HTTP_REFERER']);
 		!empty($model) && $this->model = $model;
+		if (IS_POST) {
+			$target = I('target');
+			$keyword = I('keyword');
+			// if (!$target) {
+			// 	$this->error('请选择搜索项');
+			// }
+			// if (!$keyword) {
+			// 	$this->error('请输入搜素内容');
+			// }
+			$this->model['list_map'][$target] =  array('like', '%'.$keyword.'%');
+			$this->assign('search_tip', $this->model['list_search'][$target].'为“'.$keyword.'”的搜索结果');
+			$this->assign('keyword', $keyword);
+			$this->assign('target', $target);
+		}
 		$fields_arr = array();
 		foreach ($this->model['lists'] as $k => $v) {
 			if (!$v['name']) {
@@ -157,7 +171,7 @@ class CommonController extends Controller {
 			}
 		}
 		$lists['data'] = $data;
-		$pagination = pagination($count, $per);
+		$pagination = pagination($count, $per, $this->model['list_map']);
 		$this->assign('pagination', $pagination);
 		$this->assign('count', $count);
 		$this->assign('model', $this->model);
@@ -179,6 +193,63 @@ class CommonController extends Controller {
 		$add_success_info = $this->model['add_success_info'] ? $this->model['add_success_info'] : '新增成功';
 		$add_error_info = $this->model['add_error_info'] ? $this->model['add_error_info'] : '新增失败';
 		if (IS_POST) {
+			$fields = (json_decode($_POST['fields'], true));
+			foreach ($fields as $k => $v) {
+				if (isset($v['pre_type']) && isset($v['pre_name']) && isset($v['name'])) {
+					if ($v['pre_type'] == 'function') {
+						$function = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $function($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $function($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $function($_POST[$v['name']]);
+									break;
+							}
+						}
+					} elseif ($v['pre_type'] == 'callback') {
+						$callback = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $this->$callback($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);
+									break;
+							}
+						}
+					}
+				}
+			}
+			unset($_POST['fields']);
 			$Model = M($this->model['name']);
 			$_validate = $this->model['validate'];
 			$_auto = $this->model['auto'];
@@ -192,6 +263,7 @@ class CommonController extends Controller {
 				if (!$res) {
 					$this->error($add_error_info);
 				} else {
+					$add_success_url = str_replace('%7Bpk%7D', $res, $add_success_url);
 					$this->success($add_success_info, $add_success_url);
 				}
 			}
@@ -245,6 +317,63 @@ class CommonController extends Controller {
 		$edit_success_info = $this->model['edit_success_info'] ? $this->model['edit_success_info'] : '编辑成功';
 		$edit_error_info = $this->model['edit_error_info'] ? $this->model['edit_error_info'] : '编辑失败';
 		if (IS_POST) {
+			$fields = (json_decode($_POST['fields'], true));
+			foreach ($fields as $k => $v) {
+				if (isset($v['pre_type']) && isset($v['pre_name']) && isset($v['name'])) {
+					if ($v['pre_type'] == 'function') {
+						$function = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $function($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $function($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $function($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $function($_POST[$v['name']]);
+									break;
+							}
+						}
+					} elseif ($v['pre_type'] == 'callback') {
+						$callback = $v['pre_name'];
+						if (!isset($v['pre_params'])) {									
+							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);		
+						} else {	
+							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
+							$params_arr = explode(',', $params_str);
+							switch (count($params_arr)) {
+								case 1:
+									$_POST[$v['name']] = $this->$callback($params_arr[0]);
+									break;
+								case 2:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1]);
+									break;
+								case 3:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2]);
+									break;
+								case 4:
+									$_POST[$v['name']] = $this->$callback($params_arr[0], $params_arr[1], $params_arr[2], $params_arr[3]);
+									break;
+								default:
+									$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);
+									break;
+							}
+						}
+					}
+				}
+			}
+			unset($_POST['fields']);
 			$Model = M($this->model['name']);
 			$_validate = $this->model['validate'];
 			$_auto = $this->model['auto'];
@@ -389,6 +518,14 @@ class CommonController extends Controller {
 	 */
 	public function setListMap($map) {
 		$this->model['list_map'] = $map;
+		return $this;
+	}
+
+	/**
+	 * 设置搜索条件
+	 */
+	public function setListSearch($search) {
+		$this->model['list_search'] = $search;
 		return $this;
 	}
 
@@ -726,6 +863,7 @@ class CommonController extends Controller {
 		$this->model['subnav'] || $this->model['subnav'] = $this->subnav;
 		$this->model['btn'] || $this->model['btn'] = $this->btn;
 		$this->model['tip'] || $this->model['tip'] = $this->tip;
+		$this->model['list_search'] || $this->model['list_search'] = $this->list_search;
 		$this->model['submit_type'] || $this->model['submit_type'] = $this->submit_type;
 
 		$this->model['meta_title'] && $this->assign('meta_title', $this->model['meta_title']);
@@ -735,6 +873,7 @@ class CommonController extends Controller {
 		$this->model['subnav'] && $this->assign('subnav', $this->model['subnav']);
 		$this->model['btn'] && $this->assign('btn', $this->model['btn']);
 		$this->model['tip'] && $this->assign('tip', $this->model['tip']);
+		$this->model['list_search'] && $this->assign('list_search', $this->model['list_search']);
 		$this->model['submit_type'] && $this->assign('submit_type', $this->model['submit_type']);
 		$this->assign('_G', $_G);
 		parent::display($templateFile,$charset,$contentType,$content,$prefix);
