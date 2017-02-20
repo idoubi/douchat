@@ -42,7 +42,12 @@ class ImportCssBehavior extends Behavior {
 						}
 						break;
 					default:
-						# code...
+						if (strpos($k, '.min') === false) {
+							$v = str_replace('.min', '', $v);
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/'.$v.'/'.$k.'/css/'.$v.'.min.css">';
+						} else {
+							$res[] = '<link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/'.$v.'/'.$k.'/css/'.$v.'.css">';
+						}
 						break;
 				}
 			}
