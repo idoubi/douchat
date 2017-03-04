@@ -382,6 +382,10 @@ CREATE TABLE IF NOT EXISTS `dc_rbac_role_user` (
   `user_id` char(32) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+DROP INDEX `role_user_key` ON `dc_rbac_role_user`;
+
+ALTER TABLE `dc_rbac_role_user`
+ADD UNIQUE INDEX `role_user_key` (`role_id`, `user_id`) USING BTREE;
 -- --------------------------------------------------------
 
 --
