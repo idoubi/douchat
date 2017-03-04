@@ -16,6 +16,9 @@ class CommonController extends Controller {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	protected function _initialize() {
+		if (!is_file(SITE_PATH.'/Data/install.lock')) {				// 如果框架未安装，则跳转到安装页面
+			$this->redirect('Install/Index/index');
+		}
 		global $_G;
 		$_G['site_path'] = SITE_PATH . '/';
 		$_G['site_url'] = str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
