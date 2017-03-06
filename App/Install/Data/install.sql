@@ -379,13 +379,10 @@ ON DUPLICATE KEY UPDATE name=VALUES(`name`);
 
 CREATE TABLE IF NOT EXISTS `dc_rbac_role_user` (
   `role_id` mediumint(9) unsigned DEFAULT NULL,
-  `user_id` char(32) DEFAULT NULL
+  `user_id` char(32) DEFAULT NULL,
+  UNIQUE INDEX `role_user_key` (`role_id`, `user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-DROP INDEX `role_user_key` ON `dc_rbac_role_user`;
-
-ALTER TABLE `dc_rbac_role_user`
-ADD UNIQUE INDEX `role_user_key` (`role_id`, `user_id`) USING BTREE;
 -- --------------------------------------------------------
 
 --
