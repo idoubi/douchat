@@ -92,6 +92,7 @@ class ApiController extends Controller {
                 $this->respond_special('link', $this->message);
                 break;
             case 'event':
+                $this->end_context();                                   // 事件消息不响应上下文
                 $this->event = strtolower($this->message['Event']);     // 获取事件类型
                 if ($this->event == 'location') {
                     $this->event = 'report_location';                   // 将上报地理位置事件转化为report_location
@@ -125,9 +126,11 @@ class ApiController extends Controller {
                 break;
         }
 
-        // 触发未识别回复
-        $this->respond_special('unrecognize', $this->message);
-    
+        if (!$this->get_context()) {
+            // 触发未识别回复
+            $this->respond_special('unrecognize', $this->message);
+        }
+        
 	}
 
     /**
@@ -271,6 +274,17 @@ class ApiController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     public function respond_special($type, $message) {
+        if (S('context_'.get_openid())) {       // 消息上下文存在
+            $this->in_context = 1;
+            $this->addon = S('context_'.get_openid());
+            $this->addon_settings = D('AddonSetting')->get_addon_settings($this->addon, $this->mpid);
+            $respond = A('Addons://'.$this->addon.'/Respond');
+            if (method_exists($respond, 'wechat')) {
+                $respond->wechat($this->message);
+            }
+        } else {
+            $this->in_context = 0;
+        }
         $auto_reply = D('MpAutoReply')->get_auto_reply_by_type($type);
         $reply_type = $auto_reply['reply_type'];
         switch ($reply_type) {
