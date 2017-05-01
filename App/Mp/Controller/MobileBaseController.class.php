@@ -40,6 +40,9 @@ class MobileBaseController extends Controller {
         if (get_mpid() && !get_openid()) {
             init_fans();
         }
+        if (!get_ext_openid()) {
+            init_ext_fans();       // 初始化鉴权用户
+        }
         global $_G;
         $_G['site_path'] = SITE_PATH . '/';
         $_G['site_url'] = str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);

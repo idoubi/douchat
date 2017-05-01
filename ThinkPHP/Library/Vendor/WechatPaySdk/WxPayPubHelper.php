@@ -798,7 +798,7 @@ class JsApi_pub extends Common_util_pub
         //初始化curl
        	$ch = curl_init();
 		//设置超时
-		curl_setopt($ch, CURLOP_TIMEOUT, $this->curl_timeout);
+		curl_setopt($ch, CURLOPT_TIMEOUT, $this->curl_timeout);
 		curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,FALSE);
         curl_setopt($ch,CURLOPT_SSL_VERIFYHOST,FALSE);
@@ -842,7 +842,7 @@ class JsApi_pub extends Common_util_pub
 	    $jsApiObj["signType"] = "MD5";
 	    $jsApiObj["paySign"] = $this->getSign($jsApiObj);
 	    $this->parameters = json_encode($jsApiObj);
-		return $this->parameters;
+	    return $this->parameters;
 	}
 }
 

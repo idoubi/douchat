@@ -153,6 +153,26 @@ function get_openid($openid = '') {
 }
 
 /**
+ * 获取用户借权标识
+ */
+function get_ext_openid($ext_openid = '') {
+    $token = get_token();                     
+    if (empty($token)) {                         // 如果公众号标识不存在
+        return null;
+    }
+    if ($ext_openid) {                              // 设置当前用户标识
+        session('ext_openid_'.$token, $ext_openid);
+    } elseif (I('ext_openid')) {                    // 如果浏览器带有openid参数，则缓存用户标识
+        session('ext_openid_'.$token, I('ext_openid'));
+    }
+    $ext_openid = session('ext_openid_'.$token);                 // 获取当前用户标识
+    if (empty($ext_openid)) {
+        return null;
+    }
+    return $ext_openid;
+}
+
+/**
  * 初始化粉丝信息
  */
 function init_fans() {
@@ -201,12 +221,61 @@ function init_fans() {
         }
     }
 }
+
+/**
+ * 初始化鉴权用户
+ */
+function init_ext_fans() {
+    $openid = get_openid();
+    $token = get_token();
+    $ext_openid = get_ext_openid();
+    $ext_appid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appid'))->getField('value');
+    $ext_appsecret = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appsecret'))->getField('value');
+    if (empty($ext_openid) && is_wechat_browser() && $ext_appid && $ext_appsecret) {     // 通过网页授权拉取用户标识
+            $options = array(    
+                'appid'             =>  $ext_appid,               
+                'appsecret'         =>  $ext_appsecret            
+            );
+            $wechatObj = new Wechat($options);
+            if ($wechatObj->checkAuth($ext_appid, $ext_appsecret)) {              // 公众号有网页授权的权限
+                $callback = get_current_url();                  // 当前访问地址
+                $redirect_url = $wechatObj->getOauthRedirect($callback);        // 网页授权跳转地址
+                if (!I('code')) {                               // 授权跳转第一步
+                    redirect($redirect_url);
+                } elseif (I('code')) {                          // 授权跳转第二步
+                    $result = $wechatObj->getOauthAccessToken();
+                    $user_info = $wechatObj->getOauthUserinfo($result['access_token'], $result['openid']);
+                    if ($user_info) {
+                        $fans_info = M('mp_fans')->where(array('mpid'=>get_mpid(),'openid'=>$openid))->find();
+                        if ($fans_info) {
+                            if ($fans_info['is_bind'] !== 1) {
+                                $update['nickname'] = $user_info['nickname'];
+                                $update['sex'] = $user_info['sex'];
+                                $update['country'] = $user_info['country'];
+                                $update['province'] = $user_info['province'];
+                                $update['city'] = $user_info['city'];
+                                $update['headimgurl'] = $user_info['headimgurl'];
+                                M('mp_fans')->where(array('mpid'=>get_mpid(),'openid'=>$openid))->save($update);
+                            }
+                        }
+                    } 
+                    session('ext_openid_'.$token, $result['openid']);        // 缓存用户标识
+                    redirect($callback);                                 // 跳转回原来的地址
+                }
+            }
+    }
+}
+
 /**
  * 获取jssdk参数
  */
 function get_jssdk_sign_package() {
     $mp_info = get_mp_info();
-    $jssdk = new JsSdk($mp_info['appid'], $mp_info['appsecret']);
+    $appid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appid'))->getField('value');
+    $appsecret = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appsecret'))->getField('value');
+    !empty($appid) || $appid = $mp_info['appid'];        // 优先使用借权的appid
+    !empty($appsecret) || $appsecret = $mp_info['appsecret'];        // 优先使用借权的appsecret
+    $jssdk = new JsSdk($appid, $appsecret);
     $sign_package = $jssdk->getSignPackage();        // 获取jssdk配置包
     return $sign_package;
 }
@@ -230,7 +299,7 @@ function get_jsapi_parameters($data) {
     $data['mpid'] = get_mpid();
     unset($data['price']);
     $unifiedOrder = new UnifiedOrder_pub($appid,$mchid,$paysignkey,$appsecret);
-    $unifiedOrder->setParameter("openid",get_openid());
+    $unifiedOrder->setParameter("openid",get_ext_openid());
     $unifiedOrder->setParameter("body",$orderid);
     $unifiedOrder->setParameter("out_trade_no",$orderid);
     $unifiedOrder->setParameter("total_fee",$price*100);
