@@ -192,7 +192,7 @@ class ApiController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     private function respond_keyword($keyword, $message) {
-        if (S('context_'.get_openid())) {       // 消息上下文存在
+        if (S('context_'.get_openid())) {       // 消息上下文存在，分发消息到插件进行处理
             $this->in_context = 1;
             $this->addon = S('context_'.get_openid());
             $this->addon_settings = D('AddonSetting')->get_addon_settings($this->addon, $this->mpid);
@@ -200,6 +200,7 @@ class ApiController extends Controller {
             if (method_exists($respond, 'wechat')) {
                 $respond->wechat($this->message);
             }
+            exit();
         } else {
             $this->in_context = 0;
         }
