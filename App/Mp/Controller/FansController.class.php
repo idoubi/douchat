@@ -1,5 +1,4 @@
 <?php 
-
 namespace Mp\Controller;
 use Mp\Controller\BaseController;
 
@@ -9,12 +8,99 @@ use Mp\Controller\BaseController;
  */
 class FansController extends BaseController {
 
+	public function get_fans_lists()
+	{
+		if(isset($_POST['get']))
+		{
+			$wechatObj = get_wechat_obj();
+
+			if(isset($_POST['next_openid']))
+			{
+				// 如果数据库存在最后一次openid 则以这个为标准
+				$get_fans_lists = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'get_fans_lists'))->getField('value');
+				if(null==$get_fans_lists)
+				{
+					M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'get_fans_lists'))->setField('get_fans_lists','');
+				}
+				
+				if(null!==$get_fans_lists)
+				{
+					$we = $wechatObj->getUserList($get_fans_lists);
+				}else{
+					$we = $wechatObj->getUserList($_POST['next_openid']);
+				}
+			}
+			else
+			{
+				$we = $wechatObj->getUserList();
+			}
+
+			// 如果粉丝小于1万，一次性拉取
+			$list_openid = $we['data']['openid'];
+			$next_openid = $we['next_openid'];
+			if($we['total']<10000)
+			{
+				foreach ($list_openid as $key => $value) {
+					$openid = $list_openid[$key];
+					// 拉取成功返回 0
+					$mp_fans = D('mp_fans');
+					$re = $mp_fans->where("openid = '{$openid}'")->field('id,openid')->find();
+					if(null!==$re['id'])
+					{
+						D('MpFans')->save_fans_info($openid);
+					}
+				}
+				$data['result'] = 0;
+				echo json_encode($data);
+				exit();
+			}
+			else
+			{
+				// 继续拉取返回 1，记录拉取记录和最后一次拉取的openid
+				// 返回next_openid
+				// 记录当前拉取进度 记录最后一次next_openid
+				if(null!==$next_openid)
+				{
+					foreach ($list_openid as $key => $value) {
+						$openid = $list_openid[$key];
+						// 拉取成功返回 0
+						$mp_fans = D('mp_fans');
+						$re = $mp_fans->where("openid = '{$openid}'")->field('id,openid')->find();
+						if(!$re['id'])
+						{
+							D('MpFans')->save_fans_info($openid);
+						}
+					}
+
+					$data['next_openid'] = $next_openid;
+					//保存 next_openid
+					M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'get_fans_lists'))->setField('get_fans_lists',$next_openid);
+
+					$data['result'] = 1;
+					echo json_encode($data);
+					exit();
+				}else
+				{
+					$data['result'] = 0;
+					echo json_encode($data);
+					exit();
+				}
+			}
+		}
+		$this->addCrumb('拉取粉丝', U('Mp/Fans/get_fans_lists'), '')
+		     ->common_lists();
+		$this->display();
+	}
+
 	/**
 	 * 粉丝列表
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function lists() {
 		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
+
+			 ->addButton('拉取粉丝', U('Mp/Fans/get_fans_lists'), 'btn btn-primary')
+
 			 ->addCrumb('粉丝管理', U('Mp/Fans/lists'), '')
 			 ->addCrumb('粉丝列表', '', 'active')
 			 ->addNav('粉丝列表', '', 'active')

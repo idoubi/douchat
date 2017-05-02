@@ -1,0 +1,48 @@
+<script>
+	$(function(){
+
+		function ajax_get(next_openid=null)
+		{
+			$.ajax({
+				type:"POST",
+				data:{'get':'fanslist','next_openid':next_openid},
+				url:"",
+				dataType:"json",
+				success:function(data){
+					if(data.result==1)
+					{
+						$("#list").html("正在拉取中，请耐心等待");
+						ajax_get();
+					}else
+					{
+						$("#list").html("拉取已完成");
+						console.log('ok');
+					}
+				}
+			})
+		}
+
+		$.ajax({
+			type:"POST",
+			data:{'get':'fanslist'},
+			url:"",
+			dataType:"json",
+			success:function(data){
+				if(data.result==1)
+				{
+					if(null!==data.next_openid){
+						ajax_get(data.next_openid);
+					}else{
+						$("#list").html("正在拉取中，请耐心等待");
+						ajax_get();
+					}
+					
+				}else
+				{
+					console.log('ok');
+				}
+			}
+		})
+
+	})
+</script>
