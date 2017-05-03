@@ -56,7 +56,7 @@ function check_dirfile(){
 		array('dir', '可写', 'success', './Addons'),
 		array('dir', '可写', 'success', './Data'),
 		array('dir', '可写', 'success', './App/Install/Data'),
-		array('file', '可写', 'success', './App/Common/Conf/config.php'),		
+		array('dir', '可写', 'success', './App/Common/Conf'),		
 	);
 
     foreach ($items as &$val) {
@@ -191,7 +191,7 @@ function register_administrator($db, $prefix, $admin){
 	show_msg('开始注册创始人帐号...');
 
 	$sql = "INSERT INTO `{$prefix}user` (`id`, `username`,`password`, `nickname`, `headimg`, `default_mpid`, `email`, `group_id`, `register_time`) VALUES " .
-		   "('1', '[NAME]', '[PASS]','[NAME]','', '','[EMAIL]','','[TIME]')";
+		   "('1', '[NAME]', '[PASS]','[NAME]','', '','[EMAIL]','','[TIME]') ON DUPLICATE KEY UPDATE username=VALUES(`username`)";
 
 	$password = md5($admin['password']);
 	$sql = str_replace(
@@ -200,7 +200,7 @@ function register_administrator($db, $prefix, $admin){
 		$sql);
 	//执行sql
 	$res = $db->execute($sql);
-    $db->execute("INSERT INTO `{$prefix}rbac_role_user` (`role_id`, `user_id`) VALUES('1', '1')");
+    $db->execute("INSERT INTO `{$prefix}rbac_role_user` (`role_id`, `user_id`) VALUES('1', '1') ON DUPLICATE KEY UPDATE role_id=VALUES(`role_id`)");
 //	dump($sql);
 //	dump($res);
 	

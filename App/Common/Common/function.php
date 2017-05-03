@@ -25,25 +25,61 @@ function hook($tag, $params=NULL) {
  */
 function create_addon_url($url, $param = array()){
     if (!$param['mpid']) {
-       // $param['mpid'] = get_mpid();
+       $param['mpid'] = get_mpid();
     }
-    if (CONTROLLER_NAME == 'Mobile') {
-        $act = 'mobile';
-    } elseif (CONTROLLER_NAME == 'Web') {
-        $act = 'web';
-    } else {
-        $act = strtolower(CONTROLLER_NAME);
+    $urlArr = explode('/', $url);
+    switch (count($urlArr)) {
+        case 1:
+            if (in_array(CONTROLLER_NAME, array('Mobile', 'Web'))) {
+                $act = strtolower(CONTROLLER_NAME);
+                return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
+            } else {
+                $param['addon'] = get_addon();
+                return U('Mp/'.CONTROLLER_NAME.'/'.$url.'@'.C('HTTP_HOST'), $param);
+            }
+            break;
+        case 2:
+            if (in_array($urlArr[0], array('Mobile', 'Web'))) {
+                $act = strtolower($urlArr[0]);
+                return U('/addon/'.get_addon().'/'.$act.'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
+            } else {
+                $param['addon'] = get_addon();
+                return U('Mp/'.$urlArr[0].'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
+            }
+            break;
+        case 3:
+            if (in_array($urlArr[1], array('Mobile', 'Web'))) {
+                return U('/addon/'.$urlArr[0].'/'.strtolower($urlArr[1]).'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
+            } else {
+                $param['addon'] = $urlArr[0];
+                return U('Mp/'.$urlArr[1].'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
+            }
+            break;
+        default:
+            return '';
+            break;
     }
-    return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
 }
 
 /**
  * 生成移动端访问链接
  */
 function create_mobile_url($url, $param = array()) {
+    if (!$param['mpid']) {
+       $param['mpid'] = get_mpid();
+    }
     return U('/addon/'.get_addon().'/mobile/'.$url.'@'.C('HTTP_HOST'), $param);
 }
 
+/**
+ * 生成插件后台访问链接
+ */
+function create_web_url($url, $param = array()) {
+    if (!$param['mpid']) {
+       $param['mpid'] = get_mpid();
+    }
+    return U('/addon/'.get_addon().'/web/'.$url.'@'.C('HTTP_HOST'), $param);
+}
 
 /**
  * 设置/获取当前公众号标识
@@ -117,6 +153,26 @@ function get_openid($openid = '') {
 }
 
 /**
+ * 获取用户借权标识
+ */
+function get_ext_openid($ext_openid = '') {
+    $token = get_token();                     
+    if (empty($token)) {                         // 如果公众号标识不存在
+        return null;
+    }
+    if ($ext_openid) {                              // 设置当前用户标识
+        session('ext_openid_'.$token, $ext_openid);
+    } elseif (I('ext_openid')) {                    // 如果浏览器带有openid参数，则缓存用户标识
+        session('ext_openid_'.$token, I('ext_openid'));
+    }
+    $ext_openid = session('ext_openid_'.$token);                 // 获取当前用户标识
+    if (empty($ext_openid)) {
+        return null;
+    }
+    return $ext_openid;
+}
+
+/**
  * 初始化粉丝信息
  */
 function init_fans() {
@@ -165,12 +221,61 @@ function init_fans() {
         }
     }
 }
+
+/**
+ * 初始化鉴权用户
+ */
+function init_ext_fans() {
+    $openid = get_openid();
+    $token = get_token();
+    $ext_openid = get_ext_openid();
+    $ext_appid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appid'))->getField('value');
+    $ext_appsecret = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appsecret'))->getField('value');
+    if (empty($ext_openid) && is_wechat_browser() && $ext_appid && $ext_appsecret) {     // 通过网页授权拉取用户标识
+            $options = array(    
+                'appid'             =>  $ext_appid,               
+                'appsecret'         =>  $ext_appsecret            
+            );
+            $wechatObj = new Wechat($options);
+            if ($wechatObj->checkAuth($ext_appid, $ext_appsecret)) {              // 公众号有网页授权的权限
+                $callback = get_current_url();                  // 当前访问地址
+                $redirect_url = $wechatObj->getOauthRedirect($callback);        // 网页授权跳转地址
+                if (!I('code')) {                               // 授权跳转第一步
+                    redirect($redirect_url);
+                } elseif (I('code')) {                          // 授权跳转第二步
+                    $result = $wechatObj->getOauthAccessToken();
+                    $user_info = $wechatObj->getOauthUserinfo($result['access_token'], $result['openid']);
+                    if ($user_info) {
+                        $fans_info = M('mp_fans')->where(array('mpid'=>get_mpid(),'openid'=>$openid))->find();
+                        if ($fans_info) {
+                            if ($fans_info['is_bind'] !== 1) {
+                                $update['nickname'] = $user_info['nickname'];
+                                $update['sex'] = $user_info['sex'];
+                                $update['country'] = $user_info['country'];
+                                $update['province'] = $user_info['province'];
+                                $update['city'] = $user_info['city'];
+                                $update['headimgurl'] = $user_info['headimgurl'];
+                                M('mp_fans')->where(array('mpid'=>get_mpid(),'openid'=>$openid))->save($update);
+                            }
+                        }
+                    } 
+                    session('ext_openid_'.$token, $result['openid']);        // 缓存用户标识
+                    redirect($callback);                                 // 跳转回原来的地址
+                }
+            }
+    }
+}
+
 /**
  * 获取jssdk参数
  */
 function get_jssdk_sign_package() {
     $mp_info = get_mp_info();
-    $jssdk = new JsSdk($mp_info['appid'], $mp_info['appsecret']);
+    $appid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appid'))->getField('value');
+    $appsecret = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appsecret'))->getField('value');
+    !empty($appid) || $appid = $mp_info['appid'];        // 优先使用借权的appid
+    !empty($appsecret) || $appsecret = $mp_info['appsecret'];        // 优先使用借权的appsecret
+    $jssdk = new JsSdk($appid, $appsecret);
     $sign_package = $jssdk->getSignPackage();        // 获取jssdk配置包
     return $sign_package;
 }
@@ -194,7 +299,7 @@ function get_jsapi_parameters($data) {
     $data['mpid'] = get_mpid();
     unset($data['price']);
     $unifiedOrder = new UnifiedOrder_pub($appid,$mchid,$paysignkey,$appsecret);
-    $unifiedOrder->setParameter("openid",get_openid());
+    $unifiedOrder->setParameter("openid",get_ext_openid());
     $unifiedOrder->setParameter("body",$orderid);
     $unifiedOrder->setParameter("out_trade_no",$orderid);
     $unifiedOrder->setParameter("total_fee",$price*100);
@@ -207,6 +312,84 @@ function get_jsapi_parameters($data) {
     return $jsApiParameters;
 }
 
+/**
+ * 企业付款
+ */
+function mch_pay($params = array()) {
+    vendor('WechatPaySdk.WxPayPubHelper');
+    $mpid = get_mpid();
+    $mp_info = get_mp_info();
+    $openid = get_openid();
+    $settings = D('MpSetting')->get_settings();
+    $sslcert = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_cert.pem';
+    $sslkey = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_key.pem';
+    file_put_contents($sslcert, isset($settings['sslcert']) ? $settings['sslcert'] : '');
+    file_put_contents($sslkey, isset($settings['sslkey']) ? $settings['sslkey'] : '');
+    $orderid = isset($params['partner_trade_no']) ? $params['partner_trade_no'] : $mpid.time();
+    $total_amount = isset($params['amount']) ? $params['amount']*100 : '';
+    $mchpay = new MchPay_pub($settings['appid'], $settings['mchid'], $settings['paysignkey'], $settings['appsecret']);
+    $mchpay->setParameter('partner_trade_no', $orderid);
+    $mchpay->setParameter('openid', isset($params['openid']) ? $params['openid'] : $openid);
+    $mchpay->setParameter('amount', $total_amount);
+    $mchpay->setParameter('check_name', isset($params['check_name']) ? $params['check_name'] : 'NO_CHECK');
+    $mchpay->setParameter('desc', isset($params['desc']) ? $params['desc'] : '');
+    $result = $mchpay->getResult($sslcert, $sslkey);
+    if (isset($result['return_code']) && isset($result['result_code']) && $result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+        if (!M('mp_payment')->where(array('orderid'=>$orderid))->find()) {
+            $data['mpid'] = $mpid;
+            $data['openid'] = isset($params['openid']) ? $params['openid'] : $openid;
+            $data['orderid'] = $orderid;
+            $data['create_time'] = time();
+            $result['total_fee'] = $total_amount;
+            $data['detail'] = json_encode($result);
+            M('mp_payment')->add($data);
+        } 
+    }
+    unlink($sslcert);
+    unlink($sslkey);
+    return $result;
+}
+
+/**
+ * 现金红包
+ */
+function redpack_pay($params = array()) {
+    vendor('WechatPaySdk.WxPayPubHelper');
+    $mpid = get_mpid();
+    $mp_info = get_mp_info();
+    $openid = get_openid();
+    $settings = D('MpSetting')->get_settings();
+    $sslcert = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_cert.pem';
+    $sslkey = APP_PATH . '/Mp/Conf/'. $mpid . '_' . $openid . '_apiclient_key.pem';
+    file_put_contents($sslcert, isset($settings['sslcert']) ? $settings['sslcert'] : '');
+    file_put_contents($sslkey, isset($settings['sslkey']) ? $settings['sslkey'] : '');
+    $orderid = isset($params['mch_billno']) ? $params['mch_billno'] : $mpid.time();
+    $total_amount = isset($params['total_amount']) ? $params['total_amount']*100 : '';
+    $mchpay = new Redpack_pub($settings['appid'], $settings['mchid'], $settings['paysignkey'], $settings['appsecret']);
+    $mchpay->setParameter('mch_billno', $orderid);
+    $mchpay->setParameter('send_name', isset($params['send_name']) ? $params['send_name'] : $mp_info['name']);
+    $mchpay->setParameter('re_openid', isset($params['re_openid']) ? $params['re_openid'] : $openid);
+    $mchpay->setParameter('total_amount', $total_amount);
+    $mchpay->setParameter('total_num', isset($params['total_num']) ? $params['total_num'] : 1);
+    $mchpay->setParameter('wishing', isset($params['wishing']) ? $params['wishing'] : '');
+    $mchpay->setParameter('act_name', isset($params['act_name']) ? $params['act_name'] : '');
+    $mchpay->setParameter('remark', isset($params['remark']) ? $params['remark'] : '');
+    $result = $mchpay->getResult($sslcert, $sslkey);
+    if (isset($result['return_code']) && isset($result['result_code']) && $result['return_code'] == 'SUCCESS' && $result['result_code'] == 'SUCCESS') {
+        if (!M('mp_payment')->where(array('orderid'=>$orderid))->find()) {
+            $data['mpid'] = $mpid;
+            $data['openid'] = $result['re_openid'];
+            $data['orderid'] = $orderid;
+            $data['create_time'] = time();
+            $result['total_fee'] = $total_amount;
+            $data['detail'] = json_encode($result);
+            M('mp_payment')->add($data);
+        } 
+    }
+    unlink($sslcert);
+    unlink($sslkey);
+    return $result;
+}
 
 /**
  * 获取插件模型
