@@ -87,7 +87,11 @@ class MobileBaseController extends Controller {
     public function fans_bind() {
         C('TOKEN_ON', false);
         if (IS_POST) {
-            $data = I('post.');
+            $data['nickname'] = I('post.nickname');
+            $data['relname'] = I('post.relname');
+            $data['sex'] = I('post.sex');
+            $data['signature'] = I('post.signature');
+            $data['mobile'] = I('post.mobile');
             $data['is_bind'] = 1;
             $res = M('mp_fans')->where(array('openid'=>get_openid()))->save($data);
             if ($res === false) {
