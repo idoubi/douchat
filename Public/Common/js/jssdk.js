@@ -48,8 +48,6 @@ function pay(price, orderid, notify, extra, callback) {
       orderid : orderid,
       notify : notify
   };  
-  console.log(url);
-  console.log(data);       
   $.ajax({                // 发送ajax请求获取调起支付参数
       url : url,
       type : 'post',
@@ -91,10 +89,26 @@ function ajax(url,data,successFunc,errorFunc){
     dataType:"json",
     data:data,
     success:function(data){
-      successFunc(data);
+        if (typeof successFunc == 'function') {
+            successFunc(data);
+        }
     },
     error:function(){
-      errorFunc(data);
+        if (typeof errorFunc == 'function') {
+            errorFunc(data);
+        }
     }
   });
+}
+
+// 插件api请求
+function apicall(obj) {
+    if (typeof obj == 'object' && obj) {
+        ajax(API_CALL, {
+            url: obj.url,
+            method: obj.type ? obj.type : 'get',
+            headers: obj.headers,
+            data: obj.data
+        }, obj.success, obj.error)
+    }
 }

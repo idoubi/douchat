@@ -15,6 +15,7 @@ return array(
     'URL_MODEL' => 3,                       // URL模式
     'URL_ROUTER_ON' => 1,
     'URL_ROUTE_RULES' => array(
+    	'oauth2' => 'Mp/Oauth2/setAccessToken',
         'interface/:id'    => 'Mp/Api/index',
         'addon/:addon/index' => 'Mp/Web/index',
         'addon/:addon/rule' => 'Mp/Web/rule',
@@ -22,6 +23,7 @@ return array(
         'addon/:addon/setting' => 'Mp/Web/setting',
         'addon/:addon/web/:act' => 'Mp/Web/:2',
         'addon/:addon/mobile/:act' => 'Mp/Mobile/:2',
+		'addon/:addon/api/:act' => 'Mp/Api/:2',
         'news/:id' => 'Mp/MobileBase/detail'
     ),
     
