@@ -100,15 +100,3 @@ function ajax(url,data,successFunc,errorFunc){
     }
   });
 }
-
-// 插件api请求
-function apicall(obj) {
-    if (typeof obj == 'object' && obj) {
-        ajax(API_CALL, {
-            url: obj.url,
-            method: obj.type ? obj.type : 'get',
-            headers: obj.headers,
-            data: obj.data
-        }, obj.success, obj.error)
-    }
-}

@@ -68,6 +68,7 @@ class MobileBaseController extends Controller {
         add_hook('jssdk', 'Mp\Behavior\JssdkBehavior');                     // 注册导入jssdk的钩子
         add_hook('import_js', 'Mp\Behavior\ImportJsBehavior');              // 注册导入js的钩子
         add_hook('import_css', 'Mp\Behavior\ImportCssBehavior');              // 注册导入js的钩子
+		S('Api-Token', get_nonce(32), 3600);   // 缓存api请求token
         $this->assign('_G', $_G);
     }
 
@@ -148,7 +149,7 @@ class MobileBaseController extends Controller {
         if (!is_file($templateFile)) {
             E('模板不存在:'.$templateFile);
         }
-        parent::display($templateFile,$charset,$contentType,$content,$prefix); 
+        parent::display($templateFile,$charset,$contentType,$content,$prefix);
     }
 }
 

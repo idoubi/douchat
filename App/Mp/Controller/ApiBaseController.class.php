@@ -29,7 +29,7 @@ class ApiBaseController extends Controller {
 					}
 				}
 			}
-			if (!$access && NOW_TIME != $headers['Api-Token']) {  // 对在同一套系统内的插件api请求不做鉴权验证
+			if (!$access && empty(S('Api-Token'))) {  // 对在同一套系统内的插件api请求不做鉴权验证
 				$this->response(403, 'Access Denied');
 			}
 		}
@@ -57,22 +57,6 @@ class ApiBaseController extends Controller {
 	 */
 	public function responseFail($items = null) {
 		$this->response(1001, 'fail', $items);
-	}
-	
-	// 通用api请求
-	public function commonRequest() {
-		if (IS_POST) {
-			$post = I('post.');
-			if ($post['url']) {
-				$headers = $post['headers'];
-				$headers[] = 'Api-Token: '.NOW_TIME;  // 同一系统内插件api请求标识
-				$res = curl($post['url'], $post['method'], $post['data'], $headers);
-				if ($res) {
-					$this->ajaxReturn(json_decode($res, true));
-				}
-			}
-		}
-		$this->responseFail();
 	}
 }
 
