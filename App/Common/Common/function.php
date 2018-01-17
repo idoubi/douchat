@@ -34,7 +34,7 @@ function create_addon_url($url, $param = array()){
                 $act = strtolower(CONTROLLER_NAME);
                 return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
             } else {
-                $param['addon'] = get_addon();
+                $param = array_merge(['addon'=>get_addon()], $param);
                 return U('Mp/'.CONTROLLER_NAME.'/'.$url.'@'.C('HTTP_HOST'), $param);
             }
             break;
@@ -43,7 +43,7 @@ function create_addon_url($url, $param = array()){
                 $act = strtolower($urlArr[0]);
                 return U('/addon/'.get_addon().'/'.$act.'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
             } else {
-                $param['addon'] = get_addon();
+				$param = array_merge(['addon'=>get_addon()], $param);
                 return U('Mp/'.$urlArr[0].'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
             }
             break;
@@ -51,7 +51,7 @@ function create_addon_url($url, $param = array()){
             if (in_array($urlArr[1], array('Mobile', 'Web'))) {
                 return U('/addon/'.$urlArr[0].'/'.strtolower($urlArr[1]).'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
             } else {
-                $param['addon'] = $urlArr[0];
+				$param = array_merge(['addon'=>get_addon()], $param);
                 return U('Mp/'.$urlArr[1].'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
             }
             break;
