@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace Admin\Controller;
 use Admin\Controller\BaseController;
@@ -48,6 +48,10 @@ class SettingController extends BaseController {
 				 ->addNav('注册访问', '', 'active')
 				 ->addFormField('register_on', '是否开放注册', 'radio', array('options'=>array(0=>'不开放',1=>'开放'),'value'=>0))
 				 ->addFormField('register_default_role_id', '用户注册成功后默认所属的角色', 'select', array('options'=>'callback','callback_name'=>'get_role_list'))
+				 ->addFormField('user_home_url', '用户主页', 'text', [
+				 	 'placeholder' => 'Mp/Index/index',
+					 'tip' => '用户注册或登录成功后进入的页面，填写U方法支持的路径参数'
+				 ])
 				 ->setFormData(D('system_setting')->get_settings('register'))
 				 ->common_edit();
 		}
