@@ -91,6 +91,12 @@ class CommonController extends Controller {
 				if ($n['format'] == 'image') {
 					$src = $v[$n['name']] ? $v[$n['name']] : $n['extra']['placeholder'];
 					$data[$k][$m] = "<img src='".$src."' ".$n['extra']['attr']." />";
+				} elseif ($n['format'] == 'datetime') {
+					$data[$k][$m] = date('Y-m-d H:i:s', $v[$n['name']]);
+				} elseif ($n['format'] == 'date') {
+					$data[$k][$m] = date('Y-m-d', $v[$n['name']]);
+				} elseif ($n['format'] == 'time') {
+					$data[$k][$m] = date('H:i:s', $v[$n['name']]);
 				} elseif ($n['format'] == 'enum') {
 					$options = $n['extra']['options'];
 					$data[$k][$m] = $options[$v[$n['name']]];
