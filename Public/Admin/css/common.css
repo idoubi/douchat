@@ -149,7 +149,8 @@ textarea{resize:none;}
     color: #d9534f;
 }
 .aw-content-wrap h2 i{position:relative;top:0;}
-.mod-body table thead th,.mod-body table tbody td{vertical-align:middle;text-align:center;}
+.mod-body table thead th{vertical-align:middle;text-align:left;}
+.mod-body table tbody td{vertical-align:middle;text-align:left;}
 .mod-content table thead th,.mod-content table tbody td{text-align:left;}
 #search{margin-top:25px;}
 .aw-content-wrap .icon-date{position:absolute;top:5px;left:20px;background:#2780bb!important;}
