@@ -125,7 +125,7 @@ function check_func(){
  * 写入配置文件
  * @param  array $config 配置信息
  */
-function write_config($config, $auth){
+function write_config($config){
     if(is_array($config)){
         //读取配置内容
         $conf = file_get_contents(MODULE_PATH . 'Data/conf.tpl');
