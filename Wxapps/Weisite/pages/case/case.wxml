@@ -1,0 +1,42 @@
+<view class="container">
+
+    <view class="cate">
+       <block wx:for="{{cats}}" wx:key="unique">
+        <view class="cate-item {{currentTabsIndex==item.id ?'hover':''}}" 
+        style="{{currentTabsIndex==item.id ?'border-color:'+tcolor+';color:'+tcolor:''}}" bindtap="catClick" data-cid='{{item.id}}' data-fid='{{item.fid}}'> 
+           {{item.name}}
+           
+        </view>
+    </block> 
+   
+    </view>
+  <view class="case-bg">
+    <view class="case-div" style="background:#f6f5f3">
+      <view class="case-item" wx:for="{{list}}" wx:key="{{index1}}"  wx:if="{{cattype!='6'}}">
+        <navigator url="{{item.url}}" >
+        <view class="case-img">
+          <image src="{{item.thumb}}"></image>
+        </view>
+        <view class="case-text">
+          {{item.title}}{{fidx}}
+        </view>
+        </navigator>
+      </view>
+
+       <view class="case-item" wx:for="{{list}}" wx:for-index="sid" wx:key="{{index}}" wx:if="{{cattype=='6'}}" bindtap='navigateMini' data-sid='{{sid}}' >
+        
+        <view class="case-img">
+          <image src="{{item.thumb}}"></image>
+        </view>
+        <view class="case-text">
+          {{item.title}}
+        </view>
+        
+      </view>
+    </view>
+    <view class="loadMore" bindtap="loadMore" data-lastid='{{lastid}}'>加载更多</view>
+   <view class="copyright mt40">{{copyright}}</view> 
+  </view> 
+</view>
+<import src="../public/foot.wxml" />
+<template is="foot" data="{{blist}}" /> 

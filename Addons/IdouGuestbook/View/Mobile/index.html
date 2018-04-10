@@ -1,0 +1,176 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  	<title>留言板</title>
+  	{:hook('jssdk', false)}
+  	<meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  	<meta name="apple-mobile-web-app-capable" content="yes">
+  	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+  	<meta name="format-detection" content="telephone=no">
+  	<link href="__ROOT__/Addons/IdouGuestbook/View/Public/message.css" rel="stylesheet" type="text/css">
+  	{:hook('import_js', ['vue', 'axios'])}
+</head> 
+<body id="message">
+  	<div class="qiandaobanner">
+	    <a href="javascript:history.go(-1);">
+	      	<img src="__ROOT__/Addons/IdouGuestbook/View/Public/banner_00.jpg">
+	    </a> 
+	</div>
+  	<div class="cardexplain" id="app">
+		<div class="window" id="windowcenter">
+			<div class="content">
+				<div id="txt"></div>
+			</div>
+		</div>
+		<div class="history">
+		    <div class="history-date">
+		      	<ul>
+		      		<a>
+		      			<h2 class="first first1" style="position: relative;" @click="toggleBox">请点击留言</h2>
+		      		</a>
+		      		<if condition="$settings['need_audit'] eq '1'">
+					<li class="nob  mb">
+						<div class="beizhu">留言审核通过后才会显示在留言墙上！</div>
+					</li>
+					</if>
+					<li class="green bounceInDown nob ly1" v-show="isBoxShow">
+						<dl>
+					     	<dt><input name="nickname" type="text" class="px" id="nickname" v-model="nickname" placeholder="请输入您的昵称"></dt>
+						 	<dt><textarea name="content" class="pxtextarea" style=" height:60px;" id="content" v-model="content" placeholder="请输入留言"></textarea></dt>
+							<dt><a id="leave_message" class="submit" href="javascript:void(0)" @click="submitMessage">提交留言</a></dt>
+			          	</dl>
+					</li>
+
+			        <li class="green bounceInDown" v-for="item in messages">
+			          	<h3>
+							<img :src="item.fans_info.headimgurl" v-if="item.fans_info.headimgurl" />
+							<img src="__ROOT__/Addons/IdouGuestbook/View/Public/logo100x100.jpg" v-else />
+							{{item.nickname}}
+							<span>{{item.create_time}}</span>
+							<div class="clr"></div>
+						</h3>
+			          	<dl>
+			            	<dt class="hfinfo" date="381581">{{item.content}}</dt>
+			          	</dl>
+			            <!-- <dl class="huifu">
+			              	<dt>
+			              		<span>　
+			              			<a class="hhbt czan" date="381581" href="javascript:void(0)">回复</a> 　
+			              			<p style="display:none;" class="hhly381581"> 
+			              				<textarea name="info" class="pxtextarea hly381581"></textarea> 
+			               				<a class="hhsubmit submit" date="381581" href="javascript:void(0)">确定</a> 
+			               			</p>
+			               		</span>
+			               	</dt>
+			          	</dl> -->
+	                </li>
+
+                	<!--<li class="bounceInDown">-->
+						<!--&lt;!&ndash;页码开始&ndash;&gt;-->
+						<!--<div class="pagination">-->
+							<!--<if condition="$show['prev_page_url']">-->
+			              	<!--<div class="left">-->
+			              		<!--<a href="{$show['prev_page_url']}">上一页</a>-->
+			              	<!--</div>-->
+			              	<!--<else />-->
+			              	<!--<div class="left disabled">-->
+			              		<!--<a>上一页{:get_mpid()}</a>-->
+			              	<!--</div>-->
+			              	<!--</if>-->
+							<!--<div class="allpage">-->
+			              		<!--<div class="currentpage"><if condition="$show['page_count'] gt 0"> {$show['page']}/{$show['page_count']} </if></div> -->
+							<!--</div>-->
+							<!--<if condition="$show['next_page_url']">-->
+							<!--<div class="right "> -->
+								<!--<a href="{$show['next_page_url']}">下一页</a>-->
+							<!--</div>-->
+							<!--<else />-->
+							<!--<div class="right disabled"> -->
+								<!--<a>下一页</a>-->
+							<!--</div>-->
+							<!--</if>-->
+							<!--<div class="clr"></div>-->
+						<!--</div>	-->
+						<!--&lt;!&ndash;页码结束&ndash;&gt;-->
+					<!--</li>   -->
+      			</ul>
+    		</div> 
+  		</div>
+	</div> 
+<script type="text/javascript">
+
+	new Vue({
+		el: '#app',
+		data: {
+		    messages: [],
+			nickname: "{$fans_info.nickname}",
+			content: '',
+			isBoxShow: 0
+		},
+		created: function () {
+		    this.showMessages(1);
+        },
+		methods: {
+		    toggleBox: function () {
+				this.isBoxShow = 1 - this.isBoxShow;
+            },
+		    submitMessage: function() {
+		        if (!this.nickname) {
+		            alert('昵称必填');
+					return false;
+				}
+				if (!this.content) {
+		            alert('留言内容必填');
+		            return false;
+				}
+				var that = this;
+                var params = new URLSearchParams();
+                params.append("nickname", that.nickname);
+                params.append("content", that.content);
+				axios.post("{:create_addon_url('Api/addData')}", params)
+					.then(function (resp) {
+						if (resp.data.errcode == 0) {
+						    alert('留言成功');
+						    that.isBoxShow = false;
+						    that.showMessages(1);
+						}
+                    })
+			},
+			showMessages: function(page) {
+                var that = this;
+                page = page || 1;
+                axios.get("{:create_addon_url('Api/getDataList', ['page'=>1])}")
+                    .then(function (resp) {
+                        if (resp.data.errcode == 0) {
+                            that.messages = resp.data.items
+                        }
+                    })
+                    .catch(function () {
+                        console.log('error')
+                    })
+			}
+		}
+	});
+
+	wx.ready(function() {
+		var share_data = {
+			title : "{$settings['share_title']}",
+			desc : "{$settings['share_desc']}",
+			link : "{:create_addon_url('index')}",
+			imgUrl : "{$settings['share_cover']}",
+			success : function() {
+				alert('分享成功');
+				//close_window();
+			},
+			cancel : function() {
+				
+			}
+		};
+		onMenuShareAppMessage(share_data);
+		onMenuShareTimeline(share_data);
+		onMenuShareQQ(share_data);
+	});
+</script> 
+
+</body>
+</html>

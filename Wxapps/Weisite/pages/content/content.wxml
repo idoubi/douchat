@@ -1,0 +1,9 @@
+<view class='container'>
+    <view class='page-cover'>
+        <image src='{{page.cover}}'></image>
+    </view>
+    <view class='page-title'>{{page.title}}</view>
+    <view class='page-intro'>{{page.intro}}</view>
+    <view class='page-content'>{{page.content}}</view>
+</view>
+<tabBar selected-icon="{{selectedIcon}}"></tabBar>  

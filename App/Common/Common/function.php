@@ -132,6 +132,18 @@ function get_mp_info($mpid = '') {
 }
 
 /**
+ * 获取当前账号类别
+ * 1：微信公众号 2：微信小程序
+ */
+function get_mp_type() {
+	$mp_info = get_mp_info();
+	if (!empty($mp_info) && in_array($mp_info['mp_type'], [1, 2])) {
+		return $mp_info['mp_type'];
+	}
+	return 1;
+}
+
+/**
  * 设置/获取用户标识
  * @author 艾逗笔<765532665@qq.com>
  */
@@ -826,11 +838,10 @@ function is_user_login() {
 }
 
 /**
- * 获取当前用户ID
- * @author 艾逗笔<765532665@qq.com>
+ * 获取当前登录用户ID
  */
 function get_user_id() {
-	$user_id = session('user_id');
+	$user_id = session(C('USER_AUTH_KEY'));
     if (!$user_id || $user_id < 0) {
         return false;
     }

@@ -15,7 +15,6 @@ return array(
     'URL_MODEL' => 3,                       // URL模式
     'URL_ROUTER_ON' => 1,
     'URL_ROUTE_RULES' => array(
-        'oauth2' => 'Mp/Oauth2/setAccessToken',
         'interface/:id'    => 'Mp/Api/index',
         'addon/:addon/index' => 'Mp/Web/index',
         'addon/:addon/rule' => 'Mp/Web/rule',

@@ -1,24 +1,23 @@
-<?php 
+<?php
 
+/**
+ * 粉丝管理控制器
+ * @author 艾逗笔<http://idoubi.cc>
+ */
 namespace Mp\Controller;
 use Mp\Controller\BaseController;
 
-/**
- * 公众号粉丝管理控制器
- * @author 艾逗笔<765532665@qq.com>
- */
 class FansController extends BaseController {
 
 	/**
 	 * 粉丝列表
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function lists() {
-		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
-			 ->addCrumb('粉丝管理', U('Mp/Fans/lists'), '')
+		$this->setMetaTitle('粉丝列表')
+             ->addCrumb('账号管理', '', '')
 			 ->addCrumb('粉丝列表', '', 'active')
 			 ->addNav('粉丝列表', '', 'active')
-			 ->addNav('功能配置', U('Mp/Fans/setting'), '')
+//			 ->addNav('功能配置', U('Mp/Fans/setting'), '')
 			 ->setModel('mp_fans')
 			 ->setListMap(array('mpid'=>get_mpid()))
 			 ->addListItem('openid', '粉丝OPENID', 'hidden')
@@ -26,19 +25,25 @@ class FansController extends BaseController {
 			 ->addListItem('nickname', '昵称', '', array('placeholder'=>'匿名'))
 			 ->addListItem('sex', '性别', 'enum', array('options'=>array(''=>'未知',0=>'未知',1=>'男',2=>'女')))
 			 ->addListItem('is_subscribe', '是否关注', 'enum', array('options'=>array(0=>'未关注',1=>'已关注')))
-			 ->addListItem('score', '积分')
-			 ->addListItem('money', '金钱')
-			 ->addListItem('id', '操作', 'custom', array('options'=>array('edit_fans'=>array('编辑粉丝资料', U('Mp/Fans/edit_fans', array('openid'=>'{openid}')),'btn btn-primary btn-sm icon-edit',''))))
+			 ->addListItem('mobile', '手机号', '', ['placeholder'=>'-'])
+			 ->addListItem('id', '操作', 'custom', array('options'=>array(
+			     'edit_fans'=>array('编辑粉丝资料', U('Mp/Fans/edit', array('openid'=>'{openid}')),'btn btn-primary btn-sm',''),
+                 'delete_fans' => [
+                     '删除粉丝',
+                     U('Fans/delete', ['openid'=>'{openid}']),
+                     'btn btn-sm btn-danger',
+                     'attr' => 'onclick="return confirm(\"确认删除？\");"'
+                 ]
+             )))
 		     ->common_lists();
 	}
 	
 	/**
 	 * 编辑粉丝信息
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function edit_fans() {
-		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
-			 ->addCrumb('粉丝管理', U('Mp/Fans/lists'), '')
+	public function edit() {
+		$this->setMetaTitle('编辑粉丝信息')
+             ->addCrumb('账号管理', '', '')
 			 ->addCrumb('编辑粉丝信息', '', 'active')
 			 ->addNav('编辑粉丝信息', '', 'active')
 		     ->setModel('mp_fans')
@@ -48,13 +53,20 @@ class FansController extends BaseController {
 		     ->addFormField('sex', '性别', 'radio', array('options'=>array(0=>'未知',1=>'男',2=>'女')))
 		     ->addFormField('mobile', '手机号', 'text')
 		     ->addFormField('signature', '个性签名', 'textarea')
-		     ->setEditMap(array('openid'=>I('get.openid')))
+		     ->setEditMap(array('openid'=>I('get.openid'), 'mpid'=>$this->mpid))
 		     ->common_edit();
 	}
 
+	// 删除粉丝
+    public function delete() {
+	    $this->setModel('mp_fans')
+            ->setDeleteMap(['openid'=>I('get.openid'), 'mpid'=>$this->mpid])
+            ->setDeleteSuccessUrl(U('lists'))
+            ->common_delete();
+    }
+
 	/**
 	 * 粉丝配置
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function setting() {
 		C('TOKEN_ON', false);

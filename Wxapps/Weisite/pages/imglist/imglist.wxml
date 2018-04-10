@@ -1,0 +1,15 @@
+
+<view class="news" >
+    <view class="news-div">
+      <view class="image-item" wx:for="{{list}}" wx:key="{{index}}">
+          <image src="{{item.cover}}"></image>
+          <view class="image-item-title">{{item.title}}</view>
+          <view class="image-item-intro">{{item.intro}}</view>
+      </view>
+    </view>
+</view> 
+<!-- <view class="loadMore" bindtap="loadMore" data-lastid='{{lastid}}'>加载更多</view>
+<view class="copyright mt40">{{copyright}}</view> -->
+<!--这里是底部菜单  -->
+<import src="../public/foot.wxml" />
+<template is="foot" data="{{blist}}" /> 

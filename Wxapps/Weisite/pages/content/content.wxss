@@ -1,0 +1,46 @@
+@import "../../wxParse/wxParse.wxss";
+.container {
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.page-cover {
+  width: 100%;
+  height: 600rpx;
+}
+
+.page-cover image {
+  width: 100%;
+  height: 100%;
+
+}
+.page-title,
+.page-intro,
+.page-content {
+  padding: 0 30rpx;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.page-title {
+  font-weight: bold;
+  font-size: 40rpx;
+  line-height: 3;
+}
+
+.page-intro {
+  font-size: 26rpx;
+  color: #999;
+  line-height: 2;
+}
+
+.page-content {
+  font-size: 30rpx;
+  line-height: 2;
+}
+
+.wxParse{
+  width: 98%;
+  margin: 20rpx auto;
+}

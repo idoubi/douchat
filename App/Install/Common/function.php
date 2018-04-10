@@ -54,6 +54,7 @@ function check_dirfile(){
 		array('dir',  '可写', 'success', './Uploads/Pictures'),
 		array('dir',  '可写', 'success', './Runtime'),
 		array('dir', '可写', 'success', './Addons'),
+		array('dir', '可写', 'success', './Wxapps'),
 		array('dir', '可写', 'success', './Data'),
 		array('dir', '可写', 'success', './App/Install/Data'),
 		array('dir', '可写', 'success', './App/Common/Conf'),		

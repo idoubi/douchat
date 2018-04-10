@@ -1,32 +1,22 @@
-<?php 
+<?php
 
+/**
+ * 个人中心控制器
+ * @author 艾逗笔<http://idoubi.cc>
+ */
 namespace Mp\Controller;
 use Mp\Controller\BaseController;
 
-/**
- * 公众号管理员控制器
- * @author 艾逗笔<765532665@qq.com>
- */
 class UserController extends BaseController {
 
 	/**
-	 * 个人资料
-	 * @author 艾逗笔<765532665@qq.com>
+	 * 基本资料
 	 */
 	public function profile() {
-		$sidenav = array(
-			array(
-				'title' => '个人资料',
-				'url' => U('Mp/User/profile'),
-				'class' => 'icon icon-user'
-			)
-		);
-		$this->addCrumb('公众号管理', U('Index/index'), '')
-			 ->addCrumb('个人资料', U('User/profile'), '')
-			 ->addCrumb('编辑个人资料', '', 'active')
-			 ->addNav('编辑个人资料', '', 'active')
-			 ->addNav('修改密码', U('User/change_password'), '')
-			 ->setSideNav($sidenav)
+		$this->setMetaTitle('基本资料')
+			 ->addCrumb('个人中心', '', '')
+			 ->addCrumb('基本资料', '', 'active')
+			 ->addNav('编辑基本资料', '', 'active')
 			 ->setModel('user')
 			 ->addFormField('nickname', '昵称', 'text')
 			 ->addFormField('headimg', '头像', 'image')
@@ -38,7 +28,6 @@ class UserController extends BaseController {
 
 	/**
 	 * 修改密码
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function change_password() {
 		if (IS_POST) {
@@ -68,19 +57,10 @@ class UserController extends BaseController {
 				$this->success('修改密码成功', U('Mp/User/profile'));
 			}
 		} else {
-			$sidenav = array(
-				array(
-					'title' => '个人资料',
-					'url' => U('Mp/User/profile'),
-					'class' => 'icon icon-user'
-				)
-			);
-			$this->addCrumb('公众号管理', U('Index/index'), '')
-				 ->addCrumb('个人资料', U('User/profile'), '')
+			$this->setMetaTitle('修改密码')
+				 ->addCrumb('个人中心', '', '')
 				 ->addCrumb('修改密码', '', 'active')
-				 ->addNav('编辑个人资料', U('User/profile'), '')
 				 ->addNav('修改密码', '', 'active')
-				 ->setSideNav($sidenav)
 				 ->addFormField('id', '用户ID', 'hidden')
 				 ->addFormField('username', '用户名', 'text', array('attr'=>'disabled="true"'))
 				 ->addFormField('old_pass', '原密码', 'password')

@@ -1,42 +1,65 @@
-<?php 
-
-namespace Common\Controller;
-use Think\Controller;
+<?php
 
 /**
  * 模块公用控制器
- * @author 艾逗笔<765532665@qq.com>
+ * @author 艾逗笔<http://idoubi.cc>
  */
+namespace Common\Controller;
+use Think\Controller;
+
 class CommonController extends Controller {
-
-	public $model = array();
-
-	/**
-	 * 初始化
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
-	protected function _initialize() {
+	
+	public $user_id;				// 当前登录用户id
+	public $user_info;				// 当前用户信息
+	public $user_access;			// 当前用户权限
+	public $module;					// 当前模块
+	public $controller;				// 当前控制器
+	public $action;					// 当前方法
+	public $product_info;			// 产品信息
+	public $system_settings;		// 系统设置
+	
+	public $model = [];				// 当前数据模型
+	
+	// 初始化
+	public function __construct() {
+		parent::__construct();
 		if (!is_file(SITE_PATH.'/Data/install.lock')) {				// 如果框架未安装，则跳转到安装页面
 			$this->redirect('Install/Index/index');
 		}
+		
+		add_hook('rbac', 'Common\Behavior\RbacBehavior');
+		hook('rbac');								// 用户权限检测
+		
+		$this->user_id = get_user_id();
+		$this->user_info = get_user_info();
+		$this->user_access = D('User/User')->get_user_access($this->user_id);
+		$this->module = strtolower(MODULE_NAME);
+		$this->controller = strtolower(CONTROLLER_NAME);
+		$this->action = strtolower(ACTION_NAME);
+		$this->product_info = json_decode(file_get_contents('./Data/product.info'), true);
+		$this->system_settings = D('Admin/SystemSetting')->get_settings();
+		
 		global $_G;
 		$_G['site_path'] = SITE_PATH . '/';
 		$_G['site_url'] = str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
 		$_G['addons_path'] = str_replace('./', $_G['site_path'], ADDON_PATH);
 		$_G['addons_url'] = $_G['site_url'] . str_replace('./', '', ADDON_PATH);
-		$_G['module_name'] = strtolower(MODULE_NAME);
-		$_G['controller_name'] = strtolower(CONTROLLER_NAME);
-		$_G['action_name'] = strtolower(ACTION_NAME);
-		add_hook('rbac', 'Common\Behavior\RbacBehavior');
-		hook('rbac');											// 执行权限检测钩子
-		$this->user_id = session(C('USER_AUTH_KEY'));			
-		$this->user_info = get_user_info();
-		$this->user_access = D('User/User')->get_user_access($this->user_id);
+		$_G['user_id'] = $this->user_id;
+		$_G['user_info'] = $this->user_info;
+		$_G['user_access'] = $this->user_access;
+		$_G['module'] = $this->module;
+		$_G['controller'] = $this->controller;
+		$_G['action'] = $this->action;
+		$_G['product_info'] = $this->product_info;
+		$_G['system_settings'] = $this->system_settings;
+	}
+	
+	protected function _initialize() {
+	
 	}
 
 	/**
 	 * 通用数据列表
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function common_lists($model = array()) {
 		cookie('__forward__', $_SERVER['HTTP_REFERER']);
@@ -82,7 +105,7 @@ class CommonController extends Controller {
 				$results[$n] = $list_data[$i];
 				$n++;
 			}
-		}	
+		}
 		foreach ($results as $k => &$v) {
 			foreach ($this->model['lists'] as $m => $n) {
 				if (!$n['name']) {
@@ -656,7 +679,12 @@ class CommonController extends Controller {
 	}
 
 	public function setListData($data) {
-		$this->model['list_data'] = $data;
+	    if (!is_array($data)) {
+	        return $this;
+        }
+        foreach ($data as $k => $v) {
+	        $this->model['list_data'][] = $v;
+        }
 		return $this;
 	}
 

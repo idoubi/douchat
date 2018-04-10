@@ -118,26 +118,26 @@
                 <else />
                 <a href="#" class="dropdown-toggle mod-bell" data-toggle="">
                     <img src="__PUBLIC__/Admin/img/noname.jpg" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
-                    <if condition="$_G['module_name'] eq 'admin'">
+                    <if condition="$_G['module'] eq 'admin'">
                     系统管理后台
                     <else />
-                    请先选择公众号
+                    请选择账号
                     </if>
                 </a>
                 </if>
                 <ul class="dropdown-menu mod-user">
                     <li>
-                        <a href="{:U('Mp/Index/index')}"><i class="icon icon-home"></i>公众号首页</a>
+                        <a href="{:U('Mp/Index/index', ['mpid'=>$mp_info['id']])}"><i class="icon icon-home"></i>账号首页</a>
                     </li>
                     <li>
-                        <a href="{:U('Mp/Mp/edit', array('id'=>$mp_info['id']))}"><i class="icon icon-edit"></i>编辑当前账号</a>
+                        <a href="{:U('Mp/Mp/edit', ['id'=>$mp_info['id'], 'mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-edit"></i>编辑当前账号</a>
                     </li>
                     <li>
-                        <a href="{:U('Mp/Mp/lists')}"><i class="icon icon-ul"></i>管理其他账号</a>
+                        <a href="{:U('Mp/Mp/lists', ['mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-ul"></i>管理其他账号</a>
                     </li>
                 </ul>
             </li>
-            <volist name="topmenu" id="vo">
+            <volist name="topnav" id="vo">
             <li class="top-menu"> 
                 <a href="{$vo.url}" class="{$vo.class}">{$vo.title}</a>
             </li>

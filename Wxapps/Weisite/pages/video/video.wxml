@@ -1,0 +1,21 @@
+<view class="container">
+    <view class="title">
+        {{article.title}}
+    </view>
+    <view class="date">
+       {{article.addtime}}
+    </view>
+
+    <view class="content">
+    <video src="{{article.videosrc}}"  style="width:100%;"></video>
+    <import src="../../../wxParse/wxParse.wxml"/>
+      <view class="wxParse">
+<template is="wxParse" data="{{wxParseData:article1.nodes}}"/>
+</view>
+    
+    </view>
+
+</view>    
+
+<import src="../public/foot.wxml" />
+<template is="foot" data="{{blist}}" /> 

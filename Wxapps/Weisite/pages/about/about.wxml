@@ -1,0 +1,16 @@
+<view class="container">
+    <view class="title">
+        {{catname}}
+    </view>
+   
+
+    
+<import src="../../../wxParse/wxParse.wxml"/>
+<view class="wxParse">
+<template is="wxParse" data="{{wxParseData:article1.nodes}}"/>
+</view>
+    <view class="copyright">{{copyright}}</view> 
+</view>
+<!--这里是底部菜单  -->
+<import src="../public/foot.wxml" />
+<template is="foot" data="{{blist}}" /> 

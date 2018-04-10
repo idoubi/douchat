@@ -1,0 +1,105 @@
+/* contact.wxss */
+.title{
+ 
+  height: 65rpx;
+  line-height: 65rpx;
+  background: white;
+  border-left: 5px solid #2d7dee;
+  font-size: 14px;
+  /* padding: 7px 0px 0px 10px; */
+  border-bottom:1px solid #f3f3f3;
+  text-indent: 10px;
+  margin-top: 10px;
+}
+.contact_img{
+  width:100%;
+  height: 210px;
+}
+.contact_text{
+  font-size:13px;
+  color: #777;
+  border-bottom:1px solid #eee;
+  height: 65rpx;
+  line-height: 65rpx;
+  padding-left:15rpx;
+  position: relative
+}
+.contact_text .ri{
+  margin-left:20rpx;
+  position: absolute;
+  right: 15px;
+  top:0px;
+}
+.contact_text .le{
+  position: absolute;
+  margin-left:10rpx;
+  
+}
+
+.contact_text image{
+  width: 40rpx; height: 40rpx;
+  margin-top:5px;
+}
+
+.card1{
+	width: 80%;
+	box-shadow: 0 1px 3px 0 rgba(0,0,0,0.2), 0 3px 10px 0 rgba(0,0,0,0.19);
+	margin-left: 10%;
+  background: white;
+  position:  absolute;
+  z-index: 9999;
+  height: 140rpx;
+  margin-top:-8%;
+ }
+ .card1 button{
+   position: absolute;
+   top:25rpx;
+   left: 230rpx;
+   background: none;
+   /* border: 1px solid #eee; */
+   content: none;
+   
+ }
+ button{
+   color: #666;
+ }
+ button::after{
+   border: 0;
+   color: #777;
+ }
+             
+.card2{
+	padding: 10px;
+  height: 70px;
+  float: left;
+}
+
+
+.first{
+  margin-top: 90rpx;
+}
+
+.userinfo-avatar {
+  width: 95rpx;
+  height: 95rpx;
+  border:1px solid #eee;
+  border-radius: 50%;
+}
+
+.contact_name{
+  text-align: center;
+  line-height: 140rpx;
+  color: #666;
+  padding-right: 15rpx;
+  font-size: 22px;
+}
+
+.contact_customer{
+  width: 95%;
+  margin: 0 auto;
+  
+  margin-top: 25rpx;
+}
+.contact_button{
+  color:#fff;
+}

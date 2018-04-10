@@ -1,0 +1,31 @@
+﻿#b-menu {animation-duration:0.4s;-webkit-animation-duration:0.4s; position: fixed; bottom: 0; left: 0; height: 48px; background:#fff;width:100%;font-size:12px;border-top:1px solid #f0efed; -webkit-box-shadow:0 -2px 2px 0 rgba(0,0,0,0.05); box-shadow: 0 -2px 2px 0 rgba(0,0,0,0.05);z-index:2 }
+#b-menu a { display: inline-block; float: left; text-align: center; color:#727272;position:relative}
+#b-menu i {  height: 28px; line-height: 30px;  display: block; font-size:20px;text-align:center;color:#c7c7c7;clear:both;width:30px;margin:0 auto;}
+#b-menu .sel i { background: #ec6c53;color:#fff;border-radius:50% ;position:absolute;top:-13px;left:50%;margin-left:-21px;width:38px;height:38px;line-height:38px;border:2px solid #fff}
+#b-menu .sel{color:#ec6c53;padding-top:28px}
+
+
+.header100 { background: #e33737;height:44px;line-height:44px;color:#fff;position:relative; box-sizing:border-box;padding:5px 20%}
+.header100 .tab{height:34px;line-height:34px;border:2px solid #fff;border-radius:15px;padding:1px;box-sizing:border-box}
+.header100 .tab a { display: block; width: 50%; text-align: center; color: #fff;float:left;border-radius:15px;height:28px;line-height:28px }
+.header100 .tab .sel { background:#fff;color:#ec6c53}
+.header100 .a { position: absolute; top: 7px; left: 10px; width: 28px; color: #e7292b; line-height: 28px; height: 28px; text-align: center; background: #fff; border-radius: 50%; -webkit-box-shadow: 0 0 10px #ff9b9b; -moz-box-shadow: 0 0 10px #ff9b9b; box-shadow: 0 0 10px #ff9b9b; }
+.header100 .pub { right: 10px;left:auto }
+.header100 .txt { width:100%;line-height:34px;text-align:center}
+
+.footer { height: 36px; text-align: center; margin-top: 18px; font-size:12px;color:#c7c7c7}
+/*.footer { height: 100px; text-align: center; margin-top: 20px; font-size:12px;color:#c7c7c7}*/
+.footer a { color: #777;padding:0 2px }
+
+#pub { background: #f9f9f9; }
+#pub .form { background: #fff; }
+#pub .rule { position: fixed; top:0px;width:100%;height:100%;z-index:9999;display:none}
+#pub .rule .mask { display: block; }
+#pub .rule .d {border-radius:5px; height:90%; width: 90%; background: #fff; font-size:14px;line-height:1.6em;padding:10px;box-sizing:border-box;position:absolute;top:20px;z-index:9999;left:5%;color:#666;text-indent:2em;overflow:auto }
+#pub .rule a { display: block; height: 50px; line-height: 50px; text-align:center;text-indent:0;margin-top:10px;position:absolute;bottom:0px;left:0px;width:100%;z-index:9999}
+#pub .rule a i { font-size: 30px; color: #fff; }
+#pub .ru .sw { float: left; padding:2px 0 0 5px;  }
+#pub .ru .label { border: 0px; }
+#pub .ru .cus_checkbox_1.small + label {margin-right:5px }
+#pub .ru em { font-size: 12px; }
+#pub .form .sw { width: 40px; }

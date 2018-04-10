@@ -1,34 +1,30 @@
-<?php 
+<?php
 
+/**
+ * 账号管理入口
+ * @author 艾逗笔<http://idoubi.cc>
+ */
 namespace Mp\Controller;
 use Mp\Controller\BaseController;
 
 class IndexController extends BaseController {
-
-	/**
-	 * 初始化
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
-	public function _initialize() {
-		if (I('mpid')) {
-			$mp_info = M('mp')->find(I('mpid'));
-			if ($mp_info['user_id'] == get_user_id()) {
-				$token = md5($mp_info['origin_id']);
-				M('mp')->where(array('id'=>I('mpid')))->setField('token', $token);
-				get_token($token);
-				get_mpid(I('mpid'));							// 缓存当前公众号
-				D('User/User')->set_default_mp(I('mpid'));		// 设置当前用户默认管理公众号
-			} else {
-				$this->error('你不具备此公众号的管理权限');
-			}
+	
+	// 初始化
+	public function __construct() {
+		parent::__construct();
+		$mpid = I('mpid', get_mpid(), 'intval');
+		$mp_info = M('mp')->where(['user_id'=>$this->user_id])->find($mpid);
+		if (empty($mp_info)) {
+			$this->error('账号不存在或你没有此账号的管理权限');
 		}
-		parent::_initialize();
+		$token = md5($mp_info['origin_id']);
+		M('mp')->where(['id'=>$mpid,'user_id'=>$this->user_id])->setField('token', $token);
+		$this->mpid = get_mpid($mpid);		// 缓存当前管理账号
+		$this->mp_type = get_mp_type();		// 获取当前账号类别
+		D('User/User')->set_default_mp($mpid);			// 设置当前用户默认管理账号
 	}
 
-	/**
-	 * 公众号管理首页
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
+	// 首页
 	public function index() {
 		global $_G;
 		$info = get_mp_info();

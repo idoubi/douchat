@@ -1,35 +1,32 @@
-<?php 
+<?php
 
+/**
+ * 插件后台公用控制器
+ * @author 艾逗笔<http://idoubi.cc>
+ */
 namespace Mp\Controller;
 use Mp\Controller\BaseController;
 
-/**
- * 插件公用控制器
- * @author 艾逗笔<765532665@qq.com>
- */
 class AddonsController extends BaseController {
 
 	public $crumb;
 	public $nav;
 	public $subnav;
 	public $tip;
-
-	/**
-	 * 初始化
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
-	public function _initialize() {
-		parent::_initialize();
-		global $_G;	
-		$_G['addon'] = $this->addon = get_addon();
+	
+	// 初始化
+	public function __construct() {
+		parent::__construct();
+		
+		global $_G;
 		$_G['addon_info'] = D('Addons')->get_addon_info($this->addon);		// 获取插件信息
 		$_G['addon_config'] = $_G['addon_info']['config'];					// 获取插件配置
 		$_G['addon_path'] = $_G['addons_path'] . $_G['addon'] . '/';
 		$_G['addon_url'] = $_G['addons_url'] . $_G['addon'] . '/';
 		$_G['addon_public_path'] = $_G['addons_path'] . 'View/Public/';
 		$_G['addon_public_url'] = $_G['addons_url'] . 'View/Public/';
-		if (!$_G['addon'] && $_G['action_name'] != 'manage') {
-			$this->redirect('Index/index');
+		if (empty($_G['addon']) && $_G['action'] != 'manage') {
+			$this->redirect('Addons/manage');
 		}
 		$this->assign('_G', $_G);
 		add_hook('tip', 'Mp\Behavior\TipBehavior');							// 添加生成提示信息的钩子
@@ -38,14 +35,17 @@ class AddonsController extends BaseController {
 		$this->crumb = hook('crumb');										// 执行钩子，获取面包屑
 		add_hook('nav', 'Mp\Behavior\NavBehavior');							// 添加生成插件导航的钩子
 		$this->nav = hook('nav');											// 执行钩子，获取插件导航数据
-		$this->meta_title = '业务导航';
-		if ($_G['action_name'] == 'entry') {										// 获取子导航					
+		if ($_G['action'] == 'entry') {										// 获取子导航
 			$this->subnav = $this->nav['entry']['children'];
-		} elseif ($_G['action_name'] == 'setting') {
+		} elseif ($_G['action'] == 'setting') {
 			$this->subnav = $this->nav['setting']['children'];
 		} else {
 			$this->subnav = $this->nav['menu']['children'];
 		}
+	}
+	
+	public function _initialize() {
+		parent::_initialize();
 	}
 
 	/**
@@ -75,12 +75,12 @@ class AddonsController extends BaseController {
 		} else {
 			$crumb = array(
 				array(
-					'title' => '公众号管理',
-					'url' => U('Index/index'),
+					'title' => '应用中心',
+					'url' => '',
 					'class' => ''
 				),
 				array(
-					'title' => '插件管理',
+					'title' => '全部应用',
 					'url' => '',
 					'class' => 'active'
 				)
@@ -147,64 +147,133 @@ class AddonsController extends BaseController {
 	 * 配置参数
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setting($settings = array()) {
-		if (IS_POST) {
-			$settings = I('post.');
-			M('addon_setting')->where(array('mpid'=>get_mpid(), 'addon'=>get_addon()))->delete();		// 删除旧的配置项
-			foreach ($settings as $k => $v) {
-				if ($k == C('TOKEN_NAME')) {
-					continue;
-				}
-				$data['mpid'] = get_mpid();
-				$data['addon'] = get_addon();
-				$data['name'] = $k;
-				$data['value'] = $v;
-				$datas[] = $data;
-			}
-			$res = M('addon_setting')->addAll($datas);
-			if (!$res) {
-				$this->error('保存配置失败');
-			} else {
-				$this->success('保存配置成功');
-			}
-		} else {		
-			$addon = get_addon();
-			$addon_info = D('Addons')->get_addon_info();
-			$addon_config = $addon_info['config'];
-			$setting_list = $addon_config['setting_list'];
-			if (isset($addon_config['setting_list_group'])) {
-				if (I('get.type')) {
-					$type = I('get.type');
-				} elseif ($addon_config['setting_list_default_group']) {
-					$type = $addon_config['setting_list_default_group'];
-				} else {
-					$types = array_keys($addon_config['setting_list_group']);
-					$type = $types[0];
-				}
-				foreach ($addon_config['setting_list'] as $k => $v) {
-					if ($addon_config['setting_list_group'][$type]['is_show'] == 1) {
-						if ($v['group'] == $type) {
-							$fields[$k] = $v;
-						} else {
-							$v['type'] = 'hidden';
-							$fields[$k] = $v;
-						}
-					}
-				}
-			} else {
-				$fields = $addon_config['setting_list'];
-			}
-			$this->setCrumb($this->crumb)
-				 ->setMetaTitle('配置参数')
-				 ->setNav($this->nav)
-				 ->setSubNav($this->subnav)
-				 ->setTip($this->tip)
-				 ->setModel('addon_setting')
-				 ->setFormFields($fields)
-				 ->setFormData(D('AddonSetting')->get_addon_settings())
-				 ->common_edit();
-		}
-	}
+    public function setting($settings = array()) {
+        $mpid = get_mpid();
+        $addon = get_addon();
+        $addon_config = D('Mp/Addons')->get_addon_config($addon);
+        $type = I('type', '');
+        $theme = I('theme', '');
+        $theme_config = [];
+        $nav = [];          // 导航
+        $fields = [];   // 配置字段
+        if (!empty($theme)) {       // 主题设置
+            $this->tip = '当前进行设置的主题：'.$theme;
+            if (isset($addon_config['theme_list'])) {
+                if (isset($addon_config['theme_list'][$theme])) {
+                    $theme_config = $addon_config['theme_list'][$theme];
+                } else {
+                    foreach ($addon_config['theme_list'] as $vtheme) {
+                        if (isset($vtheme['name']) && $vtheme['name'] == $theme) {
+                            $theme_config = $vtheme;
+                        }
+                    }
+                }
+            }
+        } else {    // 模块设置
+            $theme_config = $addon_config;
+        }
+
+        if (isset($theme_config['setting_list_group'])) {
+            $listGroup = [];
+            foreach ($theme_config['setting_list_group'] as $v) {
+                if (isset($v['is_show']) && $v['is_show'] == 1) {
+                    if (isset($v['name']) && !empty($v['name']) && isset($v['title']) && !empty($v['title'])) {
+                        $listGroup[$v['name']] = $v;
+                    }
+                }
+            }
+
+            if (empty($type)) {
+                if ($theme_config['setting_list_default_group']) {
+                    $type = $theme_config['setting_list_default_group'];
+                } else {
+                    $types = array_keys($listGroup);
+                    $type = $types[0];
+                }
+            }
+
+            foreach ($theme_config['setting_list'] as $k => $v) {
+                if ($listGroup[$type]['is_show'] == 1) {
+                    if ($v['group'] == $type) {
+                        $fields[$k] = $v;
+                    }
+                }
+            }
+
+            foreach ($listGroup as $k => $v) {
+                $nav[] = array(
+                    'title' => $v['title'],
+                    'url' => U('/addon/'.$addon.'/setting?type='.$k.'&theme='.$theme),
+                    'class' => $type == $k ? 'active' : ''
+                );
+            }
+
+        } else {
+            $fields = $theme_config['setting_list'];
+        }
+
+        $keys = [];
+        foreach ($fields as $k => $v) {
+            if (isset($v['name']) && !empty($v['name'])) {
+                $keys[] = $v['name'];
+            } elseif (is_string($k)) {
+                $keys[] = $k;
+            }
+        }
+
+        $fields[] = [
+            'name' => 'theme',
+            'title' => '当前主题',
+            'value' => $theme,
+            'type' => 'hidden'
+        ];
+        $fields[] = [
+            'name' => 'type',
+            'title' => '当前类型',
+            'value' => $type,
+            'type' => 'hidden'
+        ];
+
+        $this->subnav = $nav;
+
+        if (IS_POST) {
+            $post = I('post.');
+            $map = [
+                'mpid' => $mpid,
+                'addon' => $addon,
+                'theme' => $theme,
+                'type' => $type
+            ];
+            $datas = [];
+            foreach ($post as $k => $v) {
+                if (in_array($k, $keys)) {
+                    $map['name'] = $k;
+                    if (M('addon_setting')->where($map)->find()) {
+                        M('addon_setting')->where($map)->save(['value'=>$v]);
+                    } else {
+                        $data = $map;
+                        $data['name'] = $k;
+                        $data['value'] = $v;
+                        $datas[] = $data;
+                    }
+                }
+            }
+            if (!empty($datas)) {
+                M('addon_setting')->addAll($datas);
+            }
+            $this->success('编辑成功', U('/addon/'.$addon.'/setting?type='.$type.'&theme='.$theme));
+        } else {
+            $this->setCrumb($this->crumb)
+                ->setMetaTitle('配置参数')
+                ->setNav($this->nav)
+                ->setSubNav($this->subnav)
+                ->setTip($this->tip)
+                ->setModel('addon_setting')
+                ->setFormFields($fields)
+                ->setFormData(D('AddonSetting')->get_addon_settings($addon, $mpid, $theme, $type))
+                ->common_edit();
+        }
+    }
 
 	/**
 	 * 封面入口设置

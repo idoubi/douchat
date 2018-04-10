@@ -1,0 +1,11 @@
+<view class="multi-ads">
+    <view class='title' wx:if="{{adInfo.title}}">
+        <text class='title-main'>{{adInfo.title.main}}</text>
+        <text class='title-sub'>{{adInfo.title.sub}}</text>
+    </view>
+    <view class='multi-ad-wrap' wx:for="{{adInfo.data}}" wx:key=""  bindtap='{{item.caseid?"turnDetails":""}}' data-caseid="{{item.caseid}}">
+        <image src="{{item.imgUrl}}" class='multi-ad-img'></image>
+        <text class='multi-ad-title'>{{item.imgTitle}}</text>
+        <text class='multi-ad-des' wx:for="{{item.imgDes}}" wx:for-item="des" wx:key="">{{des}}</text>
+    </view>
+</view>

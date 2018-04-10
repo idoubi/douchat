@@ -1,17 +1,16 @@
-<?php 
-
-namespace Admin\Controller;
-use Admin\Controller\BaseController;
+<?php
 
 /**
  * 插件管理控制器
- * @author 艾逗笔<765532665@qq.com>
+ * @author 艾逗笔<http://idoubi.cc>
  */
+namespace Admin\Controller;
+use Admin\Controller\BaseController;
+
 class AddonsController extends BaseController {
 
 	/**
 	 * 已安装插件
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function lists() {
 		$install_addons = D('Addons')->get_installed_addons();

@@ -1,0 +1,43 @@
+﻿#datescroll div { float: left; margin-left: 10%; margin-top: 15px; padding-right: 22px; }
+#datescroll_datetime div { float: left; margin-left: 10%; padding-right: 22px; }
+
+#yearwrapper { position: absolute; left: 0; top: 45px; bottom: 60px; width: 80%; }
+#monthwrapper { position: absolute; left: 26%; top: 45px; bottom: 60px; width: 80%; }
+#daywrapper { position: absolute; left: 50%; top: 45px; bottom: 60px; width: 80%; }
+
+#Hourwrapper { position: absolute; left: 0; top: 195px; bottom: 68px; width: 80%; }
+#Minutewrapper { position: absolute; left: 26%; top: 195px; bottom: 68px; width: 80%; }
+#Secondwrapper { position: absolute; left: 50%; top: 195px; bottom: 68px; width: 80%; }
+
+/*增加手指滑动触摸面积*/
+#Hourwrapper ul li { color: #898989; font-size: 12px; }
+#Minutewrapper ul li { color: #898989; font-size: 12px; }
+#Secondwrapper ul li { color: #898989; font-size: 12px; }
+#yearwrapper ul li { color: #898989; font-size: 12px; }
+#monthwrapper ul li { color: #898989; font-size: 12px; }
+#daywrapper ul li { color: #898989; font-size: 12px; }
+
+#markyear { position: relative; margin-left: 76px; top: -2px; }
+#markmonth { position: relative; margin-left: 40px; top: -2px; }
+#markday { position: relative; margin-left: 42px; top: -2px; }
+#markhour { position: relative; margin-left: 62px; top: -2px; }
+#markminut { position: relative; margin-left: 58px; top: -2px; }
+#marksecond { position: relative; margin-left: 68px; top: -2px; }
+#dateheader { width: 100%; height: 50px; background: #79C12F; text-align: center; color: #fff; line-height: 50px; font-size: 20px; }
+
+#setcancle ul { text-align: center; line-height: 30px; margin: 1px auto; font-size: 20px; }
+#setcancle ul li { border-radius: 4px; float: left; width: 40%; height: 36px;line-height:36px; list-style-type: none; font-size:15px;}
+#dateconfirm{position: absolute;background:#f71e1e;left:20px;color:#fff;}
+#datecancle{position: absolute;background:  #dcdddd;right:20px;width: 40%;color:#666;}
+#dateshadow { display: none; position: absolute; width: 100%; height: 100%; top: 0; left: 0; background: #000; filter: alpha(Opacity=50); -moz-opacity: 0.5; opacity: 0.5; }
+#datePage{font-size: 22px; border-radius: 3px; position:absolute;top:110px;MARGIN-RIGHT: auto;vertical-align:middle;
+MARGIN-LEFT: auto;width: 80%;;height: 240px;background: #FFFFFF;z-index:9999999;overflow:hidden;left:50%;margin-left:-40%}
+#datetitle { width: 100%; height:40px; background: #f5f5f5; text-align: center; color: #999; line-height: 40px;  }
+#datetitle h1 { font-size:14px;font-weight:normal}
+#datemark { font-size: 18px; left: 5%; width: 90%;height: 25px;  background:#fcdf2b; position: absolute; top: 108px; }
+#timemark { font-size: 18px; left: 5%; width: 90%; height: 25px;  background:#fcdf2b; position: absolute; top: 242px; }
+#datescroll { background: #F8F8F8; width: 94%; margin: 10px 3%; border: 1px solid #E0E0E0; border-radius: 4px; height: 120px; text-align: center; line-height: 40px; }
+#datescroll_datetime { display: none; background: #F8F8F8; width: 94%; margin: 10px 3%; margin-top: 10px; border: 1px solid #E0E0E0; border-radius: 4px; height: 120px; text-align: center; line-height: 40px; }
+#yearwrapper ul, #monthwrapper ul, #daywrapper ul { width: 40%; }
+#Hourwrapper ul, #Minutewrapper ul, #Secondwrapper ul { width: 40%; }
+#dateFooter { width: 100%; background: #fff; height: 50px; bottom: 0px; position: absolute; }

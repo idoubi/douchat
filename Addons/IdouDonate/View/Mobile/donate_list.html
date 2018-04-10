@@ -1,0 +1,144 @@
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <meta name="viewport" content="width=device-width,height=device-height,inital-scale=1.0,maximum-scale=1.0,user-scalable=no;" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <title>捐赠列表</title>
+    {:hook('jssdk', false)}
+    {:hook('import_css', array('0.4.3'=>'weui'))}
+
+	<style type="text/css">
+		.weui_cells{
+			padding-bottom: 60px;
+		}
+
+		.weui_cell{
+			position: relative;
+			height: 92px;
+			overflow: hidden;
+		}
+
+		.weui_cell_hd img{
+			width: 60px;
+			height: 60px;
+			border-radius: 30px;
+		}
+
+		#donate{
+			position: fixed;
+			bottom: 15px;
+			width: 90%;
+			left: 50%;
+			margin-left: -45%;
+			z-index: 9999;
+		}
+
+		.nickname{
+			position: absolute;
+			left: 80px;
+			top:15px;
+			font-size: 18px;
+		}
+
+		.money{
+			width: 80px;
+			height: 40px;
+			position: absolute;
+			left: 80px;
+			top: 40px;
+			text-align: left;
+			color: #08a5e0;
+			font-size: 18px;
+			font-weight: bolder;
+		}
+
+		.content{
+			width: 60%;
+			height: 40px;
+			position: absolute;
+			left: 80px;
+			top: 70px;
+			text-align: left;
+			color: #333;
+			font-size: 14px;
+			font-weight: bolder;
+		}
+
+		.weui_cell_ft{
+			position: absolute;
+			top: 25px;
+			right: 10px;
+			font-size: 12px;
+		}
+
+		.weui_btn{
+			background: #1ba358;
+			color: #fff !important;
+		}
+	</style>
+</head>
+
+<body>
+
+	<div class="weui_cells weui_cells_split">
+		<volist name="lists" id="vo">
+        <div class="weui_cell">
+            <div class="weui_cell_hd">
+            	<img src="<if condition="$vo['is_anonymous'] eq 1">{$_G['addon_public_url']}/img/anonymous.jpeg<else />{$vo.fans.headimgurl}</if>" alt="">
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">
+                <p class="nickname"><if condition="$vo['is_anonymous'] eq 1">匿名<else />{$vo.fans.nickname}</if></p>
+            </div>
+            <div class="weui_cell_bd weui_cell_primary">
+                <p class="money">{$vo.money}元</p>
+                <p class="content">{$vo.content}</p>
+            </div>
+            <div class="weui_cell_ft">
+                {$vo.create_time|date='y-m-d H:i:s',###}
+            </div>
+        </div>
+    	</volist>
+    	<div class="bd spacing">
+               
+            <div class="button_sp_area">
+               
+                <a href="javascript:;" class="weui_btn weui_btn_plain_primary" id="donate">我要捐赠</a>
+                
+            </div>
+        </div>
+    </div>
+    {:hook('import_js', 'jquery')} 
+    <script type="text/javascript">
+    	$(function(){
+    		$("#donate").click(function(){
+    			var url = "{:create_addon_url('index')}";
+    			window.location.href = url;
+    		});
+    	});
+    </script>
+
+    <script>
+    wx.ready(function () {
+        sharedata = {
+            title: "{$config['share_title']}",
+            desc: "{$config['share_desc']}",
+            link: "{php $this->createMobileUrl('donate_list'); }",
+            imgUrl: "{$config['share_pic']}",
+            success: function(){
+                
+            },
+            cancel: function(){
+                
+            }
+        };
+        wx.onMenuShareAppMessage(sharedata);
+        wx.onMenuShareTimeline(sharedata);
+    });
+    </script>
+
+</body>
+
+</html>
+</block>

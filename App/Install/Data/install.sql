@@ -20,15 +20,17 @@ SET time_zone = "+00:00";
 -- Database: `douchat`
 --
 
-CREATE TABLE `dc_access_token` (
-  `access_token` varchar(255) NOT NULL COMMENT '授权token',
-  `refresh_token` varchar(255) NOT NULL DEFAULT '' COMMENT '刷新token',
-  `expires_in` smallint(10) NOT NULL DEFAULT '3600' COMMENT '过期时间',
-  `scope` varchar(255) NOT NULL DEFAULT '' COMMENT '权限范围',
-  `create_time` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
-  PRIMARY KEY (`access_token`),
-  KEY `idx_access_token` (`access_token`) USING HASH
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Oauth2授权表';
+CREATE TABLE `dc_access_key` (
+  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '自增ID',
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `mpid` int(10) NOT NULL DEFAULT '0' COMMENT '账号id',
+  `ak` varchar(255) NOT NULL DEFAULT '' COMMENT 'api请求ak',
+  `sk` varchar(255) NOT NULL DEFAULT '' COMMENT 'api请求sk',
+  `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态。0：停用，1：使用中',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口授权key表';
 
 -- --------------------------------------------------------
 
@@ -90,7 +92,9 @@ CREATE TABLE IF NOT EXISTS `dc_addon_setting` (
   `mpid` int(10) NOT NULL COMMENT '公众号标识',
   `addon` varchar(50) NOT NULL COMMENT '插件标识',
   `name` varchar(50) NOT NULL COMMENT '配置项',
-  `value` text NOT NULL COMMENT '配置值'
+  `value` text NOT NULL COMMENT '配置值',
+  `theme` varchar(50) NOT NULL DEFAULT '' COMMENT '主题',
+  `type` varchar(50) NOT NULL DEFAULT '' COMMENT '类别',
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件配置参数表';
 
 -- --------------------------------------------------------

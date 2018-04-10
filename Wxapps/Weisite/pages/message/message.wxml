@@ -1,0 +1,95 @@
+<view class="container">
+  <view class="form-desc">
+    {{form.desc}}
+  </view>
+  <block wx:if="{{form.t1show==1}}">
+  <view class="fb-mobile">
+    <view class="label">
+      <block wx:if="{{form.t1full==1}}"><text>*</text></block>{{form.t1name}}：
+    </view>
+    <view class="mobile-box">
+      <input class="mobile" bindinput="t1"/>
+    </view>
+  </view>
+  </block>
+
+  <block wx:if="{{form.t2show==1}}">
+  <view class="fb-mobile">
+    <view class="label">
+      <block wx:if="{{form.t2full==1}}"><text>*</text></block>{{form.t2name}}：
+    </view>
+    <view class="mobile-box">
+      <input class="mobile" bindinput="t2"/>
+    </view>
+  </view>
+  </block>
+
+  <block wx:if="{{form.t3show==1}}">
+  <view class="fb-mobile">
+    <view class="label">
+      <block wx:if="{{form.t3full==1}}"><text>*</text></block>{{form.t3name}}：
+    </view>
+    <view class="mobile-box">
+      <input class="mobile" bindinput="t3"/>
+    </view>
+  </view>
+  </block>
+
+  <block wx:if="{{form.t4show==1}}">
+  <view class="fb-mobile">
+    <view class="label">
+      <block wx:if="{{form.t4full==1}}"><text>*</text></block>{{form.t4name}}：
+    </view>
+    <view class="mobile-box">
+      <input class="mobile" bindinput="t4"/>
+    </view>
+  </view>
+  </block>
+
+  
+
+  
+
+  <block wx:if="{{form.rshow==1}}">
+   <view class="fb-mobile">
+    <view class="label"><block wx:if="{{form.rfull==1}}"><text>*</text></block>{{form.rname}}:</view>
+    <view class="choice">
+      <radio-group class="radio-group" bindchange="radioChange">
+        <label class="radio" wx:for="{{form.rvalue}}">
+          <radio value="{{item}}" />{{item}}
+        </label>
+      </radio-group>
+    </view>
+  </view>
+  </block>
+
+  <block wx:if="{{form.cshow==1}}">
+    <view class="fb-mobile">
+      <view class="label"><block wx:if="{{form.cfull==1}}"><text>*</text></block>{{form.cname}}:</view>
+      <view class="choice">
+        <checkbox-group class="checkbox-group" bindchange="checkChange">
+          <label class="checkbox" wx:for="{{form.cvalue}}">
+            <checkbox value="{{item}}" />{{item}}
+          </label>
+        </checkbox-group>
+      </view>
+    </view>
+  </block>
+
+
+  <block wx:if="{{form.ashow==1}}">
+  <view class="fb-body">
+    <view class="label"><block wx:if="{{form.afull==1}}"><text>*</text></block>{{form.aname}}：</view>
+    <view class="fb-body-content">
+      <textarea class="content" bindinput="textareaBlur"/>
+    </view>
+  </view>
+  </block>
+
+  <button class="fb-btn" bindtap="submitClick" style='background-color:{{tcolor}}'>提交</button>
+</view>
+
+<!--这里是底部菜单  -->
+<import src="../public/foot.wxml" />
+<template is="foot" data="{{blist}}" /> 
+

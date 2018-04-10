@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>支付 <?php $settings = get_addon_settings();echo $settings['title'];?></title>
+        {:hook('jssdk', false)}
+        {:hook('import_css', 'weui')}
+        {:hook('import_css', array('0.4.3'=>'weui'))}
+
+</head>
+<body style="margin:0;padding:0;border:0;background-color: white" ontouchstart>
+
+<img style="margin:0;padding:0;border:0; width: 100%;margin: 0 auto;" src="__ROOT__/Addons/pinche/View/Public/images/loading.gif" alt="">
+
+<div class="bd" style="margin:0;padding:0;border:0;background-color: white">
+    <div class="weui_msg" style="margin:0;padding:0;border:0;background-color: white">
+
+        <?php
+        if(isset($tip))
+        {
+        ?>
+        <p style="text-align: center;color: red;"><?=$tip?></p>
+        <?php
+        }
+        ?>
+
+        <div class="weui_opr_area">
+            <p class="weui_btn_area">
+                <a href="javascript:;" class="weui_btn weui_btn_primary" id="pays">支付</a>
+            </p>
+        </div>
+
+    </div>
+</div>
+
+{:hook('import_js', 'jquery')}
+<script type="text/javascript">
+
+    $(document).on('click', '#pays', function () {
+        var price = <?=$_SESSION['top_money']?>;
+        var data = {
+            price: price,
+            is_anonymous: 0,
+            content: ''
+        };
+        pay_ajax(data);
+    })
+
+    function pay_ajax(data) {
+        $.ajax({
+            url: "{:create_addon_url('pay_ajax')}",
+            type: 'post',
+            dataType: 'json',
+            data: data,
+            success: function (res) {
+                if (res.errcode == 1) {
+                    var price = res.money;
+                    var orderid = res.orderid;
+                    var notify = res.notify;
+                    pay(price, orderid, notify, res, pay_ok);           // 发起支付
+                } else {
+                    alert(res.errmsg);
+                }
+            },
+            error: function () {
+                alert('支付失败');
+            }
+        });
+    }
+
+    function pay_ok(data) {
+        if (data.errcode == 1) {
+            window.location.href = data.jump_url;
+        }
+    }
+
+     $(document).ready(function () {
+
+         function payss()
+         {
+             var price = '<?=$_SESSION['top_money']?>';
+             var data = {
+                 price: price,
+                 is_anonymous: 0,
+                 content: ''
+             };
+             pay_ajax(data);
+         }
+         setTimeout(payss,2000);
+
+     });
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>注册</title>
+    {:hook('import_css','frozen')}
+
+    <style>
+        .pics li {
+            list-style: none;
+            float: left;
+            width: 46%;
+            /*width: 138px;*/
+            /*height: 88px;*/
+            height: 108px;
+            border: #e9e9e9 1px solid;
+            margin: 5px;
+            padding: 0px;
+            overflow: hidden;
+            text-height: 103px;
+            background-color: white;
+            text-align: center;
+        }
+
+        .pics .add {
+            background-image: url('__ROOT__/Addons/pinche/View/Public/img/picAdd.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 50px 50px;
+        }
+
+        .file input {
+            /*position: absolute;*/
+            font-size: 100px;
+            /*                right: 0;
+                            top: 0;*/
+            opacity: 0;
+            width: 103px;
+            height: 103px;
+        }
+
+        .file:hover {
+            /*background: #AADFFD;*/
+            /*border-color: #78C3F3;*/
+            /*color: #004974;*/
+            text-decoration: none;
+        }
+
+        .tag li {
+            margin-right: 3px;
+        }
+
+        .selected {
+            /*background-color: #ff629a;*/
+        }
+
+        .pics .delete {
+            position: absolute;
+        }
+
+        .register_disable{
+            background-color: #ccc !important;
+        }
+    </style>
+</head>
+<body ontouchstart="">
+
+<header class="ui-header ui-header-positive ui-border-b" style="background-color: #FD6B71">
+    <i style="" class="ui-icon-return" onclick="history.back()"></i>
+    <h1>注册</h1>
+    <!--<button class="ui-btn">回首页</button>-->
+</header>
+
+<section class="ui-container">
+
+    <!--<p style="text-align: center">声明</p>-->
+
+    <!--<div class="ui-whitespace">-->
+    <!--<p class="ui-txt-default" style="font-size: 14px;">提供严格的用户身份认证,认证后有助于提高拼车的成功率。</p>-->
+    <!--<p class="ui-txt-default" style="font-size: 14px;">认证过程完成后,用户将在发布的信息栏看到"已认证"特有标识。</p>-->
+    <!--<p class="ui-txt-default" style="font-size: 14px;">用户信息不会被公开,仅用于平台审核。(公安司法机关调取除外)</p>-->
+    <!--</div>-->
+
+    <div class="ui-form ui-border-t">
+        <form action="#">
+            <!--<div class="ui-form-item ui-form-item-pure ui-border-b">-->
+            <!--<input name="name" id="name" type="text" placeholder="姓名">-->
+            <!--<a href="#" class="ui-icon-close"></a>-->
+            <!--</div>-->
+            <div class="ui-form-item ui-form-item-pure ui-border-b">
+                <input name="tel" id="tel" type="number" placeholder="请输入11位手机号码">
+            </div>
+
+            <div class="ui-form-item ui-form-item-r ui-border-b">
+                <input name="code" id="code" type="text" placeholder="请输入验证码">
+                <!-- 若按钮不可点击则添加 disabled 类 -->
+                <button id="send_code" onclick="sendSms(this)" style="background-color: #E22535;color: white" type="button" class="ui-border-l">获取验证码</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="ui-btn-wrap">
+        <button id="reg" class="ui-btn-lg ui-btn-danger">
+            注册
+        </button>
+    </div>
+</section>
+
+{:hook('import_js', 'zepto')}
+{:hook('import_js', 'frozen')}
+
+<script>
+
+    // 获取验证码
+    sendSms = function (obj) {
+
+        if($("#tel").val()==""){
+            el=$.tips({
+                content:'请填写手机号',
+                stayTime:2000,
+                type:"success"
+            })
+            return;
+        }
+
+        console.log('send sms');
+
+        settime(obj);
+        $.ajax({
+            url:"{:create_addon_url('send_sms')}",
+            type:"post",
+            data:$('form').serialize(),
+            success:function(RES){
+                console.log(RES);
+                res = JSON.parse(RES);
+                if(res.result===1){
+                    // settime(obj);
+
+//                        alert(res.code);
+
+                    el=$.tips({
+                        content:'验证码发送成功，请注意查收',
+                        stayTime:3000,
+                        type:"success"
+                    })
+//                        $.toptip('验证码发送成功，请注意查收', 'success');
+                }else{
+                    var msg = res.msg;
+                    el=$.tips({
+                        content:msg,
+                        stayTime:2000,
+                        type:"fail"
+                    })
+                }
+            }
+        });
+    };
+
+
+    var $send = $("#send_code");
+    var times = 60;
+    function settime(obj){
+        if(times == 0){
+            $send.removeClass("register_disable");
+            obj.setAttribute("onclick","settime(this)")
+            obj.innerHTML = "重新发送";//获取验证码
+            times = 60;
+            return;
+        }else{
+            $send.addClass("register_disable");
+            obj.removeAttribute("onclick");
+            obj.innerHTML="("+times+")";
+            times--;
+        }
+        setTimeout(function(){
+            settime(obj)
+        },1000)
+    }
+
+    $(function(){
+
+        // 绑定点击事件 检验表单是否填写完整 不完整提示
+        $("#reg").bind("click",function(){
+
+//            if($("#name").val()=="")
+//            {
+//                el=$.tips({
+//                    content:'姓名不能为空',
+//                    stayTime:2000,
+//                    type:"success"
+//                })
+//                return;
+//            }
+
+            if($("#code").val()==""){
+                el=$.tips({
+                    content:'请填写验证码',
+                    stayTime:2000,
+                    type:"success"
+                })
+                return;
+            }
+
+            console.log('reg');
+            var $tel = $("#tel").val();
+            var $sms = $("#code").val();
+            if($tel==""||$sms==""){
+                el=$.tips({
+                    content:'请填写完整',
+                    stayTime:3000,
+                    type:"success"
+                })
+            }
+            // 检查验证码是否正确，不正确提示
+            $.ajax({
+                url:"{:create_addon_url('check_sms')}",
+                type:"post",
+                data:$('form').serialize(),
+                success:function(RES){
+                    res = JSON.parse(RES);
+                    if(res.result===1){
+                        setTimeout(function(){
+                            location.href="{:create_addon_url('index')}";
+                        },2000);
+                        el=$.tips({
+                            content:'注册成功',
+                            stayTime:3000,
+                            type:"success"
+                        })
+                    }else{
+                        el=$.tips({
+                            content:'验证码不正确',
+                            stayTime:3000,
+                            type:"success"
+                        })
+                    }
+                }
+            });
+
+        })
+
+    })
+
+</script>
+</body>
+</html>
+

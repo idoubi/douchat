@@ -1,0 +1,13 @@
+﻿.wr { box-sizing: border-box; padding: 20px; }
+.box { background:rgba(255,255,255,0.9);  border-radius: 4px; padding:20px 10px;font-size:14px;color:#666;position:relative;overflow:hidden}
+.box.istop:after{content:"置顶";font-size:12px;background:#e33737;color:#fff;padding:1px;position:absolute;width:60px;text-align:center;-webkit-transform:rotateZ(-45deg);left:-16px;top:6px;display:inline-block;height:18px;line-height:18px}
+.user { text-align: center; }
+.user img { width: 50px; height: 50px; border-radius: 50%; }
+.user em { font-size: 14px; font-weight: bold; color: #666;display:block;line-height:30px}
+.user em i { color: #75d9ff;font-size:20px;vertical-align:middle;margin-left:5px; font-weight:normal}
+.user em .girl { color: #ff9ce5; }
+.row { height: 40px; line-height: 40px; border-bottom: 1px solid #f5f5f5; }
+.row:last-child { border: 0px; }
+.row span { display: inline-block; width: 50px;color:#999 }
+
+.footer { height: 35px;color:#b4b4b4 }

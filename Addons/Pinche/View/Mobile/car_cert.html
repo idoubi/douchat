@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>车主认证</title>
+    <link rel="stylesheet" href="__ROOT__/Addons/pinche/View/Public/css/frozen.css">
+
+    <style>
+        .pics li {
+            list-style: none;
+            float: left;
+            width: 46%;
+            /*width: 138px;*/
+            /*height: 88px;*/
+            height: 108px;
+            border: #e9e9e9 1px solid;
+            margin: 5px;
+            padding: 0px;
+            overflow: hidden;
+            text-height: 103px;
+            background-color: white;
+            text-align: center;
+        }
+
+        .pics .add {
+            background-image: url('__ROOT__/Addons/pinche/View/Public/img/picAdd.jpg');
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 30px 30px;
+        }
+
+        .file input {
+            /*position: absolute;*/
+            font-size: 100px;
+            /*                right: 0;
+                            top: 0;*/
+            opacity: 0;
+            width: 103px;
+            height: 103px;
+        }
+
+        .file:hover {
+            /*background: #AADFFD;*/
+            /*border-color: #78C3F3;*/
+            /*color: #004974;*/
+            text-decoration: none;
+        }
+
+        .tag li {
+            margin-right: 3px;
+        }
+
+        .selected {
+            /*background-color: #ff629a;*/
+        }
+
+        .pics .delete {
+            position: absolute;
+        }
+    </style>
+</head>
+<body ontouchstart="">
+
+<header class="ui-header ui-header-positive ui-border-b" style="background-color: #FD6B71">
+    <i style="" class="ui-icon-return" onclick="history.back()"></i>
+    <h1>车主认证</h1>
+    <!--<button class="ui-btn">回首页</button>-->
+</header>
+
+<section class="ui-container">
+
+    <?php
+    if($state == '0'){
+    ?>
+    <div class="ui-tips ui-tips-info">
+        <i></i><span>正在审核中</span>
+    </div>
+
+    <?php
+    }elseif($state == '1'){
+    ?>
+    <div class="ui-tips ui-tips-success">
+        <i></i><span>认证成功</span>
+    </div>
+    <?php
+    }
+    ?>
+
+    <!--<p style="text-align: center;color: #54B4D3">声明</p>-->
+
+    <!--<div class="ui-whitespace" style="border:1px solid #54B4D3;border-radius: 5px;margin: 10px;padding: 5px;">-->
+        <!--<p class="ui-txt-default" style="font-size: 14px;color: #54B4D3">用户实名认证完全出于合乘双方安全保障的考虑。本平台不会将您的实名信息透露给任何第三方组织或者个人（公安司法部门除外）。认证过程完成后，用户将在发布的信息栏看到“已认证”特有标示。有助于提高拼车的成功率。</p>-->
+    <!--</div>-->
+
+
+    <div class="ui-form ui-border-t">
+        <form action="#">
+            <div class="ui-form-item ui-form-item-pure ui-border-b">
+                <input value="<?=$userinfo['nickname']?>" name="name" id="name" type="text" placeholder="姓名">
+                <!--<a href="#" class="ui-icon-close"></a>-->
+            </div>
+            <div class="ui-form-item ui-form-item-pure ui-border-b">
+                <input value="<?=$userinfo['car_type']?>" name="carType" id="carType" type="text" placeholder="车型">
+                <!--<a href="#" class="ui-icon-close"></a>-->
+            </div>
+            <div class="ui-form-item ui-form-item-pure ui-border-b">
+                <input value="<?=$userinfo['car_num']?>" name="carNum" id="carNum" type="text" placeholder="车牌号码">
+            </div>
+        </form>
+    </div>
+
+    <!--<div class="ui-form ui-border-t">-->
+    <!--<form action="#">-->
+    <!--<div class="ui-form-item ui-form-item-pure ui-border-b">-->
+    <!--<input type="text" placeholder="姓名">-->
+    <!--&lt;!&ndash;<a href="#" class="ui-icon-close"></a>&ndash;&gt;-->
+    <!--</div>-->
+    <!--<div class="ui-form-item ui-form-item-pure ui-border-b">-->
+    <!--<input type="number" placeholder="请输入11位手机号码">-->
+    <!--</div>-->
+
+    <!--&lt;!&ndash;<img src="" alt="">&ndash;&gt;-->
+    <!--&lt;!&ndash;<div class="ui-form-item ui-form-item-pure ui-border-b">&ndash;&gt;-->
+    <!--&lt;!&ndash;<input type="number" placeholder="图形验证码">&ndash;&gt;-->
+    <!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+    <!--<div class="ui-form-item ui-form-item-r ui-border-b">-->
+    <!--<input type="text" placeholder="请输入验证码">-->
+    <!--&lt;!&ndash; 若按钮不可点击则添加 disabled 类 &ndash;&gt;-->
+    <!--<button style="background-color: #E22535;color: white" type="button" class="ui-border-l">获取验证码</button>-->
+    <!--</div>-->
+    <!--</form>-->
+    <!--</div>-->
+
+
+    <div class="ui-form-item ui-border-b file" style="height:180px;margin: 0 auto ">
+
+        <span style="display:block;float:left;width: 50%;text-align:center;">身份证</span>
+        <span style="display:block;float:left;width: 50%;text-align:center;">车辆照片</span>
+        <ul class="bs-pics1 pics">
+            <li class="add">
+                <input id="file1" type="file" accept="image/*">
+                <div style="font-size:12px;color:#D6D6D6;text-align: center;margin-top: -40px;" class="ui-flex ui-flex-pack-center">
+                    上传正面照片
+                </div>
+            </li>
+        </ul>
+
+        <ul class="bs-pics2 pics">
+            <li class="add">
+                <input id="file2" type="file" accept="image/*">
+                <div style="font-size:12px;color:#D6D6D6;text-align: center;margin-top: -40px;" class="ui-flex ui-flex-pack-center">
+                    上传车头正面照片
+                </div>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="ui-form-item ui-border-b file" style="height:180px;margin: 0 auto;">
+
+        <span style="display:block;float:left;width: 50%;text-align:center;">驾驶证</span>
+        <span style="display:block;float:left;width: 50%;text-align:center;">行驶证</span>
+
+        <ul class="bs-pics3 pics">
+            <li class="add">
+                <input id="file3" type="file" accept="image/*">
+                <div style="font-size:12px;color:#D6D6D6;text-align: center;margin-top: -40px;" class="ui-flex ui-flex-pack-center">
+                    上传行驶证照片
+                </div>
+            </li>
+
+        </ul>
+
+        <ul class="bs-pics4 pics">
+            <li class="add">
+                <input id="file4" type="file" accept="image/*">
+                <div style="font-size:12px;color:#D6D6D6;text-align: center;margin-top: -40px;" class="ui-flex ui-flex-pack-center">
+                    上传驾驶证照片
+                </div>
+            </li>
+        </ul>
+
+    </div>
+
+    <?php
+    if(isset($state)){
+    ?>
+    <div class="ui-btn-wrap">
+        <button class="bs-submit ui-btn-lg ui-btn-danger">
+            修改
+        </button>
+    </div>
+    <?php
+    }else{
+    ?>
+    <div class="ui-btn-wrap">
+        <button class="bs-submit ui-btn-lg ui-btn-danger">
+            确定
+        </button>
+    </div>
+    <?php
+    }
+    ?>
+
+</section>
+
+<script src="__ROOT__/Addons/pinche/View/Public/js/zepto.min.js"></script>
+<script src="__ROOT__/Addons/pinche/View/Public/js/frozen.js"></script>
+
+<script src="__ROOT__/Addons/pinche/View/Public/js/lrz.bundle.js"></script>
+<script>
+<?php
+        if(!empty($userinfo['id_card'])){
+            ?>
+
+//            $(".bs-pics1").html('<li><img src="__PUBLIC__/' + '<?=$userinfo['id_card']?>' + '" width="100%"/></li>');
+
+
+            <?php
+        }
+
+?>
+
+//    $(".bs-pics1").html('<li><img src="__PUBLIC__/' + result.url + '" width="100%"/></li>');
+
+    var picArr = new Array();
+    // 上传身份证1
+    document.querySelector('#file1').addEventListener('change', function () {
+//        $('.show').fadeIn();
+        lrz(this.files[0], {width: 700})
+                .then(function (rst) {
+                    // 处理成功会执行
+//                       console.log(rst);
+                    var xhr = new XMLHttpRequest();
+                    var data = {
+                        base64: rst.base64,
+                        size: rst.base64.length // 校验用，防止未完整接收
+                    };
+                    xhr.open('POST', '{:create_addon_url('formdata')}');
+                    xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                    xhr.onreadystatechange = function () {
+//                            console.log(xhr.status);
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+
+                            var result = JSON.parse(xhr.response);
+                            if (result.error == 0) {
+                                $(".bs-pics1").html('<li><img src="__PUBLIC__/' + result.url + '" width="100%"/></li>');
+                                // picArr.push('"' + result.url + '"');
+                                picArr.push(result.url);
+                                console.log(picArr);
+                            }
+//                                console.log(result);
+
+//                                result.error
+//                                    ? alert('服务端错误，未能保存图片')
+//                                    //: demo_report('服务端实存的图片', result.src, result.size);
+//                                                                : alert('上传OK');
+                        }
+                    };
+                    xhr.send(JSON.stringify(data)); // 发送base64
+//                        });
+                })
+                .catch(function (err) {
+                    // 处理失败会执行
+                    console.log(rst);
+                })
+                .always(function () {
+                    // 不管是成功失败，都会执行
+                    $('.show').fadeOut();
+                });
+    });
+
+    //    上传身份证2
+    document.querySelector('#file2').addEventListener('change', function () {
+//        $('.show').fadeIn();
+        lrz(this.files[0], {width: 700})
+                .then(function (rst) {
+                    // 处理成功会执行
+//                       console.log(rst);
+                    var xhr = new XMLHttpRequest();
+                    var data = {
+                        base64: rst.base64,
+                        size: rst.base64.length // 校验用，防止未完整接收
+                    };
+                    xhr.open('POST', '{:create_addon_url('formdata')}');
+                    xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                    xhr.onreadystatechange = function () {
+//                            console.log(xhr.status);
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+
+                            var result = JSON.parse(xhr.response);
+                            if (result.error == 0) {
+                                $(".bs-pics2").html('<li><img src="__PUBLIC__/' + result.url + '" width="100%"/></li>');
+                                // picArr.push('"' + result.url + '"');
+                                picArr.push(result.url);
+                                console.log(picArr);
+                            }
+//                                console.log(result);
+
+//                                result.error
+//                                    ? alert('服务端错误，未能保存图片')
+//                                    //: demo_report('服务端实存的图片', result.src, result.size);
+//                                                                : alert('上传OK');
+                        }
+                    };
+                    xhr.send(JSON.stringify(data)); // 发送base64
+//                        });
+                })
+                .catch(function (err) {
+                    // 处理失败会执行
+                    console.log(rst);
+                })
+                .always(function () {
+                    // 不管是成功失败，都会执行
+                    $('.show').fadeOut();
+                });
+    });
+
+
+    //    3
+    document.querySelector('#file3').addEventListener('change', function () {
+//        $('.show').fadeIn();
+        lrz(this.files[0], {width: 700})
+                .then(function (rst) {
+                    // 处理成功会执行
+//                       console.log(rst);
+                    var xhr = new XMLHttpRequest();
+                    var data = {
+                        base64: rst.base64,
+                        size: rst.base64.length // 校验用，防止未完整接收
+                    };
+                    xhr.open('POST', '{:create_addon_url('formdata')}');
+                    xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                    xhr.onreadystatechange = function () {
+//                            console.log(xhr.status);
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+
+                            var result = JSON.parse(xhr.response);
+                            if (result.error == 0) {
+                                $(".bs-pics3").html('<li><img src="__PUBLIC__/' + result.url + '" width="100%"/></li>');
+                                // picArr.push('"' + result.url + '"');
+                                picArr.push(result.url);
+                                console.log(picArr);
+                            }
+//                                console.log(result);
+
+//                                result.error
+//                                    ? alert('服务端错误，未能保存图片')
+//                                    //: demo_report('服务端实存的图片', result.src, result.size);
+//                                                                : alert('上传OK');
+                        }
+                    };
+                    xhr.send(JSON.stringify(data)); // 发送base64
+//                        });
+                })
+                .catch(function (err) {
+                    // 处理失败会执行
+                    console.log(rst);
+                })
+                .always(function () {
+                    // 不管是成功失败，都会执行
+                    $('.show').fadeOut();
+                });
+    });
+
+
+
+    //    4
+    document.querySelector('#file4').addEventListener('change', function () {
+//        $('.show').fadeIn();
+        lrz(this.files[0], {width: 700})
+                .then(function (rst) {
+                    // 处理成功会执行
+//                       console.log(rst);
+                    var xhr = new XMLHttpRequest();
+                    var data = {
+                        base64: rst.base64,
+                        size: rst.base64.length // 校验用，防止未完整接收
+                    };
+                    xhr.open('POST', '{:create_addon_url('formdata')}');
+                    xhr.setRequestHeader('Content-Type', 'application/json; charset=utf-8');
+                    xhr.onreadystatechange = function () {
+//                            console.log(xhr.status);
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+
+                            var result = JSON.parse(xhr.response);
+                            if (result.error == 0) {
+                                $(".bs-pics4").html('<li><img src="__PUBLIC__/' + result.url + '" width="100%"/></li>');
+                                // picArr.push('"' + result.url + '"');
+                                picArr.push(result.url);
+                                console.log(picArr);
+                            }
+//                                console.log(result);
+
+//                                result.error
+//                                    ? alert('服务端错误，未能保存图片')
+//                                    //: demo_report('服务端实存的图片', result.src, result.size);
+//                                                                : alert('上传OK');
+                        }
+                    };
+                    xhr.send(JSON.stringify(data)); // 发送base64
+//                        });
+                })
+                .catch(function (err) {
+                    // 处理失败会执行
+                    console.log(rst);
+                })
+                .always(function () {
+                    // 不管是成功失败，都会执行
+                    $('.show').fadeOut();
+                });
+    });
+
+
+    $(function () {
+
+
+        $('.bs-submit').click(function () {
+
+            console.log(picArr);
+            if($("#name").val()==''){
+
+                el = $.tips({
+                    content: '请填写姓名',
+                    stayTime: 2000,
+                    type: "success"
+                })
+
+                return;
+            }
+
+            if($("#carType").val()==''){
+                el = $.tips({
+                    content: '请填写车型',
+                    stayTime: 2000,
+                    type: "success"
+                })
+                return;
+            }
+
+            if($("#carNum").val()==''){
+                el = $.tips({
+                    content: '请填写车牌号码',
+                    stayTime: 2000,
+                    type: "success"
+                })
+                return;
+            }
+
+            if(picArr.length<4){
+                el = $.tips({
+                    content: '请先上传图片',
+                    stayTime: 2000,
+                    type: "success"
+                })
+                return;
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: "{:create_addon_url('car_cert_ajax')}",
+                data: {'img': picArr,'name':$("#name").val(),'carType':$("#carType").val(),'carNum':$("#carNum").val(),<?php if(isset($state)){?>'state':1<?php } ?>},
+
+                // dataType: 'json',
+                // timeout: 30000,
+                context: $('body'),
+                success: function(data){
+
+                    data = JSON.parse(data);
+
+                    if(data.result==0){
+                        el = $.tips({
+                            content: data.msg,
+                            stayTime: 2000,
+                            type: "success"
+                        })
+                        return;
+                    }else if(data.result==1){
+                        el = $.tips({
+                            content: data.msg,
+                            stayTime: 2000,
+                            type: "success"
+                        })
+                        location.href = '{:create_addon_url('user')}';
+                        return;
+                    }else if(data.result==2 || data.result==3){
+                        el = $.tips({
+                            content: data.msg,
+                            stayTime: 2000,
+                            type: "success"
+                        })
+                        el.on("tips:hide", function () {
+                            console.log("tips hide");
+                            location.href = '{:create_addon_url('user')}';
+                        })
+
+                        return;
+                    }
+
+//                    if(data=='ok')
+//                    {
+//                        // location.href=site_url+'/address';
+//                    }
+//                    else
+//                    {
+//                        $.toast("失败");
+//                        // location.href=site_url+'/address';
+//                    }
+
+                },
+                error: function(xhr, type){
+                    el = $.tips({
+                        content: '提交失败,请稍后再试',
+                        stayTime: 2000,
+                        type: "success"
+                    })
+                }
+            });
+
+        })
+
+    })
+</script>
+</body>
+</html>

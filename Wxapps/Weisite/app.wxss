@@ -1,0 +1,156 @@
+@import 'styles/weui.wxss';
+.page__hd {
+  padding: 40px;
+}
+
+.page__bd {
+  padding-bottom: 40px;
+}
+
+.page__bd_spacing {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.page__ft {
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.page__title {
+  text-align: left;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.page__desc {
+  margin-top: 5px;
+  color: #888;
+  text-align: left;
+  font-size: 14px;
+}
+.we7-bottom-placeholder {
+    width: 100%;
+    height: 134rpx;
+    position: relative;
+    bottom: 0;
+    z-index: -1
+}
+.we7-bottom {
+    display: flex;
+    overflow: hidden;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 10rpx 0;
+    border-top: 1px solid #eee;
+    background-color: #fff;
+    z-index:99;
+}
+.we7-bottom.active {
+    background-color: #fff;
+}
+.we7-bottom.active navigatorurl {
+    background-color: #fff
+}
+.we7-bottom .we7-bottom-item {
+    flex: 1;
+    padding: 10rpx;
+    text-align: center;
+    position: relative;
+}
+.we7-bottom .item-img {
+    width: 50rpx;
+    height: 50rpx;
+    display: inline-block
+}
+.we7-bottom .item-text {
+    display: block;
+    font-size: 12px;
+    line-height:1
+}
+.goHome {
+    position: fixed;
+    bottom: 150rpx;
+    right: 30rpx;
+    width: 50rpx;
+    height: 50rpx;
+    background-color: #1ba9ba;
+    padding: 30rpx;
+    border-radius: 50%
+}
+.goHome>image {
+    width: 100%
+}
+.text-right {
+    text-align: right;
+}
+
+
+page{ 
+   height: 100%; 
+  /* font-family: 'avenir'; */
+}
+image{ 
+   width: 100%;  
+  height: 100%;
+ }
+
+ .copyright{
+   text-align: center;
+   margin-top: 20rpx;
+   font-size: 12px;
+   color: #aaa;
+ }
+ .mt40{
+   margin-top: 40rpx;
+ }
+
+ .cate{
+  border-bottom: 1px solid #f3f3f3;
+  display: flex;
+  font-size: 14px;
+  background: white;
+  flex-wrap: wrap;
+  color: #666;
+  
+
+}
+.cate-item{
+  text-align: center;
+  width:25%;
+  margin-top:20rpx;
+  padding-bottom: 20rpx;
+}
+  
+.hover{
+  /* font-weight: bold; */
+  color: #2d7dee;
+  border-bottom: 2px solid #2d7dee;
+  padding-bottom: 20rpx;
+}
+.hide{
+  display: none;
+}
+.we7-bottom-item button{
+  position: absolute;
+  top:0px;
+  left: 40rpx;
+  background: red;
+  width: 100rpx;
+  height: 100rpx;
+  opacity: 0.0;
+  z-index: 100;
+}
+.we7-bottom-item navigator{
+  position: absolute;
+  display: block;
+  top:0px;
+  left: 40rpx;
+  background: red;
+  width: 100rpx;
+  height: 100rpx;
+  opacity: 0.0;
+  z-index: 100;
+}

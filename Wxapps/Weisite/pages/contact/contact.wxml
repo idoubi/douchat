@@ -1,0 +1,24 @@
+
+<view class="contact_img">
+  <image src="{{info.contact_background}}"  mode="scaleToFill"></image>
+</view>
+<view class="card1">
+  <view class="card2">
+  
+    <image class="userinfo-avatar logo" src="{{info.contact_logo}}" background-size="cover"></image>
+    
+  </view>
+  <view class='contact_name'>{{info.contact_name}}</view>
+</view>
+<view class="contact_text first"><image src="../../resource/images/phone.png"  mode="scaleToFill"></image><text class="le">{{info.phone}} </text><text bindtap="calling" class="ri">点击拨打</text></view>
+<view class="contact_text"><image src="../../resource/images/qq.png"  mode="scaleToFill"></image><text class="le">{{info.qq}}</text></view>
+<view class="contact_text"><image src="../../resource/images/email.png"  mode="scaleToFill"></image><text class="le">{{info.email}}</text></view>
+<view class="contact_text"><image src="../../resource/images/address.png"  mode="scaleToFill"></image><text class="le">{{info.address}}</text>  <text bindtap="gomap" class="ri">地图导航</text></view>
+
+<view class="contact_customer  {{info.custom_close=='1' ?'hide':''}}">
+   <button open-type="contact" class='contact_button' style='background-color:{{tcolor}}'>在线客服</button>
+</view>
+<!-- <view class="copyright mt40">{{copyright}}</view> -->
+<!--这里是底部菜单  -->
+<import src="../public/foot.wxml" />
+<template is="foot" data="{{blist}}" /> 
