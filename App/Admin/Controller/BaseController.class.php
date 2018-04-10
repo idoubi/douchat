@@ -96,11 +96,6 @@ class BaseController extends CommonController {
                         'title' => '功能插件',
                         'url' => U('Addons/lists'),
                         'class' => $this->controller == 'addons' ? 'active' : ''
-                    ],
-                    [
-                        'title' => '小程序模板',
-                        'url' => U('Wxapp/lists'),
-                        'class' => $this->controller == 'wxapp' ? 'active' : ''
                     ]
                 ]
 			)
