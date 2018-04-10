@@ -4,7 +4,8 @@ return array(
 	'name' => '微签到',
 	'bzname' => 'IdouSign',
 	'desc' => '基础的微信签到功能',
-	'version' => '1.0.0',
+	'version' => '0.4.0',
+	'type' => '1',
 	'author' => '艾逗笔',
 	'logo' => 'logo.jpg',
 	'config' => array(

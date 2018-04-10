@@ -28,10 +28,15 @@ class IndexController extends BaseController {
 	public function index() {
 		global $_G;
 		$info = get_mp_info();
+		if (isset($info['mp_type']) && $info['mp_type'] == 2) {
+			$info['mp_type_name'] = '小程序';
+		} else {
+			$info['mp_type_name'] = '公众号';
+		}
 		$this->assign('info', $info);
-		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
+		$this->addCrumb('账号管理', U('Mp/Index/index'), '')
 			 ->addCrumb('首页', '', 'active')
-			 ->addNav('接口配置', '', 'active')
+			 ->addNav('账号信息', '', 'active')
 			 ->addNav('清除缓存', U('clear_cache'), '')
 			 ->assign('api_url', U('/interface/'.$info['token'].'@'.C('HTTP_HOST')))
 			 ->display();

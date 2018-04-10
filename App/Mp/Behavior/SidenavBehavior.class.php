@@ -56,14 +56,18 @@ class SidenavBehavior extends Behavior {
 				]
 			];
 		} elseif (in_array($ctl, ['addons']) || get_addon()) {
-			$sidenav[] = [
-				'title' => '应用管理',
-				'url' => 'javascript:;',
-				'class' => 'icon icon-ul active',
-				'attr' => 'data="icon"',
-				'children' => $access_addons
-			];
+			$addons_1 = [];		// 公众号应用
+			$addons_2 = [];		// 小程序应用
 			foreach ($access_addons as $k => $v) {
+				if ($v['bzname'] == $params['addon']) {
+					$v['class'] = 'active';
+				}
+				if (isset($v['type']) && in_array(2, $v['type'])) {
+					$addons_2[] = $v;	// 小程序应用
+				} else {
+					$addons_1[] = $v;	// 公众号应用
+				}
+				
 				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
 					if (isset($v['config']['sidebar_list']['addon'])) {
 						$mp_sidebar = $v['config']['sidebar_list']['mp'];
@@ -73,6 +77,20 @@ class SidenavBehavior extends Behavior {
 					}
 				}
 			}
+			$sidenav[] = [
+				'title' => '公众号应用',
+				'url' => 'javascript:;',
+				'class' => 'icon icon-ul',
+				'attr' => 'data="icon"',
+				'children' => $addons_1
+			];
+			$sidenav[] = [
+				'title' => '小程序应用',
+				'url' => 'javascript:;',
+				'class' => 'icon icon-ul',
+				'attr' => 'data="icon"',
+				'children' => $addons_2
+			];
 		} elseif ($params['mp_type'] == 2) {
 			$sidenav = [
 				[

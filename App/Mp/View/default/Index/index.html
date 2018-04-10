@@ -16,13 +16,24 @@
 	                	<tr>
 		                    <td>
 		                        <div class="form-group">
-		                            <span class="col-sm-4 col-xs-3 control-label">公众号名称:</span>
+		                            <span class="col-sm-4 col-xs-3 control-label">账号名称:</span>
 		                            <div class="col-sm-6 col-xs-8">
 		                                {$info.name}
 		                            </div>
 		                        </div>
 		                    </td>
 		                </tr>
+						<tr>
+							<td>
+								<div class="form-group">
+									<span class="col-sm-4 col-xs-3 control-label">账号类型:</span>
+									<div class="col-sm-6 col-xs-8">
+										{$info.mp_type_name}
+									</div>
+								</div>
+							</td>
+						</tr>
+						<if condition="$info['mp_type'] eq 1">
 		                <tr>
 		                    <td>
 		                        <div class="form-group">
@@ -54,6 +65,7 @@
 		                        </div>
 		                    </td>
 		                </tr>
+						</if>
 	            	</tbody>
 	            </table>
             </div>

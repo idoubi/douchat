@@ -19,6 +19,7 @@ class AddonsModel extends Model {
 			}
 			$arr['title'] = $v['name'];
 			$arr['bzname'] = $v['bzname'];
+			$arr['type'] = isset($v['type']) ? explode(',', $v['type']) : [1];
 			preg_match('/.*index.php/', $v['index_url'], $m);
 			$arr['url'] = str_replace($m[0], SITE_URL.'index.php', $v['index_url']);
 			$arr['class'] = '';

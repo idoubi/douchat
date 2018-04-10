@@ -4,8 +4,8 @@ return array(
 	'name' => '聊天机器人',
 	'bzname' => 'IdouChat',
 	'desc' => '微信智能聊天机器人插件，可在微信端开启机器人聊天模式',
-	'type' => 'wechat',
-	'version' => '1.0',
+	'type' => '1',
+	'version' => '0.4.0',
 	'author' => '艾逗笔',
 	'logo' => 'logo.jpg',
 	'config' => array(

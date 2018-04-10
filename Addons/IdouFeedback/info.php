@@ -4,7 +4,8 @@ return array(
 	'name' => '意见反馈',
 	'bzname' => 'IdouFeedback',
 	'desc' => '微信端意见反馈功能',
-	'version' => '1.0',
+	'version' => '0.4.0',
+	'type' => '1',
 	'author' => '艾逗笔',
 	'logo' => 'logo.jpg',
 	'config' => array(

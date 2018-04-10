@@ -4,8 +4,8 @@ return array(
     'name' => '微捐赠',
     'bzname' => 'IdouDonate',
     'desc' => '微信捐赠插件',
-    'type' => 'customer',
-    'version' => '1.0',
+    'type' => '1',
+    'version' => '0.4.0',
     'author' => '艾逗笔',
     'logo' => 'logo.gif',
     'config' => array(

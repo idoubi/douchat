@@ -21,17 +21,12 @@ class WebController extends AddonsController {
 			[
 				'title' => '拼车信息',
 				'url' => create_addon_url('infoList'),
-				'class' => in_array($this->act, ['infolist']) ? 'active' : ''
+				'class' => in_array($this->action, ['infolist']) ? 'active' : ''
 			],
 			[
 				'title' => '预约管理',
 				'url' => create_addon_url('appointmentList'),
-				'class' => in_array($this->act, ['appointmentlist', 'appointmentedit']) ? 'active' : ''
-			],
-			[
-				'title' => '接口列表',
-				'url' => create_addon_url('api'),
-				'class' => in_array($this->act, ['api']) ? 'active' : ''
+				'class' => in_array($this->action, ['appointmentlist', 'appointmentedit']) ? 'active' : ''
 			]
 		];
 		$this->subnav = [];

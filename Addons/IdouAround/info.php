@@ -4,7 +4,8 @@ return array(
 	'name' => '周边查询',
 	'bzname' => 'IdouAround',
 	'desc' => '发送地理位置，可以查询周边的酒店、餐馆、KTV等信息。',
-	'version' => '1.0',
+	'version' => '0.4.0',
+	'type' => '1',
 	'author' => '艾逗笔',
 	'logo' => 'logo.png',
 	'config' => array(

@@ -21,6 +21,12 @@ class AddonsController extends BaseController {
 		global $_G;
 		$_G['addon_info'] = D('Addons')->get_addon_info($this->addon);		// 获取插件信息
 		$_G['addon_config'] = $_G['addon_info']['config'];					// 获取插件配置
+		$_G['addon_type'] = !isset($_G['addon_info']['type']) ? [1] : explode(',', $_G['addon_info']['type']);	// 插件类型
+		if (!in_array($this->action, ['manage'])) {
+			if (!in_array($this->mp_type, $_G['addon_type'])) {
+				$this->error('此应用不支持当前账号类型');
+			}
+		}
 		$_G['addon_path'] = $_G['addons_path'] . $_G['addon'] . '/';
 		$_G['addon_url'] = $_G['addons_url'] . $_G['addon'] . '/';
 		$_G['addon_public_path'] = $_G['addons_path'] . 'View/Public/';

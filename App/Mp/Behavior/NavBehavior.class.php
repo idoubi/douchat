@@ -65,7 +65,7 @@ class NavBehavior extends Behavior {
 		if ($addon_config['entry'] == 1) {
 			$entry_list = $this->parse_entry($addon_config['entry_list']);
 			$addonnav['entry'] = array(
-				'title' => '封面入口',
+				'title' => '公众号入口',
 				'url' => !empty($entry_list) ? $entry_list[0]['url'] : '',
 				'class' => $addon_config['entry_list'][I('act')] ? 'active' : '',
 				'children' => $entry_list

@@ -4,8 +4,8 @@ return array(
     'name' => '留言板',
     'bzname' => 'IdouGuestbook',
     'desc' => '微信端留言板功能',
-    'type' => 'wechat',
-    'version' => '1.0',
+    'type' => '1',
+    'version' => '0.4.0',
     'author' => '艾逗笔',
     'logo' => 'logo.jpg',
     'config' => array(

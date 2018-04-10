@@ -4,7 +4,8 @@ return array(
 	'name' => '成语接龙',
 	'bzname' => 'IdouIdioms',
 	'desc' => '调用API实现微信端成语接龙',
-	'version' => '1.0',
+	'version' => '0.4.0',
+	'type' => '1',
 	'author' => '艾逗笔',
 	'logo' => 'logo.jpg',
 	'config' => array(
