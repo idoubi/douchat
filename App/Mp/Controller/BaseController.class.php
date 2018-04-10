@@ -22,7 +22,7 @@ class BaseController extends CommonController {
 		}
 		
 		$this->mpid = get_mpid();
-		$this->mp_type = get_mp_type();
+		$this->mp_type = I('mp_type', get_mp_type(), 'intval');
 		$this->mp_info = get_mp_info();
 		$this->addon = get_addon();
 		
