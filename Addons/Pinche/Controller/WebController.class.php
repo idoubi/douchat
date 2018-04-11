@@ -31,11 +31,7 @@ class WebController extends AddonsController {
 		];
 		$this->subnav = [];
 	}
-
-	public function index() {
-	    $this->redirect(create_addon_url('infoList'));
-    }
-
+    
 	// 拼车信息
 	public function infoList() {
 		$type = I('type', 1, 'intval');

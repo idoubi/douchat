@@ -21,6 +21,7 @@ return array(
         'setting' => 0,
         'entry' => 0,
         'menu' => 1,
+        'index_url' => U('/addon/Pinche/web/infoList'),
         'entry_list' => array(
             'index' => '主页'
         ),
