@@ -1,7 +1,0 @@
-<!--components/tabBar/index.wxml-->
-<view class='tabBar-wrap' data-selected="{{selectedIcon}}">
-    <view wx:for="{{tabBarList.items}}" data-type="{{item.type}}" data-link="{{item.link}}" style='color:{{tabBarList.font_color}};background-color: {{tabBarList.backgroud_color}}; border-color:{{tabBarList.border_color}}' bindtap='switchTab' wx:key="" data-index="{{index}}">
-        <image src='{{item.selected ? item.selected_icon : item.icon}}'></image>
-        <text style='color:{{item.selected?tabBarList.selected_font_color:tabBarList.font_color}}'>{{item.title}}</text>
-    </view>
-</view>
