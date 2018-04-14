@@ -606,7 +606,7 @@ class CommonController extends Controller {
 	 * 添加表单字段
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addFormField($name, $title, $type, $extra) {
+	public function addFormField($name, $title, $type, $extra = null) {
 		if (is_array($name)) {
 			$this->model['fields'][] = $name;
 		} else {
