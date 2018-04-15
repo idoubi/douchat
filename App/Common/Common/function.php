@@ -840,7 +840,10 @@ function is_user_login() {
 /**
  * 获取当前登录用户ID
  */
-function get_user_id() {
+function get_user_id($user_id = null) {
+	if (!empty($user_id)) {
+		session(C('USER_AUTH_KEY'), $user_id);
+	}
 	$user_id = session(C('USER_AUTH_KEY'));
     if (!$user_id || $user_id < 0) {
         return false;

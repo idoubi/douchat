@@ -27,17 +27,29 @@ class ApiBaseController extends Controller {
 		$this->controller = strtolower(CONTROLLER_NAME);
 		$this->action = strtolower(ACTION_NAME);
 		$this->headers = getallheaders();		// 获取请求头
+		if (!get_user_id()) {			// 接口请求权限检测
+			$ak = isset($this->headers['Ak']) ? $this->headers['Ak'] : '';
+			$sk = isset($this->headers['Sk']) ? $this->headers['Sk'] : '';
+			$user_id = M('access_key')->where([
+				'ak' => $ak,
+				'sk' => $sk,
+				'status' => 1
+			])->getField('user_id');
+			if (empty($user_id)) {
+				$this->response(1001, 'Access Denied');
+			}
+			get_user_id($user_id);
+		}
+		$this->user_id = get_user_id();
 		$mpid = isset($_GET['mpid']) ? intval($_GET['mpid']) : 0;
 		if (empty($mpid)) {
 			$this->response(1001, 'Invalid mpid');
 		}
 		$this->mpid = get_mpid($mpid);            // 将当前账号进行缓存
-        $this->user_id = get_user_id();             // 当前登录用户
-
 		$this->addon = get_addon();
 
-		if (isset($this->headers['Api-Version']) && !empty($this->headers['Api-Version'])) {
-			$this->version = $headers['Addon-Version'];
+		if (isset($this->headers['version']) && !empty($this->headers['version'])) {
+			$this->version = $headers['version'];
 		}
 	}
 	

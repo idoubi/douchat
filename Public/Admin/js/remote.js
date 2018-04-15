@@ -1,4 +1,4 @@
-var remote_url = 'http://douchat.cc/';
+var remote_url = 'http://douchat.net/';
 $(function(){  
   // 获取艾豆问答社区开发交流版块的数据
     $.ajax({

@@ -32,9 +32,9 @@ class BaseController extends CommonController {
 		$_G['mp_info'] = $this->mp_info;
 		$_G['addon'] = $this->addon;
 		
-		if (!in_array($_G['controller'], ['mp', 'user', 'material'])) {
+		if (!in_array($_G['controller'], ['mp', 'user', 'material', 'accesskey']) && !($_G['controller'] == 'addons' && $_G['action'] == 'manage')) {
 			if (empty($_G['mpid']) || empty($_G['mp_info'])) {
-				$this->redirect('Mp/lists');
+				$this->error('请先选择管理账号', U('Mp/lists'));
 			}
 		}
 		
