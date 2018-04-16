@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 -- Database: `douchat`
 --
 
-CREATE TABLE `dc_access_key` (
+CREATE TABLE IF NOT EXISTS `dc_access_key` (
   `id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增ID',
   `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
   `mpid` int(10) NOT NULL DEFAULT '0' COMMENT '账号id',
