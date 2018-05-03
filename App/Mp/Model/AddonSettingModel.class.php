@@ -58,17 +58,21 @@ class AddonSettingModel extends Model {
             $data = M('addon_setting')->where($map)->select();
             if (isset($addonConfig['setting_list_group']) && !empty($addonConfig['setting_list_group']) && is_array($addonConfig['setting_list_group'])) {
                 $groups = [];
-                foreach ($addonConfig['setting_list_group'] as $v) {
+                foreach ($addonConfig['setting_list_group'] as $k => $v) {
                     if (isset($v['name']) && !empty($v['name'])) {
                         $groups[] = $v['name'];
-                    }
+                    } elseif (is_string($k)) {
+                    	$groups[] = $k;
+					}
                 }
                 if (isset($addonConfig['setting_list']) && !empty($addonConfig['setting_list']) && is_array($addonConfig['setting_list'])) {
                     $fields = [];
-                    foreach ($addonConfig['setting_list'] as $v) {
+                    foreach ($addonConfig['setting_list'] as $k => $v) {
                         if (isset($v['name']) && !empty($v['name'])) {
                             $fields[] = $v['name'];
-                        }
+                        } elseif (is_string($k)) {
+                        	$fields[] = $k;
+						}
                     }
                     foreach ($data as $v) {
                         if (isset($v['name']) && !empty($v['name']) && in_array($v['name'], $fields)) {

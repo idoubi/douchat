@@ -23,6 +23,7 @@ class AddonsController extends BaseController {
 			 ->addListItem('logo', '插件LOGO', 'image', array('attr'=>'width=80,height=80'))
 			 ->addListItem('name', '插件名称')
 			 ->addListItem('bzname', '插件标识名')
+			 ->addListItem('type', '插件类型')
 			 ->addListItem('desc', '插件描述')
 			 ->addListItem('version', '当前版本')
 			 ->addListItem('last_version', '最新版本')

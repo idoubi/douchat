@@ -181,11 +181,13 @@ class AddonsController extends BaseController {
 
         if (isset($theme_config['setting_list_group'])) {
             $listGroup = [];
-            foreach ($theme_config['setting_list_group'] as $v) {
+            foreach ($theme_config['setting_list_group'] as $k => $v) {
                 if (isset($v['is_show']) && $v['is_show'] == 1) {
                     if (isset($v['name']) && !empty($v['name']) && isset($v['title']) && !empty($v['title'])) {
                         $listGroup[$v['name']] = $v;
-                    }
+                    } elseif (is_string($k)) {
+                    	$listGroup[$k] = $v;
+					}
                 }
             }
 
