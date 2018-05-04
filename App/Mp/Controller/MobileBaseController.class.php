@@ -20,23 +20,6 @@ class MobileBaseController extends Controller {
                 redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid=wx8dcd98079e13d33f&redirect_uri=&wxref=mp.weixin.qq.com&from=singlemessage&isappinstalled=0&response_type=code&scope=snsapi_base&state=&connect_redirect=1#wechat_redirect');
             }
         }
-        if (I('out_trade_no')) {
-            $payment = I('post.');
-            if (!M('mp_payment')->where(array('orderid'=>$payment['out_trade_no']))->find()) {
-                $data['mpid'] = $payment['mpid'];
-                $data['openid'] = $payment['openid'];
-                $data['orderid'] = $payment['out_trade_no'];
-                $data['create_time'] = strtotime($payment['time_end']);
-                $data['detail'] = json_encode($payment);
-                M('mp_payment')->add($data);
-                $return_code = I('return_code');
-                $return_msg = I('return_msg');
-                return '<xml>
-                          <return_code><![CDATA['.$return_code.']]></return_code>
-                          <return_msg><![CDATA['.$return_msg.']]></return_msg>
-                        </xml>';
-            } 
-        }
         if (get_mpid() && !get_openid()) {
             init_fans();
         }
@@ -77,9 +60,83 @@ class MobileBaseController extends Controller {
      * @author 艾逗笔<765532665@qq.com>
      */
     public function json_pay() {
-        $jsApiParameters = get_jsapi_parameters(I('post.'));
+    	$data = I('post.');
+    	$mpid = get_mpid();
+    	$openid = get_ext_openid();
+    	if (empty($data['price']) || empty($data['orderid']) || empty($mpid) || empty($openid)) {
+    		exit();
+		}
+		$data['mpid'] = $mpid;
+    	$data['openid'] = $openid;
+        $jsApiParameters = get_jsapi_parameters($data);
         $this->ajaxReturn($jsApiParameters);
     }
+    
+    // 接收异步通知
+	public function pay_notify() {
+		if (I('out_trade_no') && I('result_code') == 'SUCCESS' && I('return_code') == 'SUCCESS') {
+			$payment = I('post.');
+			
+			if ($info = M('mp_payment')->where(array('orderid'=>$payment['out_trade_no'],'mchid'=>$payment['mch_id']))->find()) {
+				/**
+				签名算法：
+				◆ 参数名ASCII码从小到大排序（字典序）；
+				◆ 如果参数的值为空不参与签名；
+				◆ 参数名区分大小写；
+				◆ 验证调用返回或微信主动通知签名时，传送的sign参数不参与签名，将生成的签名与该sign值作校验。
+				◆ 微信接口可能增加字段，验证签名时必须支持增加的扩展字段
+				 */
+				ksort($payment);
+				$sArr = [];
+				foreach ($payment as $k => $v) {
+					if (!empty($v) && $k != 'sign') {
+						if ($k == 'attach') {
+							$sArr[] = "$k=".htmlspecialchars_decode($v);
+						} else {
+							$sArr[] = "$k=$v";
+						}
+					}
+				}
+				$stringA = implode('&', $sArr);
+				
+				$paysignkey = M('mp_setting')->where([
+					'mpid' => $info['mpid'],
+					'name' => 'paysignkey'
+				])->getField('value');
+				
+				$stringSignTemp = $stringA . "&key=" . $paysignkey;
+				$sign = strtoupper(md5($stringSignTemp));
+				if ($sign == $payment['sign']) {			// 签名校验通过
+					$data['detail'] = json_encode($payment);
+					$data['status'] = 1;
+					M('mp_payment')->where([
+						'orderid' => $payment['out_trade_no'],
+						'mchid' => $payment['mch_id']
+					])->save($data);
+					
+					// 将通知转发到插件控制器中进行处理
+					if (isset($info['notify']) && !empty($info['notify'])) {
+						$notify_url = $info['notify'];
+						$ch = curl_init();
+						curl_setopt($ch, CURLOPT_URL, $notify_url);
+						curl_setopt($ch, CURLOPT_POST, 1);
+						curl_setopt($ch, CURLOPT_HEADER, 0);
+						curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+						curl_setopt($ch, CURLOPT_POSTFIELDS, $payment);
+						curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+						curl_exec($ch);
+						curl_close($ch);
+					}
+					$return_code = I('return_code');
+					$return_msg = I('return_msg');
+					return '<xml>
+                          <return_code><![CDATA['.$return_code.']]></return_code>
+                          <return_msg><![CDATA['.$return_msg.']]></return_msg>
+                        </xml>';
+				}
+			}
+		}
+	}
 
     /**
      * 粉丝绑定

@@ -14,8 +14,6 @@ $params = json_decode($attach, true);								// 将附加参数转换为数组
 
 if ($params['notify']) {
 	$notify_url = $params['notify'];				// 将通知转发到插件控制器中进行处理
-	$arr['mpid'] = $params['mpid'];
-	$arr['notify_url'] = $notify_url;
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, $notify_url);
 	curl_setopt($ch, CURLOPT_POST, 1);

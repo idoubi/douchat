@@ -298,29 +298,54 @@ function get_jssdk_sign_package() {
  */
 function get_jsapi_parameters($data) {
     vendor('WechatPaySdk.WxPayPubHelper');
-    $appid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appid'))->getField('value');
-    $appsecret = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appsecret'))->getField('value');
-    $mchid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'mchid'))->getField('value');
-    $paysignkey = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'paysignkey'))->getField('value');
+    $paySetting = M('mp_setting')->where([
+    	'mpid' => $data['mpid'],
+		'name' => ['in', ['appid', 'appsecret', 'mchid', 'paysignkey']]
+	])->field('name, value')->select();
+    $payParams = [];
+    foreach ($paySetting as $v) {
+    	if (!empty($v['name'])) {
+    		$payParams[$v['name']] = $v['value'];
+		}
+	}
+    $appid = isset($payParams['appid']) ? $payParams['appid'] : '';
+    $appsecret = isset($payParams['appsecret']) ? $payParams['appsecret'] : '';
+    $mchid = isset($payParams['mchid']) ? $payParams['mchid'] : '';
+    $paysignkey = isset($payParams['paysignkey']) ? $payParams['paysignkey'] : '';
     $jsApi = new JsApi_pub($appid,$mchid,$paysignkey,$appsecret); 
-    $orderid = $data['orderid'];      
-    if($orderid == ""){
-        $orderid = $data['single_orderid'];
-    }   
+    $orderid = $data['orderid'];
     $price= floatval($data['price']);
-    $data['mpid'] = get_mpid();
-    unset($data['price']);
+    $attach = [
+		'notify' => U('Mp/MobileBase/pay_notify@'.C('HTTP_HOST'))
+	];
     $unifiedOrder = new UnifiedOrder_pub($appid,$mchid,$paysignkey,$appsecret);
-    $unifiedOrder->setParameter("openid",get_ext_openid());
+    $unifiedOrder->setParameter("openid",$data['openid']);
     $unifiedOrder->setParameter("body",$orderid);
     $unifiedOrder->setParameter("out_trade_no",$orderid);
     $unifiedOrder->setParameter("total_fee",$price*100);
     $unifiedOrder->setParameter("notify_url", C('HTTP_HOST') . '/Data/notify.php');
     $unifiedOrder->setParameter("trade_type","JSAPI");
-    $unifiedOrder->setParameter("attach", json_encode($data));//附加数据
+    $unifiedOrder->setParameter("attach", json_encode($attach));//附加数据
     $prepay_id = $unifiedOrder->getPrepayId();
     $jsApi->setPrepayId($prepay_id);
     $jsApiParameters = $jsApi->getParameters();
+	
+	if (M('mp_payment')->where(['mpid'=>$data['mpid'],'orderid'=>$data['orderid']])->find('id')) {
+	
+	} else {
+		M('mp_payment')->add([
+			'mpid' => $data['mpid'],
+			'openid' => $data['openid'],
+			'orderid' => $data['orderid'],
+			'create_time' => time(),
+			'detail' => json_encode($data),
+			'price' => $data['price'],
+			'notify' => isset($data['notify']) ? $data['notify'] : '',
+			'status' => 0,
+			'mchid' => $mchid
+		]);
+	}
+	
     return $jsApiParameters;
 }
 

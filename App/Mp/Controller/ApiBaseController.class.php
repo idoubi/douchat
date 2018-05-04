@@ -54,7 +54,7 @@ class ApiBaseController extends Controller {
 	}
 	
 	/**
-	 * 获取api请求token（暂时不用此验证方式）
+	 * 获取api请求token
 	 */
 	public function getAccessToken() {
 		if (!IS_POST) {
@@ -91,7 +91,7 @@ class ApiBaseController extends Controller {
 	 */
 	public function getUserToken() {
 		if (!IS_POST) {
-			$this->response(1001, 'Access Denied');
+			//$this->response(1001, 'Access Denied');
 		}
 		try {
 			$post = I('post.');
@@ -329,6 +329,13 @@ class ApiBaseController extends Controller {
 	 */
 	public function responseFail($items = null) {
 		$this->response(1001, 'fail', $items);
+	}
+	
+	/**
+	 * 支付异步通知
+	 */
+	public function payNotify() {
+	
 	}
 }
 

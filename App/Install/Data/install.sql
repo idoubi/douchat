@@ -268,7 +268,11 @@ CREATE TABLE IF NOT EXISTS `dc_mp_payment` (
   `openid` varchar(255) DEFAULT NULL COMMENT '用户标识',
   `orderid` varchar(255) DEFAULT NULL COMMENT '订单号',
   `create_time` int(10) DEFAULT NULL COMMENT '支付时间',
-  `detail` text COMMENT '支付详情'
+  `detail` text COMMENT '支付详情',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支付金额',
+  `notify` varchar(255) NOT NULL DEFAULT '' COMMENT '支付结果处理方法',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付状态',
+  `mchid` varchar(50) NOT NULL DEFAULT '' COMMENT '商户id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号支付配置';
 -- --------------------------------------------------------
 
