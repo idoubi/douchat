@@ -36,7 +36,7 @@ class ApiBaseController extends Controller {
 				'status' => 1
 			])->getField('user_id');
 			if (empty($user_id)) {
-				$this->response(1001, 'Access Denied');
+				$this->response(2001, 'Api请求秘钥检测失效');
 			}
 			get_user_id($user_id);
 		}
@@ -47,6 +47,7 @@ class ApiBaseController extends Controller {
 		}
 		$this->mpid = get_mpid($mpid);            // 将当前账号进行缓存
 		$this->addon = get_addon();
+		$this->openid = '';
 
 		if (isset($this->headers['version']) && !empty($this->headers['version'])) {
 			$this->version = $headers['version'];
@@ -54,44 +55,11 @@ class ApiBaseController extends Controller {
 	}
 	
 	/**
-	 * 获取api请求token
+	 * 用户登录
 	 */
-	public function getAccessToken() {
+	public function login() {
 		if (!IS_POST) {
 			$this->response(1001, 'Access Denied');
-		}
-		$ak = I('ak');
-		$sk = I('sk');
-		if (empty($ak) || empty($sk)) {
-			$this->response(1001, 'Invalid params');
-		}
-		$user_id = M('access_key')->where([
-			'ak' => $ak,
-			'sk' => $sk
-		])->getField('user_id');
-		if (!empty($user_id)) {
-			$access_token = get_nonce(32);		// api访问token
-			$expires = 24 * 3600;			// 过期时间
-			S($access_token, [
-				'user_id' => $user_id,
-				'mpid' => $this->mpid
-			], $expires);
-			
-			$this->response(0, '获取成功', [
-				'access_token' => $access_token,
-				'expires' => $expires
-			]);
-		}
-		
-		$this->response(1001, '获取失败');
-	}
-	
-	/**
-	 * 获取用户token
-	 */
-	public function getUserToken() {
-		if (!IS_POST) {
-			//$this->response(1001, 'Access Denied');
 		}
 		try {
 			$post = I('post.');
@@ -106,7 +74,9 @@ class ApiBaseController extends Controller {
 			$appid = $mp_info['appid'];
 			$appsecret = $mp_info['appsecret'];
 			$join_type = $mp_info['join_type'];
-			if ($join_type == 1) {		// 手动接入
+			if ($join_type == 2) {		// 授权接入
+			
+			} else {		// 手动接入
 				$Wxapp = new Wxapp([
 					'appid' => $appid,
 					'appsecret' => $appsecret
@@ -150,50 +120,32 @@ class ApiBaseController extends Controller {
 					$decodeData['country'] = $fansInfo['country'];
 					$decodeData['city'] = $fansInfo['city'];
 					$decodeData['province'] = $fansInfo['province'];
+					$decodeData['relname'] = $fansInfo['relname'];
+					$decodeData['mobile'] = $fansInfo['mobile'];
+					$decodeData['signature'] = $fansInfo['signature'];
 				}
-				$user_token = get_nonce(32);
+				$user_token = get_nonce(64);			// 用户登录态标识3rdSessionKey
 				$expires = 24 * 3600;
 				S($user_token, [
 					'openid' => $sessionData['openid'],
 					'session_key' => $sessionData['session_key']
 				], $expires);
 				$this->response(0, '获取成功', [
-					'userInfo' => $decodeData,
+					'user_info' => $decodeData,
 					'user_token' => $user_token,
 					'expires' => $expires
 				]);
-			} elseif ($join_type == 2) {		// 授权接入的方式
-			
 			}
 		} catch (\Exception $e) {
 			$this->response(1001, $e->getMessage());
 		}
 	}
 	
-	/**
-	 * 权限检测。调用此方法的api必须要客户端有访问权限
-	 */
-	protected function checkAccess() {
-		$access = false;
-		$headers = $this->headers;
-		if (isset($headers['Access-Token']) && !empty($headers['Access-Token'])) {
-			$access_token = $headers['Access-Token'];
-			$cache = S($access_token);
-			if (!empty($cache) && !empty($cache['user_id'])) {
-				$this->user_id = $cache['user_id'];
-				$access = true;
-			}
-		}
-		if (!$access) {
-			$this->response(1001, 'Access Denied');
-		}
-	}
 	
 	/**
 	 * 登录检测。调用此方法的api必须要微信端用户登录后才能请求
 	 */
 	protected function checkLogin() {
-		$this->checkAccess();
 		$access = false;
 		$headers = $this->headers;
 		if (isset($headers['User-Token']) && !empty($headers['User-Token'])) {
@@ -205,7 +157,7 @@ class ApiBaseController extends Controller {
 			}
 		}
 		if (!$access) {
-			$this->response(1001, 'Access Denied');
+			$this->response(2002, '用户登录检测失效');
 		}
 	}
 	
@@ -229,17 +181,28 @@ class ApiBaseController extends Controller {
 		}
 	}
 	
-	/**
-	 * 更新小程序用户
-	 */
-	public function updateWxaFans() {
+	// 更新个人资料
+	public function updateProfile() {
+		$this->checkLogin();
 		if (!IS_POST) {
-			$this->error(1001, 'Access Denied');
+			$this->response(1001, 'Access Denied');
 		}
+		$post = I('post.');
+		$post['mpid'] = $this->mpid;
+		$post['openid'] = $this->openid;
+		$res = M('mp_fans')->where([
+			'mpid' => $this->mpid,
+			'openid' => $this->openid
+		])->save($post);
+		if ($res === false) {
+			$this->response(1001, '更新个人资料失败');
+		}
+		$this->response(0, '更新个人资料成功');
 	}
 	
 	/**
 	 * 上传图片
+	 * TODO
 	 */
 	public function uploadPicture() {
 		$this->checkLogin();
@@ -299,7 +262,7 @@ class ApiBaseController extends Controller {
 	
 	/**
 	 * 生成返回给客户端的3rdsession
-	 * 此方法作为备用
+	 * 此方法暂时启用
 	 */
 	private function get3rdSession($openid) {
 		$session3rd = get_nonce(168);
@@ -329,13 +292,6 @@ class ApiBaseController extends Controller {
 	 */
 	public function responseFail($items = null) {
 		$this->response(1001, 'fail', $items);
-	}
-	
-	/**
-	 * 支付异步通知
-	 */
-	public function payNotify() {
-	
 	}
 }
 

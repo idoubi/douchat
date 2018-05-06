@@ -49,6 +49,7 @@ class AddonsModel extends Model {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function get_installed_addons($type = '') {
+		$mpType = get_mp_type();
 		$map['status'] = 1;
 		if ($type) {
 			$map['type'] = $type;
@@ -59,7 +60,7 @@ class AddonsModel extends Model {
 			$v['last_version'] = $addon_dir_info['version'];
 			if ($addon_dir_info['config']['index_url']) {
 				$v['index_url'] = $addon_dir_info['config']['index_url'];
-			} elseif ($addon_dir_info['config']['respond_rule']) {
+			} elseif ($addon_dir_info['config']['respond_rule'] && $mpType != 2) {
 				// $v['index_url'] = U('Mp/Web/rule', array('addon'=>$v['bzname']));
 				$v['index_url'] = U('/addon/'.$v['bzname'].'/rule');
 			} elseif ($addon_dir_info['config']['setting']) {

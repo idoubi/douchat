@@ -12,7 +12,6 @@ class SidenavBehavior extends Behavior {
 	public function run(&$params) {
 		$ctl = $params['controller'];
 		$act = $params['action'];
-		$mpType = get_mp_type();
 		$access_addons = D('Addons')->get_access_addons();
 		if (in_array($ctl, ['mp', 'user', 'accesskey'])) {
 			$sidenav = [

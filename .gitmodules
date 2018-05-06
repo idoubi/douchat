@@ -1,6 +1,0 @@
-[submodule "Addons"]
-	path = Addons
-	url = https://github.com/mikemintang/douchat-addons.git
-[submodule "Wxapps"]
-	path = Wxapps
-	url = https://github.com/mikemintang/douchat-wxapps.git
