@@ -1,0 +1,57 @@
+<import src="../../style/footer.wxml"  />
+<view class="page">
+    <view class="page__hd i-header">
+        <view class="g-bd">
+            <view></view>
+            <view class="g-bda">
+                <view bindtap="" class="g-bda-userinfo">
+                    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></image>
+                    <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+    
+    <view class="page__bd">
+        <view class="weui-panel">
+            <view class="weui-panel__hd">账户中心</view>
+            <view class="weui-panel__bd">
+                <view class="weui-media-box weui-media-box_small-appmsg">
+                    <view class="weui-cells weui-cells_in-small-appmsg">
+                        <navigator url="release/release" class="weui-cell weui-cell_access"
+                                   hover-class="weui-cell_active">
+                            <view class="weui-cell__hd">
+                                <image src="/image/reg.png" style="width: 20px;height: 20px;margin-right: 5px"  />
+                            </view>
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>我的日记</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                        <navigator url="feedback/feedback" class="weui-cell weui-cell_access"
+                                   hover-class="weui-cell_active">
+                            <view class="weui-cell__hd">
+                                <image src="/image/edit.png" style="width: 20px;height: 20px;margin-right: 5px"  />
+                            </view>
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>我的资料</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                        <navigator url="/pages/account/account" bindtap="about" class="weui-cell weui-cell_access"
+                                   hover-class="weui-cell_active">
+                            <view class="weui-cell__hd">
+                                <image src="/image/help.png" style="width: 20px;height: 20px;margin-right: 5px"  />
+                            </view>
+                            <view class="weui-cell__bd weui-cell_primary">
+                                <view>关于本程序</view>
+                            </view>
+                            <view class="weui-cell__ft weui-cell__ft_in-access"></view>
+                        </navigator>
+                    </view>
+                </view>
+            </view>
+        </view>
+    </view>
+    <template is="foot" data="{{copyright}}"  />
+</view>

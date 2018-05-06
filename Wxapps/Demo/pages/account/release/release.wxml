@@ -1,0 +1,112 @@
+<import src="../../../style/footer.wxml" />
+<image class="toWrite" bindtap="toAddDiary" src="/image/add.png"></image>
+<view class="page">
+    <view class="page__hd i-header">
+        <view class="g-bd">
+            <view></view>
+            <view class="g-bda">
+                <view bindtap="" class="g-bda-userinfo">
+                    <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></image>
+                    <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+                </view>
+            </view>
+        </view>
+    </view>
+  <scroll-view lower-threshold="800" bindscrolltolower="pullUpLoad" upper-threshold="0" scroll-y="true" style="height: {{windowHeight}}px;  ">
+    <view class="page__bd">
+
+      <!--<button type="primary" bindtap="toAddDiary" hover-class="other-button-hover"> 增加日记 </button>-->
+      <view class="weui-panel">
+        <view class="weui-panel__hd">我的日记</view>
+        <view class="weui-panel__bd">
+          <view class="weui-media-box weui-media-box_text" wx:for="{{diaryList}}" wx:key="diaryItem">
+            <view class="weui-media-box__title weui-media-box__title_in-text">
+              {{item.title}}</view>
+            <view class="weui-media-box__desc">{{item.content}}</view>
+            <view class="weui-media-box__info">
+              <view class="weui-media-box__info__meta weui-media-time">{{item.created_at_format}}</view>
+              <view class="weui-media-box__info__meta weui-media-box__info__meta_extra"></view>
+              <view class="weui-media-box__info__meta weui-media-box__info__operate">
+                <icon type="cancel" size="16"></icon>
+                <text class="del" bindtap="deleteDiary" data-id="{{item.id}}">删除</text>
+                <icon type="success" size="16"></icon>
+                <text bindtap="toModifyDiary" data-id="{{item.id}}" data-content="{{item.content}}" data-title="{{item.title}}">编辑</text>
+              </view>
+            </view>
+          </view>
+        </view>
+      </view>
+    </view>
+    <view class="page__ft">
+      <view class="page__bd page__bd_spacing">
+        <view class="weui-footer ">
+          <view class="weui-footer__text">{{copyright}}</view>
+        </view>
+      </view>
+    </view>
+  </scroll-view>
+</view>
+
+<view class="js_dialog" id="androidDialog2" style="opacity: 1;" wx:if="{{modifyDiarys}}">
+  <view class="weui-mask"></view>
+  <view class="weui-dialog weui-skin_android">
+    <view class="weui-dialog__hd"><strong class="weui-dialog__title">修改日记</strong>  </view>
+    <form bindsubmit="modifyDiary">
+      <view class="weui-dialog__bd">
+        <view class="weui-cells__title">标题</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+              <input class="weui-input" name="title" value="{{nowTitle}}" placeholder="请输入标题" />
+            </view>
+          </view>
+        </view>
+        <view class="weui-cells__title">日记内容</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">
+              <textarea class="weui-textarea" name="content" value="{{nowContent}}" placeholder="请输入日记内容" style="height: 3.3em" />
+              <view class="weui-textarea-counter">0/200</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="weui-dialog__ft">
+        <view class="weui-dialog__btn weui-dialog__btn_default" bindtap="noneWindows">取消</view>
+        <button loading="{{loading}}" class="weui-dialog__btn weui-dialog__btn_primary" data-id="{{nowId}}" formType="submit">提交</button>
+      </view>
+    </form>
+  </view>
+</view>
+
+<view class="js_dialog" id="androidDialog1" style="opacity: 1;" wx:if="{{writeDiary}}">
+  <view class="weui-mask"></view>
+  <view class="weui-dialog weui-skin_android">
+    <view class="weui-dialog__hd"><strong class="weui-dialog__title">添加日记</strong>  </view>
+    <form bindsubmit="addDiary">
+      <view class="weui-dialog__bd">
+        <view class="weui-cells__title">标题</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell weui-cell_input">
+            <view class="weui-cell__bd">
+              <input class="weui-input" name="title" value="{{nowTitle}}" placeholder="请输入标题" />
+            </view>
+          </view>
+        </view>
+        <view class="weui-cells__title">日记内容</view>
+        <view class="weui-cells weui-cells_after-title">
+          <view class="weui-cell">
+            <view class="weui-cell__bd">
+              <textarea class="weui-textarea" name="content" value="{{nowContent}}" placeholder="请输入日记内容" style="height: 3.3em" />
+              <view class="weui-textarea-counter">0/200</view>
+            </view>
+          </view>
+        </view>
+      </view>
+      <view class="weui-dialog__ft">
+        <view class="weui-dialog__btn weui-dialog__btn_default" bindtap="noneWindows">取消</view>
+        <button loading="{{loading}}" class="weui-dialog__btn weui-dialog__btn_primary" data-id="{{nowId}}" formType="submit">提交</button>
+      </view>
+    </form>
+  </view>
+</view>

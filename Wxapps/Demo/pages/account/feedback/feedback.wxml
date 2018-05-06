@@ -1,0 +1,45 @@
+<view class="page">
+  <view class="page__hd i-header">
+    <view class="g-bd">
+      <view> </view>
+      <view class="g-bda">
+        <view bindtap="" class="g-bda-userinfo">
+          <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}"></image>
+          <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+  <view class="page__bd">
+  </view>
+  <view class="btn-area">
+    <form bindsubmit="updateProfile">
+      <view class="weui-cells__title">真实姓名</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd">
+            <input class="weui-input" name="relname" placeholder="请输入真实姓名" value="{{userInfo.relname}}" />
+          </view>
+        </view>
+      </view>
+      <view class="weui-cells__title">手机号</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell weui-cell_input">
+          <view class="weui-cell__bd">
+            <input class="weui-input" name="mobile" value="{{userInfo.mobile}}" placeholder="请输入手机号" />
+          </view>
+        </view>
+      </view>
+      <view class="weui-cells__title">个性签名</view>
+      <view class="weui-cells weui-cells_after-title">
+        <view class="weui-cell">
+          <view class="weui-cell__bd">
+            <textarea class="weui-textarea" value="{{userInfo.signature}}" name="signature" placeholder="个性签名" style="height: 3.3em" />
+            <view class="weui-textarea-counter">0/200</view>
+          </view>
+        </view>
+      </view>
+      <button class="weui-btn" formType="submit" type="primary">立即提交</button>
+    </form>
+  </view>
+</view>
