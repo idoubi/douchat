@@ -127,7 +127,7 @@ function get_mp_info($mpid = '') {
     if (empty($mpid)) {
         $mpid = get_mpid();
     }
-    $mp_info = D('Mp')->get_mp_info($mpid);
+    $mp_info = D('Mp/Mp')->get_mp_info($mpid);
     return $mp_info;
 }
 
