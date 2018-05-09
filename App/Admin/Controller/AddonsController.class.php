@@ -59,7 +59,7 @@ class AddonsController extends BaseController {
 						if ($addon_info) {
 							$addons[] = $addon_info;
 						}
-					} 
+					}
 				}
 			}
 		} else {
@@ -261,6 +261,11 @@ class AddonsController extends BaseController {
 			if (!$data['desc']) {
 				$this->error('插件描述必须');
 			}
+            if (!$data['addon_type']) {
+                $this->error('请选择插件类型');
+            }else{
+                $data['addon_type'] = implode(',',$data['addon_type']);
+            }
 			if (!is_writable($addons_path)) {
 				$this->error('插件目录没有写入权限');
 			}
@@ -278,6 +283,9 @@ class AddonsController extends BaseController {
 				$files[] = "{$addon_dir}View/";
 				$files[] = "{$addon_dir}View/Mobile/";
 			}
+            if(strpos($data['addon_type'],'2')){
+                $files[] = "{$addon_dir}Controller/ApiController.class.php";
+            }
 			$res = create_dir_or_files($files);			// 生成插件文件夹及文件
 
             // 上传插件logo
@@ -297,6 +305,7 @@ class AddonsController extends BaseController {
 return array(
 	'name' => '{$data['name']}',
 	'bzname' => '{$data['bzname']}',
+	'type'=>'{$data['addon_type']}',
 	'desc' => '{$data['desc']}',
 	'version' => '{$data['version']}',
 	'author' => '{$data['author']}',
@@ -375,6 +384,26 @@ class MobileController extends MobileBaseController {
 str;
 				file_put_contents("{$addon_dir}Controller/MobileController.class.php", $mobile_file);
 			}
+			if (strpos($data['addon_type'],'2')) {
+                $api_file = <<<str
+<?php
+
+namespace Addons\\{$data['bzname']}\Controller;
+use Mp\Controller\ApiBaseController;
+
+/**
+ * {$data['name']}插件Api控制器
+ * @author {$data['author']}
+ */
+class ApiController extends ApiBaseController {
+
+
+}
+
+?>
+str;
+				file_put_contents("{$addon_dir}Controller/ApiController.class.php", $api_file);
+			}
 			$this->success('创建插件成功', U('not_install'));
 		} else {
 			$crumb = array(
@@ -449,6 +478,14 @@ str;
                     'type' => 'file',
                     'tip' => '请上传一张插件的logo'
                 ),
+                'addon_type' => array(
+                    'title' => '选择插件类型',
+                    'type' => 'checkbox',
+                    'options' => array(
+                        1 => '公众号',
+                        2 => '小程序'
+                    ),
+                ),
 				'respond_rule' => array(
 					'title' => '是否需要响应规则',
 					'type' => 'radio',
@@ -492,6 +529,7 @@ str;
 			);
             $model['submit_type'] = 'post';
             $model['meta_title'] = '创建插件';
+
 			parent::common_add($model);
 		}
 	}
