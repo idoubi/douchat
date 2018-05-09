@@ -47,6 +47,7 @@ class ApiController extends Controller {
         }
         $this->message = $origin_message;
         $this->msgtype = $this->message['MsgType'];             // 获取消息类型
+		$this->event = $this->message['Event'];					// 当前事件
         $this->mpid = $this->mpinfo['id'];                      // 获取当前公众号ID
         $this->token = $this->mpinfo['token'];                  // 获取当前公众号token
         $this->openid = $this->message['FromUserName'];         // 获取当前用户openid

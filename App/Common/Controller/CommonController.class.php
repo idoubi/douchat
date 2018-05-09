@@ -863,7 +863,7 @@ class CommonController extends Controller {
 	 * 添加操作按钮
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addButton($title, $url, $class, $attr) {
+	public function addButton($title, $url, $class = 'btn btn-primary', $attr = '') {
 		if (is_array($title)) {
 			$this->model['btn'][] = $title; 
 		} else {
