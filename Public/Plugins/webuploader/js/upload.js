@@ -149,7 +149,7 @@
             },
             dnd: '#dndArea',
             paste: '#uploader',
-            // swf: 'http://test.douchat.cc/douchat3.0/Public/Plugins/webuploader/swf/Uploader.swf',
+            // swf: 'http://test.douchat.net/douchat3.0/Public/Plugins/webuploader/swf/Uploader.swf',
             chunked: false,
             chunkSize: 512 * 1024,
            server: upload_path,

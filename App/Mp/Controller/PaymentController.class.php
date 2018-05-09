@@ -57,7 +57,7 @@ class PaymentController extends BaseController {
 			 ->addNav('支付记录', '', 'active')
 			 ->setModel('mp_payment')
 			 ->setListOrder('create_time desc')
-             ->setListMap(array('mpid'=>get_mpid()))
+             ->setListMap(array('mpid'=>get_mpid(),'status'=>1))
 			 ->addListItem('orderid', '商户订单号')
 			 ->addListItem('id', '微信支付订单号', 'callback', array('callback_name'=>'get_transaction_id','params'=>'###'))
 			 ->addListItem('create_time', '支付时间', 'function', array('function_name'=>'date','params'=>'Y-m-d H:i:s,###'))

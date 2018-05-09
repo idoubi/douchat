@@ -63,10 +63,24 @@ class AddonsModel extends Model {
 			} else {
 				$v['need_upgrade'] = 0;
 			}
+			if (!empty($v['type'])) {
+				$typeArr = explode(',', $v['type']);
+				$types = [];
+				if (in_array(1, $typeArr)) {
+					$types[] = '公众号';
+				}
+				if (in_array(2, $typeArr)) {
+					$types[] = '小程序';
+				}
+				$v['type'] = implode(',', $types);
+			} else {
+				$v['type'] = '公众号';
+			}
 		}
 		if (!$addons) {
 			return false;
 		}
+		
 		return $addons;
 	}
 

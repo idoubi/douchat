@@ -20,6 +20,17 @@ SET time_zone = "+00:00";
 -- Database: `douchat`
 --
 
+CREATE TABLE IF NOT EXISTS `dc_access_key` (
+  `id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增ID',
+  `user_id` int(10) NOT NULL DEFAULT '0' COMMENT '用户id',
+  `mpid` int(10) NOT NULL DEFAULT '0' COMMENT '账号id',
+  `ak` varchar(255) NOT NULL DEFAULT '' COMMENT 'api请求ak',
+  `sk` varchar(255) NOT NULL DEFAULT '' COMMENT 'api请求sk',
+  `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  `updated_at` int(10) NOT NULL DEFAULT '0' COMMENT '更新时间',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态。0：停用，1：使用中'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='接口授权key表';
+
 -- --------------------------------------------------------
 
 --
@@ -80,7 +91,9 @@ CREATE TABLE IF NOT EXISTS `dc_addon_setting` (
   `mpid` int(10) NOT NULL COMMENT '公众号标识',
   `addon` varchar(50) NOT NULL COMMENT '插件标识',
   `name` varchar(50) NOT NULL COMMENT '配置项',
-  `value` text NOT NULL COMMENT '配置值'
+  `value` text NOT NULL COMMENT '配置值',
+  `theme` varchar(50) NOT NULL DEFAULT '' COMMENT '主题',
+  `type` varchar(50) NOT NULL DEFAULT '' COMMENT '类别'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='插件配置参数表';
 
 -- --------------------------------------------------------
@@ -126,7 +139,9 @@ CREATE TABLE IF NOT EXISTS `dc_mp` (
   `desc` text COMMENT '描述',
   `headimg` varchar(255) DEFAULT NULL COMMENT '头像',
   `qrcode` varchar(255) DEFAULT NULL COMMENT '二维码',
-  `login_name` varchar(50) DEFAULT NULL COMMENT '公众号登录名'
+  `login_name` varchar(50) DEFAULT NULL COMMENT '公众号登录名',
+  `join_type` tinyint(1) NOT NULL DEFAULT 0 COMMENT '接入类型。0：手动接入，1：授权接入',
+  `mp_type` tinyint(1) NOT NULL DEFAULT 1 COMMENT '账号类型。1：公众号，2：小程序'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号表';
 
 -- --------------------------------------------------------
@@ -253,7 +268,11 @@ CREATE TABLE IF NOT EXISTS `dc_mp_payment` (
   `openid` varchar(255) DEFAULT NULL COMMENT '用户标识',
   `orderid` varchar(255) DEFAULT NULL COMMENT '订单号',
   `create_time` int(10) DEFAULT NULL COMMENT '支付时间',
-  `detail` text COMMENT '支付详情'
+  `detail` text COMMENT '支付详情',
+  `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支付金额',
+  `notify` varchar(255) NOT NULL DEFAULT '' COMMENT '支付结果处理方法',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付状态',
+  `mchid` varchar(50) NOT NULL DEFAULT '' COMMENT '商户id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号支付配置';
 -- --------------------------------------------------------
 

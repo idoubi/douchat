@@ -1,32 +1,61 @@
-<?php 
-
-namespace Mp\Behavior;
-use Think\Behavior;
+<?php
 
 /**
  * 生成侧边栏导航行为类
- * @author 艾逗笔<765532665@qq.com>
+ * @author 艾逗笔<http://idoubi.cc>
  */
+namespace Mp\Behavior;
+use Think\Behavior;
+
 class SidenavBehavior extends Behavior {
 
 	public function run(&$params) {
+		$ctl = $params['controller'];
+		$act = $params['action'];
 		$access_addons = D('Addons')->get_access_addons();
-		if (CONTROLLER_NAME == 'Mp') {
-			$sidenav = array(
-				array(
-					'title' => '公众号管理',
-					'url' => U('Mp/lists'),
-					'class' => 'icon icon-ul active'
-				)
-			);
-		} elseif (CONTROLLER_NAME == 'Addons' || get_addon()) {
-			$sidenav[] = array(
-				'title' => '扩展功能',
-				'url' => 'javascript:;',
-				'class' => 'icon icon-ul active',
-				'attr' => 'data="icon"',
-				'children' => $access_addons
-			);
+		if (in_array($ctl, ['mp', 'user', 'accesskey'])) {
+			$sidenav = [
+				[
+					'title' => '账号管理',
+					'url' => '',
+					'class' => 'icon icon-ul',
+					'children' => [
+						[
+							'title' => '微信公众号',
+							'url' => U('Mp/lists', ['mp_type'=>1]),
+							'class' => $ctl == 'mp' && $params['mp_type'] == 1 ? 'active' : ''
+						],
+						[
+							'title' => '微信小程序',
+							'url' => U('Mp/lists', ['mp_type'=>2]),
+							'class' => $ctl == 'mp' && $params['mp_type'] == 2 ? 'active' : ''
+						]
+					]
+				],
+				[
+					'title' => '个人中心',
+					'url' => '',
+					'class' => 'icon icon-user',
+					'children' => [
+						[
+							'title' => '基本资料',
+							'url' => U('User/profile'),
+							'class' => $ctl == 'user' && $act == 'profile' ? 'active' : ''
+						],
+						[
+							'title' => '修改密码',
+							'url' => U('User/change_password'),
+							'class' => $ctl == 'user' && $act == 'change_password' ? 'active' : ''
+						],
+						[
+							'title' => '秘钥管理',
+							'url' => U('AccessKey/lists'),
+							'class' => $ctl == 'accesskey' ? 'active' : ''
+						]
+					]
+				]
+			];
+		} elseif (in_array($ctl, ['addons']) || get_addon()) {
 			foreach ($access_addons as $k => $v) {
 				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
 					if (isset($v['config']['sidebar_list']['addon'])) {
@@ -36,74 +65,98 @@ class SidenavBehavior extends Behavior {
 						}
 					}
 				}
+				if (get_addon() == $v['bzname']) {
+					$v['class'] = 'active';
+				}
+				$addons[] = $v;
 			}
+			$sidenav[] = [
+				'title' => '全部应用',
+				'url' => 'javascript:;',
+				'class' => 'icon icon-ul',
+				'attr' => 'data="icon"',
+				'children' => $addons
+			];
+		} elseif ($params['mp_type'] == 2) {
+			$sidenav = [
+				[
+					'title' => '小程序管理',
+					'url' => 'javascript',
+					'class' => 'icon icon-signup',
+					'children' => [
+						[
+							'title' => '账号信息',
+							'url' => U('Index/index'),
+							'class' => $ctl == 'index' ? 'active' : ''
+						],
+                        [
+                            'title' => '粉丝管理',
+                            'url' => U('Fans/lists') ,
+                            'class' => $ctl == 'fans' ? 'active' : ''
+                        ]
+					]
+				]
+			];
 		} else {
-			$sidenav = array(
+			$sidenav = [
 				array(
-					'title' => '首页',
-					'url' => U('Index/index'),
-					'class' => 'icon icon-home'
-				),
-				array(
-					'title' => '基础设置',
-					'url' => 'javascript:;',
-					'class' => 'icon icon-setting',
-					'attr' => 'data="icon"',
-					'children' => array(
-						array(
-							'title' => '微信支付',
-							'url' => U('Payment/wechat'),
-							'class' => ''
-						)
-					)
-				),
-				array(
-					'title' => '基本功能',
+					'title' => '公众号功能',
 					'url' => 'javascript:;',
 					'class' => 'icon icon-signup',
 					'attr' => 'data="icon"',
-					'children' => array(
-						array(
+					'children' => [
+						[
+							'title' => '基础设置',
+							'url' => U('Index/index'),
+							'class' => ''
+						],
+						[
+							'title' => '微信支付',
+							'url' => U('Payment/wechat'),
+							'class' => ''
+						],
+						[
 							'title' => '自动回复',
 							'url' => U('AutoReply/keyword'),
 							'class' => ''
-						),
-						array(
+						],
+						[
 							'title' => '自定义菜单',
 							'url' => U('CustomMenu/publish'),
 							'class' => ''
-						),
-						array(
+						],
+						[
 							'title' => '场景二维码',
 							'url' => U('SceneQrcode/lists'),
 							'class' => ''
-						)
-					)
-				),
-				array(
-					'title' => '管理功能',
-					'url' => 'javascript:;',
-					'class' => 'icon icon-job',
-					'attr' => 'data="icon"',
-					'children' => array(
-						array(
+						],
+						[
 							'title' => '粉丝管理',
 							'url' => U('Fans/lists'),
 							'class' => ''
-						),
-						array(
+						],
+						[
 							'title' => '消息管理',
 							'url' => U('Message/lists'),
 							'class' => ''
-						),
-						array(
+						],
+						[
 							'title' => '素材管理',
 							'url' => U('Material/text'),
 							'class' => ''
-						)
-					)
-				)
-			);
+						]
+					]
+				),
+				[
+					'title' => '应用功能',
+					'url' => 'javascript:;',
+					'class' => 'icon icon-job',
+					'attr' => 'data="icon"',
+					'children' => [
+					
+					]
+				]
+			];
 			foreach ($access_addons as $k => $v) {
 				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
 					if (isset($v['config']['sidebar_list']['mp'])) {

@@ -82,7 +82,7 @@ class UserModel extends Model {
 
 		$default_mpid = $this->get_default_mp($user['id']);
 		if ($default_mpid) {
-			session('mpid', $default_mpid);		// 缓存当前用户默认管理公众号
+			get_mpid($default_mpid);		// 缓存当前用户默认管理公众号
 		}
 		return true;
 	}

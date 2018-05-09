@@ -48,8 +48,6 @@ function pay(price, orderid, notify, extra, callback) {
       orderid : orderid,
       notify : notify
   };  
-  console.log(url);
-  console.log(data);       
   $.ajax({                // 发送ajax请求获取调起支付参数
       url : url,
       type : 'post',
@@ -91,10 +89,14 @@ function ajax(url,data,successFunc,errorFunc){
     dataType:"json",
     data:data,
     success:function(data){
-      successFunc(data);
+        if (typeof successFunc == 'function') {
+            successFunc(data);
+        }
     },
     error:function(){
-      errorFunc(data);
+        if (typeof errorFunc == 'function') {
+            errorFunc(data);
+        }
     }
   });
 }

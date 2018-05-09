@@ -14,6 +14,7 @@ class JssdkBehavior extends Behavior {
 		$signPackage = get_jssdk_sign_package();
 	    return "<script>
 	    var JSON_PAY = '".U('Mp/MobileBase/json_pay')."';
+	    var API_CALL = '".U('Mp/ApiBase/commonRequest')."';
 	    </script>
 	    <script src='http://res.wx.qq.com/open/js/jweixin-1.0.0.js'></script>
 	    <script>

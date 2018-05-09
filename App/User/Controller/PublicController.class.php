@@ -20,6 +20,7 @@ class PublicController extends Controller {
 	 */
 	public function login() {
 		$system_settings = D('Admin/SystemSetting')->get_settings();
+		$userHomeUrl = isset($system_settings['user_home_url']) && !empty($system_settings['user_home_url']) ? U($system_settings['user_home_url']) : ''; // 登录注册成功后的跳转地址
 		if (IS_POST) {
 			$username = I('username');
 			$password = I('password');
@@ -43,12 +44,12 @@ class PublicController extends Controller {
 			if ($user_access['admin']) {
 				$jump_url = U('Admin/Index/index');
 			} else {
-				$jump_url = U('Mp/Index/index');
+				$jump_url = empty($userHomeUrl) ? U('Mp/Index/index') : $userHomeUrl;
 			}
 			$this->success('登录成功', $jump_url);
 		} else {
 			if (is_user_login()) {
-				$this->redirect('Mp/Index/index');
+			    empty($userHomeUrl) ? $this->redirect('Mp/Index/index') : redirect($userHomeUrl);
 			} else {
 				$this->display();
 			}

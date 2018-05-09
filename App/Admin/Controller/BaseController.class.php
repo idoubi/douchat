@@ -1,40 +1,40 @@
-<?php 
-
-namespace Admin\Controller;
-use Common\Controller\CommonController;
+<?php
 
 /**
  * 后台公用控制器
- * @author 艾逗笔<765532665@qq.com>
+ * @author 艾逗笔<http://idoubi.cc>
  */
-class BaseController extends CommonController {
+namespace Admin\Controller;
+use Common\Controller\CommonController;
 
-	/**
-	 * 初始化
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
-	public function _initialize() {
-		parent::_initialize();
+class BaseController extends CommonController {
+	
+	// 初始化
+	public function __construct() {
+		parent::__construct();
+		if (empty($this->user_access) || empty($this->user_access['admin'])) {
+			$this->error('你没有访问此模块的权限');
+		}
+		
 		global $_G;
+		$topnav = [];
 		if ($this->user_access['mp']) {
-			$topmenu[] = array(
-				'title' => '公众号管理',
-				'url' => U('Mp/Index/index'),
+			$topnav[] = array(
+				'title' => '账号中心',
+				'url' => U('Mp/Mp/lists'),
 				'class' => ''
 			);
-			$topmenu[] = array(
-				'title' => '插件管理',
+			$topnav[] = array(
+				'title' => '应用中心',
 				'url' => U('Mp/Addons/manage'),
 				'class' => ''
 			);
 		}
-		if ($this->user_access['admin']) {
-			$topmenu[] = array(
-				'title' => '系统管理',
-				'url' => U('Admin/Index/index'),
-				'class' => 'active'
-			);
-		}
+		$topnav[] = array(
+			'title' => '系统管理',
+			'url' => U('Admin/Index/index'),
+			'class' => 'active'
+		);
 		$sidenav = array(
 			array(
 				'title' => '首页',
@@ -55,12 +55,12 @@ class BaseController extends CommonController {
 					array(
 						'title' => '用户管理',
 						'url' => U('User/lists'),
-						'class' => ''
+						'class' => $this->controller == 'user' ? 'active' : ''
 					),
 					array(
 						'title' => '角色管理',
 						'url' => U('Role/lists'),
-						'class' => ''
+						'class' => $this->controller == 'role' ? 'active' : ''
 					),
 					// array(
 					// 	'title' => '权限节点管理',
@@ -70,36 +70,48 @@ class BaseController extends CommonController {
 				),
 			),
 			array(
-				'title' => '公众号管理',
+				'title' => '账号管理',
 				'url' => 'javascript:;',
 				'class' => 'icon icon-reply',
 				'attr' => 'data="icon"',
 				'children' => array(
 					array(
-						'title' => '公众号列表',
+						'title' => '账号列表',
 						'url' => U('Mp/lists'),
-						'class' => ''
+						'class' => $this->controller == 'mp' ? 'active' : ''
 					),
 					array(
-						'title' => '公众号套餐',
+						'title' => '账号套餐',
 						'url' => U('MpGroup/lists'),
-						'class' => ''
+						'class' => $this->controller == 'mpgroup' ? 'active' : ''
 					)
 				)
 			),
 			array(
 				'title' => '扩展管理',
 				'url' => U('Addons/lists'),
-				'class' => 'icon icon-job'
+				'class' => 'icon icon-job',
+                'children' => [
+                    [
+                        'title' => '功能插件',
+                        'url' => U('Addons/lists'),
+                        'class' => $this->controller == 'addons' ? 'active' : ''
+                    ]
+                ]
 			)
 		);
 		$this->assign('sidenav', $sidenav);
-		$product_info = file_get_contents('./Data/product.info');
-		$product_info = json_decode($product_info, true);
-		$this->assign('product_info', $product_info);
-		$this->assign('topmenu', $topmenu);
+		$this->assign('topnav', $topnav);
+		$this->assign('product_info', $_G['product_info']);
 		$this->assign('system_settings', $_G['system_settings']);
-		$this->assign('user_info', get_user_info());
+		$this->assign('user_info', $this->user_info);
+	}
+	
+	/**
+	 * 初始化
+	 */
+	public function _initialize() {
+		parent::_initialize();
 	}
 }
 

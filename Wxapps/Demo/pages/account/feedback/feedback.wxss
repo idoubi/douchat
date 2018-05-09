@@ -1,0 +1,19 @@
+
+.g-bda-userinfo {
+  padding-top: 50rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.userinfo-avatar {
+  width: 180rpx;
+  height: 180rpx;
+  margin: 20rpx;
+  margin-bottom: 2rpx;
+  border-radius: 50%;
+  border: 2px solid #fff;
+}
+.userinfo-nickname{
+  color: #fff;
+}

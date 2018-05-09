@@ -36,9 +36,16 @@ class ImportJsBehavior extends Behavior {
 						break;
 					case 'vue':
 						if (strpos($k, '.') === false) {
-							$res[] = '<script src="//cdn.bootcss.com/vue/2.1.3/vue.min.js"></script>';
+							$res[] = '<script src="//cdn.bootcss.com/vue/2.5.13/vue.min.js"></script>';
 						} else {
 							$res[] = '<script src="//cdn.bootcss.com/vue/'.$k.'/vue.min.js"></script>';
+						}
+						break;
+					case 'axios':
+						if (strpos($k, '.') === false) {
+							$res[] = '<script src="//cdn.bootcss.com/axios/0.17.1/axios.min.js"></script>';
+						} else {
+							$res[] = '<script src="//cdn.bootcss.com/axios/'.$k.'/axios.min.js"></script>';
 						}
 						break;
 					default:

@@ -1,0 +1,13 @@
+{
+  "pages": [
+    "pages/account/account",
+    "pages/account/release/release",
+    "pages/account/feedback/feedback"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#3891f8",
+    "navigationBarTitleText": "豆信小程序Demo",
+    "navigationBarTextStyle": "#fff"
+  }
+}

@@ -10,6 +10,7 @@ use Think\Behavior;
 class NavBehavior extends Behavior {
 
 	public function run(&$params) {
+		$mpType = get_mp_type();		// 账号类型。1：公众号，2：小程序
 		$addon = get_addon();
 		if ($addon && ACTION_NAME == 'index') {
 			$addonnav['index'] = array(
@@ -20,7 +21,7 @@ class NavBehavior extends Behavior {
 			// return $addonnav;
 		}
 		$addon_config = D('Addons')->get_addon_config();
-		if ($addon_config['respond_rule'] == 1) {
+		if ($addon_config['respond_rule'] == 1 && $mpType != 2) {
 			$addonnav['rule'] = array(
 				'title' => '响应规则',
 				'url' => U('/addon/'.$addon.'/rule'),
@@ -62,10 +63,10 @@ class NavBehavior extends Behavior {
 				'children' => $children
 			);
 		}
-		if ($addon_config['entry'] == 1) {
+		if ($addon_config['entry'] == 1 && $mpType != 2) {
 			$entry_list = $this->parse_entry($addon_config['entry_list']);
 			$addonnav['entry'] = array(
-				'title' => '封面入口',
+				'title' => '公众号入口',
 				'url' => !empty($entry_list) ? $entry_list[0]['url'] : '',
 				'class' => $addon_config['entry_list'][I('act')] ? 'active' : '',
 				'children' => $entry_list

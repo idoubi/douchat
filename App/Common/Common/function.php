@@ -34,7 +34,7 @@ function create_addon_url($url, $param = array()){
                 $act = strtolower(CONTROLLER_NAME);
                 return U('/addon/'.get_addon().'/'.$act.'/'.$url.'@'.C('HTTP_HOST'), $param);
             } else {
-                $param['addon'] = get_addon();
+                $param = array_merge(['addon'=>get_addon()], $param);
                 return U('Mp/'.CONTROLLER_NAME.'/'.$url.'@'.C('HTTP_HOST'), $param);
             }
             break;
@@ -43,7 +43,7 @@ function create_addon_url($url, $param = array()){
                 $act = strtolower($urlArr[0]);
                 return U('/addon/'.get_addon().'/'.$act.'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
             } else {
-                $param['addon'] = get_addon();
+				$param = array_merge(['addon'=>get_addon()], $param);
                 return U('Mp/'.$urlArr[0].'/'.$urlArr[1].'@'.C('HTTP_HOST'), $param);
             }
             break;
@@ -51,7 +51,7 @@ function create_addon_url($url, $param = array()){
             if (in_array($urlArr[1], array('Mobile', 'Web'))) {
                 return U('/addon/'.$urlArr[0].'/'.strtolower($urlArr[1]).'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
             } else {
-                $param['addon'] = $urlArr[0];
+				$param = array_merge(['addon'=>get_addon()], $param);
                 return U('Mp/'.$urlArr[1].'/'.$urlArr[2].'@'.C('HTTP_HOST'), $param);
             }
             break;
@@ -127,8 +127,20 @@ function get_mp_info($mpid = '') {
     if (empty($mpid)) {
         $mpid = get_mpid();
     }
-    $mp_info = D('Mp')->get_mp_info($mpid);
+    $mp_info = D('Mp/Mp')->get_mp_info($mpid);
     return $mp_info;
+}
+
+/**
+ * 获取当前账号类别
+ * 1：微信公众号 2：微信小程序
+ */
+function get_mp_type() {
+	$mp_info = get_mp_info();
+	if (!empty($mp_info) && in_array($mp_info['mp_type'], [1, 2])) {
+		return $mp_info['mp_type'];
+	}
+	return 1;
 }
 
 /**
@@ -286,29 +298,54 @@ function get_jssdk_sign_package() {
  */
 function get_jsapi_parameters($data) {
     vendor('WechatPaySdk.WxPayPubHelper');
-    $appid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appid'))->getField('value');
-    $appsecret = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'appsecret'))->getField('value');
-    $mchid = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'mchid'))->getField('value');
-    $paysignkey = M('mp_setting')->where(array('mpid'=>get_mpid(),'name'=>'paysignkey'))->getField('value');
+    $paySetting = M('mp_setting')->where([
+    	'mpid' => $data['mpid'],
+		'name' => ['in', ['appid', 'appsecret', 'mchid', 'paysignkey']]
+	])->field('name, value')->select();
+    $payParams = [];
+    foreach ($paySetting as $v) {
+    	if (!empty($v['name'])) {
+    		$payParams[$v['name']] = $v['value'];
+		}
+	}
+    $appid = isset($payParams['appid']) ? $payParams['appid'] : '';
+    $appsecret = isset($payParams['appsecret']) ? $payParams['appsecret'] : '';
+    $mchid = isset($payParams['mchid']) ? $payParams['mchid'] : '';
+    $paysignkey = isset($payParams['paysignkey']) ? $payParams['paysignkey'] : '';
     $jsApi = new JsApi_pub($appid,$mchid,$paysignkey,$appsecret); 
-    $orderid = $data['orderid'];      
-    if($orderid == ""){
-        $orderid = $data['single_orderid'];
-    }   
+    $orderid = $data['orderid'];
     $price= floatval($data['price']);
-    $data['mpid'] = get_mpid();
-    unset($data['price']);
+    $attach = [
+		'notify' => U('Mp/MobileBase/pay_notify@'.C('HTTP_HOST'))
+	];
     $unifiedOrder = new UnifiedOrder_pub($appid,$mchid,$paysignkey,$appsecret);
-    $unifiedOrder->setParameter("openid",get_ext_openid());
+    $unifiedOrder->setParameter("openid",$data['openid']);
     $unifiedOrder->setParameter("body",$orderid);
     $unifiedOrder->setParameter("out_trade_no",$orderid);
     $unifiedOrder->setParameter("total_fee",$price*100);
     $unifiedOrder->setParameter("notify_url", C('HTTP_HOST') . '/Data/notify.php');
     $unifiedOrder->setParameter("trade_type","JSAPI");
-    $unifiedOrder->setParameter("attach", json_encode($data));//附加数据
+    $unifiedOrder->setParameter("attach", json_encode($attach));//附加数据
     $prepay_id = $unifiedOrder->getPrepayId();
     $jsApi->setPrepayId($prepay_id);
     $jsApiParameters = $jsApi->getParameters();
+	
+	if (M('mp_payment')->where(['mpid'=>$data['mpid'],'orderid'=>$data['orderid']])->find('id')) {
+	
+	} else {
+		M('mp_payment')->add([
+			'mpid' => $data['mpid'],
+			'openid' => $data['openid'],
+			'orderid' => $data['orderid'],
+			'create_time' => time(),
+			'detail' => json_encode($data),
+			'price' => $data['price'],
+			'notify' => isset($data['notify']) ? $data['notify'] : '',
+			'status' => 0,
+			'mchid' => $mchid
+		]);
+	}
+	
     return $jsApiParameters;
 }
 
@@ -826,11 +863,13 @@ function is_user_login() {
 }
 
 /**
- * 获取当前用户ID
- * @author 艾逗笔<765532665@qq.com>
+ * 获取当前登录用户ID
  */
-function get_user_id() {
-	$user_id = session('user_id');
+function get_user_id($user_id = null) {
+	if (!empty($user_id)) {
+		session(C('USER_AUTH_KEY'), $user_id);
+	}
+	$user_id = session(C('USER_AUTH_KEY'));
     if (!$user_id || $user_id < 0) {
         return false;
     }
@@ -951,7 +990,55 @@ function get_ip(){
     }
 }
 
+// 获取所有请求头
+if (!function_exists('getallheaders')) {
+	function getallheaders() {
+		$headers = array();
+		foreach ($_SERVER as $name => $value) {
+			if (substr($name, 0, 5) == 'HTTP_') {
+				$headers[str_replace(' ', '-', ucwords(strtolower(str_replace('_', ' ', substr($name, 5)))))] = $value;
+			}
+		}
+		return $headers;
+	}
+}
 
-
-
-?>
+// 发起curl请求
+function curl($url, $method = 'get', $param = null, $headers = null) {
+	$oCurl = curl_init();
+	if(stripos($url,"https://")!==FALSE){
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYPEER, FALSE);
+		curl_setopt($oCurl, CURLOPT_SSL_VERIFYHOST, false);
+		curl_setopt($oCurl, CURLOPT_SSLVERSION, 1); //CURL_SSLVERSION_TLSv1
+	}
+	if ($headers) {
+		curl_setopt($oCurl, CURLOPT_HTTPHEADER, $headers);
+	}
+	if (is_string($param)) {
+		$strPOST = $param;
+	} else {
+		$aPOST = array();
+		foreach($param as $key=>$val){
+			$aPOST[] = $key."=".urlencode($val);
+		}
+		$strPOST =  join("&", $aPOST);
+	}
+	curl_setopt($oCurl, CURLOPT_URL, $url);
+	curl_setopt($oCurl, CURLOPT_RETURNTRANSFER, 1 );
+	if ($method != 'get') {
+		if ($method == 'post') {
+			curl_setopt($oCurl, CURLOPT_POST,true);
+		} else {
+			curl_setopt($oCurl, CURLOPT_CUSTOMREQUEST,strtoupper($method));
+		}
+		curl_setopt($oCurl, CURLOPT_POSTFIELDS,$strPOST);
+	}
+	$sContent = curl_exec($oCurl);
+	$aStatus = curl_getinfo($oCurl);
+	curl_close($oCurl);
+	if(intval($aStatus["http_code"])==200){
+		return $sContent;
+	}else{
+		return false;
+	}
+}

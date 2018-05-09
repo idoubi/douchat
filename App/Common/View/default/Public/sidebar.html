@@ -2,7 +2,7 @@
     <div class="mod">
         <div class="mod-logo">
             <img class="pull-left" src="__PUBLIC__/Admin/img/logo.png" alt="" />
-            <h1>豆信3.0</h1>
+            <h1>豆信</h1>
         </div>
 
         <div class="mod-message">
@@ -11,7 +11,7 @@
                     <i class="icon icon-home"></i>
                 </a>
 
-                <a class="btn btn-sm" href="{:U('Mp/Index/index')}" title="公众号首页">
+                <a class="btn btn-sm" href="{:U('Mp/Index/index')}" title="首页">
                     <i class="icon icon-ul"></i>
                 </a>
 
@@ -32,7 +32,7 @@
                 <ul>
                     <volist name="vo.children" id="vv">
                     <li>
-                        <a href="{$vv.url}">
+                        <a href="{$vv.url}" class="{$vv.class}">
                             <span>{$vv.title}</span>
                         </a>
                     </li>
@@ -51,16 +51,17 @@ var controller = "<php>echo CONTROLLER_NAME;</php>";        // 获取当前控�
 var addon = "{:get_addon()}";
 if (controller == 'Web') {
     if (addon) {
-        var active_a = $("#aw-side a[href*='"+addon+"']"); 
+        var active_a = $("#aw-side a[href*='"+addon+"']");
     } else {
-        var active_a = $("#aw-side a[href*='"+path_info+"']"); 
+        var active_a = $("#aw-side a[href*='"+path_info+"']");
     }
 } else {
     var active_a = $("#aw-side a[href*='"+controller+"']");              // 获取链接中包含当前控制器的a标签
 }
 
+active_a = $('#aw-side a[class="active"]');
 var active_ul = active_a.parent("li").parent("ul");         // 获取需要显示的ul标签
-var active_wrap = active_ul.siblings("a");                  
+var active_wrap = active_ul.siblings("a");
 
 active_a.addClass("active");
 active_ul.removeClass("hide");

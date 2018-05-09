@@ -1,65 +1,80 @@
-<?php 
+<?php
 
+/**
+ * 账号模块公用控制器
+ * @author 艾逗笔<http://idoubi.cc>
+ */
 namespace Mp\Controller;
 use Common\Controller\CommonController;
 
-/**
- * 公众号模块公用控制器
- * @author 艾逗笔<765532665@qq.com>
- */
 class BaseController extends CommonController {
-
-	/**
-	 * 初始化
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
-	public function _initialize() {
-		parent::_initialize();
+	
+	public $mpid;					// 当前账号id
+	public $mp_type;				// 当前账号类别
+	public $mp_info;				// 当前账号信息
+	public $addon;					// 当前插件
+	
+	// 初始化
+	public function __construct() {
+		parent::__construct();
+		if (empty($this->user_access) || empty($this->user_access['mp'])) {
+			$this->error('你没有此模块的访问权限');
+		}
+		
+		$this->mpid = get_mpid();
+		$this->mp_type = I('mp_type', get_mp_type(), 'intval');
+		$this->mp_info = get_mp_info();
+		$this->addon = get_addon();
+		
 		global $_G;
-		$_G['mpid'] = get_mpid();
-		$_G['mp_info'] = get_mp_info();
-		if (!$_G['mpid'] || $_G['mpid'] < 0 || !$_G['mp_info']['origin_id']) {
-			if ($_G['controller_name'] != 'mp' && $_G['controller_name'] != 'user') {
-				if ($_G['controller_name'] == 'material' && ($_G['action_name'] == 'upload' || $_G['action_name'] == 'get_image_list' || $_G['action_name'] == 'delete_attach')) {
-
-				} else {
-					$this->redirect('Mp/lists');
-				}
+		$_G['mpid'] = $this->mpid;
+		$_G['mp_type'] = $this->mp_type;
+		$_G['mp_info'] = $this->mp_info;
+		$_G['addon'] = $this->addon;
+		
+		if (!in_array($_G['controller'], ['mp', 'user', 'material', 'accesskey']) && !($_G['controller'] == 'addons' && $_G['action'] == 'manage')) {
+			if (empty($_G['mpid']) || empty($_G['mp_info'])) {
+				$this->error('请先选择管理账号', U('Mp/lists'));
 			}
 		}
-		if ($this->user_access['mp']) {
-			$topmenu[] = array(
-				'title' => '公众号管理',
-				'url' => U('Mp/Index/index'),
-				'class' => get_addon() || $_G['controller_name'] == 'addons' ? '' : 'active'
-			);
-			$topmenu[] = array(
-				'title' => '插件管理',
-				'url' => U('Mp/Addons/manage'),
-				'class' => get_addon() || $_G['controller_name'] == 'addons' ? 'active' : ''
-			);
-		}
+		
+		$topnav[] = array(
+			'title' => '账号中心',
+			'url' => U('Mp/Mp/lists', ['mp_type'=>$_G['mp_type']]),
+			'class' => get_addon() || $_G['controller'] == 'addons' ? '' : 'active'
+		);
+		$topnav[] = array(
+			'title' => '应用中心',
+			'url' => U('Mp/Addons/manage'),
+			'class' => get_addon() || $_G['controller'] == 'addons' ? 'active' : ''
+		);
 		if ($this->user_access['admin']) {
-			$topmenu[] = array(
+			$topnav[] = array(
 				'title' => '系统管理',
 				'url' => U('Admin/Index/index'),
 				'class' => ''
 			);
 		}
-		$this->assign('topmenu', $topmenu);
-		$this->assign('system_settings', $_G['system_settings']);
-		$addons = D('Admin/Addons')->get_installed_addons();
-		add_hook('sidenav', 'Mp\Behavior\SidenavBehavior');				// 添加生成侧边栏导航的钩子
+		
 		add_hook('editor', 'Mp\Behavior\EditorBehavior');
-		$sidenav = hook('sidenav');										// 执行钩子，获取侧边栏数据
+		add_hook('sidenav', 'Mp\Behavior\SidenavBehavior');				// 添加生成侧边栏导航的钩子
+		
+		$sidenav = hook('sidenav', $_G);										// 执行钩子，获取侧边栏数据
+		$addons = D('Admin/Addons')->get_installed_addons();
+		
+		$this->assign('system_settings', $_G['system_settings']);
+		$this->assign('topnav', $topnav);
 		$this->assign('sidenav', $sidenav);
 		$this->assign('addons', $addons);
 		$this->assign('mp_info', $_G['mp_info']);
-		$this->assign('user_info', get_user_info());
+		$this->assign('user_info', $_G['user_info']);
 	}
 	
+	/**
+	 * 初始化
+	 */
+	public function _initialize() {
+		parent::_initialize();
+	}
 	
 }
-
-
- ?>

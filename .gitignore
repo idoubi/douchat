@@ -1,6 +1,9 @@
 /Runtime/*
+/Addons/*
+/Wxapps/*
 /Uploads/*
 /App/Common/Conf/config.php
-/Addons/*
 /Data/*
 /MP_*
+/.idea/
+/*.txt

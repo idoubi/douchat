@@ -3,11 +3,11 @@
 /**
  * 应用入口文件
  */
-if (version_compare(PHP_VERSION,'5.3.0','<')) {				// 检测环境
-	die('require PHP > 5.3.0 !');
-}  
+if (version_compare(PHP_VERSION,'5.4.0','<')) {				// 检测环境
+	die('require PHP > 5.4.0 !');
+}
 
-define('THINK_PATH', './ThinkPHP/');						// 定义thinkphp框架路径							
+define('THINK_PATH', './ThinkPHP/');						// 定义thinkphp框架路径
 define('APP_PATH', './App/');								// 定义应用目录
 define('RUNTIME_PATH', './Runtime/');						// 定义缓存目录
 define('ADDON_PATH', './Addons/'); 							// 定义插件目录

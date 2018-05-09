@@ -1,5 +1,5 @@
 豆信（douchat）遵循Apache2开源协议发布，并提供免费使用。
-版权所有Copyright © 2015-2016 豆信 (http://douchat.cc)
+版权所有Copyright © 2015-2018 豆信 (http://douchat.net)
 豆信基于ThinkPHP开发。
 
 

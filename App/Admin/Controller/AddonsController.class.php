@@ -1,17 +1,16 @@
-<?php 
-
-namespace Admin\Controller;
-use Admin\Controller\BaseController;
+<?php
 
 /**
  * 插件管理控制器
- * @author 艾逗笔<765532665@qq.com>
+ * @author 艾逗笔<http://idoubi.cc>
  */
+namespace Admin\Controller;
+use Admin\Controller\BaseController;
+
 class AddonsController extends BaseController {
 
 	/**
 	 * 已安装插件
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function lists() {
 		$install_addons = D('Addons')->get_installed_addons();
@@ -24,6 +23,7 @@ class AddonsController extends BaseController {
 			 ->addListItem('logo', '插件LOGO', 'image', array('attr'=>'width=80,height=80'))
 			 ->addListItem('name', '插件名称')
 			 ->addListItem('bzname', '插件标识名')
+			 ->addListItem('type', '插件类型')
 			 ->addListItem('desc', '插件描述')
 			 ->addListItem('version', '当前版本')
 			 ->addListItem('last_version', '最新版本')

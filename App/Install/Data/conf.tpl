@@ -22,6 +22,7 @@ return array(
         'addon/:addon/setting' => 'Mp/Web/setting',
         'addon/:addon/web/:act' => 'Mp/Web/:2',
         'addon/:addon/mobile/:act' => 'Mp/Mobile/:2',
+        'addon/:addon/api/:act' => 'Mp/Api/:2',
         'news/:id' => 'Mp/MobileBase/detail'
     ),
     
