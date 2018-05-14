@@ -8,6 +8,7 @@ namespace Admin\Controller;
 use Admin\Controller\BaseController;
 
 class AddonsController extends BaseController {
+    private $addon_dir;
 
 	/**
 	 * 已安装插件
@@ -236,173 +237,33 @@ class AddonsController extends BaseController {
 	public function add() {
 		if (IS_POST) {
 			$addons_path = ADDON_PATH;
-			$data = I('post.');
-			if (!$data['name']) {
-				$this->error('插件名称不能为空');
-			}
-			if (!$data['bzname']) {
-				$this->error('插件标识名不能为空');
-			}
-			if (!preg_match('/^[a-zA-Z][a-zA-Z]{1,29}$/', $data['bzname'])) {
-				$this->error('插件标识名不合法');
-			}
-			if (is_dir("{$addons_path}{$data['bzname']}")) {
-				$this->error('相同名称的插件文件夹已存在');
-			}
-			if (!$data['version']) {
-				$this->error('插件版本号不能为空');
-			}
-			if (!preg_match('/^[0-20]\.([0-9]\.){0,1}[0-9]$/', $data['version'])) {
-				$this->error('插件版本号格式不正确');
-			}
-			if (!$data['author']) {
-				$this->error('作者名称必须');
-			}
-			if (!$data['desc']) {
-				$this->error('插件描述必须');
-			}
-            if (!$data['addon_type']) {
-                $this->error('请选择插件类型');
-            }else{
-                $data['addon_type'] = implode(',',$data['addon_type']);
+			$addon_model = D('Addons');
+            $data = I('post.');
+            $data['type'] = implode(',',$data['type']);
+
+			if(!$addon_model->create($data,4)){
+			    $this->error($addon_model->getError());
             }
+
 			if (!is_writable($addons_path)) {
 				$this->error('插件目录没有写入权限');
 			}
-			$addon_dir = "{$addons_path}{$data['bzname']}/";
-			$files = array();
-			$files[] = "{$addon_dir}";
-			$files[] = "{$addon_dir}info.php";
-			$files[] = "{$addon_dir}Controller/";
-			$files[] = "{$addon_dir}Controller/WebController.class.php";
-			if ($data['respond_rule'] == '1') {
-				$files[] = "{$addon_dir}Controller/RespondController.class.php";
-			}
-			if ($data['entry'] == '1') {
-				$files[] = "{$addon_dir}Controller/MobileController.class.php";
-				$files[] = "{$addon_dir}View/";
-				$files[] = "{$addon_dir}View/Mobile/";
-			}
-            if(strpos($data['addon_type'],'2')){
-                $files[] = "{$addon_dir}Controller/ApiController.class.php";
-            }
-			$res = create_dir_or_files($files);			// 生成插件文件夹及文件
 
-            // 上传插件logo
-            $logofile = $_FILES['logo'];
-            $logo = '';
-            if ($logofile['name'] != '') {      // 上传了logo文件
-                if ($logofile['error'] == 0 && $logofile['size'] < 5*1024*1000 && in_array($logofile['type'], array('image/png','image/gif','image/jpg','image/jpeg'))) {
-                    $logoname = 'logo.' . substr($logofile['type'], 6);
-                    $logopath = $addon_dir . $logoname;
-                    move_uploaded_file($logofile['tmp_name'], $logopath);
-                    $logo = $logoname;
-                }
-            }
-			$info_file = <<<str
-<?php
+            $this->addon_dir = ADDON_PATH . "{$data['bzname']}/";
+			$this->createDirOrFiles($data); // 生成插件文件夹及文件
+			$logo = $this->uploadLogo();
 
-return array(
-	'name' => '{$data['name']}',
-	'bzname' => '{$data['bzname']}',
-	'type'=>'{$data['addon_type']}',
-	'desc' => '{$data['desc']}',
-	'version' => '{$data['version']}',
-	'author' => '{$data['author']}',
-    'logo' => '{$logo}',
-	'config' => array(
-		'respond_rule' => {$data['respond_rule']},
-		'setting' => {$data['setting']},
-		'entry' => {$data['entry']},
-		'menu' => {$data['menu']}
-	)
-);
-
-?>
-str;
-			file_put_contents("{$addon_dir}info.php", $info_file);
-			$web_file = <<<str
-<?php
-
-namespace Addons\\{$data['bzname']}\Controller;
-use Mp\Controller\AddonsController;
-
-/**
- * {$data['name']}后台管理控制器
- * @author {$data['author']}
- */
-class WebController extends AddonsController {
-
-}
-
-?>
-str;
-			file_put_contents("{$addon_dir}Controller/WebController.class.php", $web_file);
+			$this->putInfoField($data,$logo);
+            $this->putWebControllerFile($data);
 
 			if ($data['respond_rule'] == '1') {
-				$respond_file = <<<str
-<?php
-
-namespace Addons\\{$data['bzname']}\Controller;
-use Mp\Controller\ApiController;
-
-/**
- * {$data['name']}响应控制器
- * @author {$data['author']}
- */
-class RespondController extends ApiController {
-
-	/**
-	 * 微信交互
-	 * @param \$message array 微信消息数组
-	 */
-	public function wechat(\$message = array()) {
-
-	}
-}
-
-?>
-str;
-				file_put_contents("{$addon_dir}Controller/RespondController.class.php", $respond_file);
+			    $this->putResponseControllerFile($data);
 			}
 			if ($data['entry'] == '1') {
-				$mobile_file = <<<str
-<?php
-
-namespace Addons\\{$data['bzname']}\Controller;
-use Mp\Controller\MobileBaseController;
-
-/**
- * {$data['name']}移动端控制器
- * @author {$data['author']}
- */
-class MobileController extends MobileBaseController {
-
-}
-
-?>
-str;
-				file_put_contents("{$addon_dir}Controller/MobileController.class.php", $mobile_file);
+			    $this->putMobileControllerFile($data);
 			}
-			if (strpos($data['addon_type'],'2')) {
-                $api_file = <<<str
-<?php
-
-namespace Addons\\{$data['bzname']}\Controller;
-use Mp\Controller\ApiBaseController;
-
-/**
- * {$data['name']}插件Api控制器
- * @author {$data['author']}
- */
-class ApiController extends ApiBaseController {
-
-
-}
-
-?>
-str;
-				file_put_contents("{$addon_dir}Controller/ApiController.class.php", $api_file);
+			if (strpos($data['type'],'2') !== false) {
+			    $this->putApiControllerFile($data);
 			}
 			$this->success('创建插件成功', U('not_install'));
 		} else {
@@ -478,7 +339,7 @@ str;
                     'type' => 'file',
                     'tip' => '请上传一张插件的logo'
                 ),
-                'addon_type' => array(
+                'type' => array(
                     'title' => '选择插件类型',
                     'type' => 'checkbox',
                     'options' => array(
@@ -533,8 +394,206 @@ str;
 			parent::common_add($model);
 		}
 	}
+
+    /**
+     * 生成相应的文件
+     * @desc
+     * @param $data
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function createDirOrFiles($data)
+    {
+
+        $files = array();
+        $files[] = "{$this->addon_dir}";
+        $files[] = "{$this->addon_dir}info.php";
+        $files[] = "{$this->addon_dir}Controller/";
+        $files[] = "{$this->addon_dir}Controller/WebController.class.php";
+
+        if ($data['respond_rule'] == '1') {
+            $files[] = "{$this->addon_dir}Controller/RespondController.class.php";
+        }
+
+        if ($data['entry'] == '1') {
+            $files[] = "{$this->addon_dir}Controller/MobileController.class.php";
+            $files[] = "{$this->addon_dir}View/";
+            $files[] = "{$this->addon_dir}View/Mobile/";
+        }
+
+        if (strpos($data['addon_type'], '2')) {
+            $files[] = "{$this->addon_dir}Controller/ApiController.class.php";
+        }
+
+        $res = create_dir_or_files($files);            // 生成插件文件夹及文件
+    }
+
+    /**
+     * 上传插件logo
+     * @desc
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function uploadLogo(){
+        $logofile = $_FILES['logo'];
+        $logo = '';
+        if ($logofile['name'] != '') {      // 上传了logo文件
+            if ($logofile['error'] == 0 && $logofile['size'] < 5*1024*1000 && in_array($logofile['type'], array('image/png','image/gif','image/jpg','image/jpeg'))) {
+                $logoname = 'logo.' . substr($logofile['type'], 6);
+                $logopath = $this->addon_dir . $logoname;
+                move_uploaded_file($logofile['tmp_name'], $logopath);
+                $logo = $logoname;
+            }
+        }
+
+        return $logo;
+    }
+
+    /**
+     * 填充info.php文件
+     * @desc
+     * @param $data
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function putInfoField($data,$logo){
+        $info_file = <<<str
+<?php
+
+return array(
+	'name' => '{$data['name']}',
+	'bzname' => '{$data['bzname']}',
+	'type'=>'{$data['type']}',
+	'desc' => '{$data['desc']}',
+	'version' => '{$data['version']}',
+	'author' => '{$data['author']}',
+    'logo' => '{$logo}',
+	'config' => array(
+		'respond_rule' => {$data['respond_rule']},
+		'setting' => {$data['setting']},
+		'entry' => {$data['entry']},
+		'menu' => {$data['menu']}
+	)
+);
+
+?>
+str;
+        file_put_contents("{$this->addon_dir}info.php", $info_file);
+    }
+
+    /**
+     * 填充webController文件
+     * @desc
+     * @param $data
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function putWebControllerFile($data){
+        $web_file = <<<str
+<?php
+
+namespace Addons\\{$data['bzname']}\Controller;
+use Mp\Controller\AddonsController;
+
+/**
+ * {$data['name']}后台管理控制器
+ * @author {$data['author']}
+ */
+class WebController extends AddonsController {
+
+}
+?>
+str;
+        file_put_contents("{$this->addon_dir}Controller/WebController.class.php", $web_file);
+    }
+
+    /**
+     * 填充ResponseController文件
+     * @desc
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function putResponseControllerFile($data){
+        $respond_file = <<<str
+<?php
+
+namespace Addons\\{$data['bzname']}\Controller;
+use Mp\Controller\ApiController;
+
+/**
+ * {$data['name']}响应控制器
+ * @author {$data['author']}
+ */
+class RespondController extends ApiController {
+
+	/**
+	 * 微信交互
+	 * @param \$message array 微信消息数组
+	 */
+	public function wechat(\$message = array()) {
+
+	}
 }
 
+?>
+str;
+        file_put_contents("{$this->addon_dir}Controller/RespondController.class.php", $respond_file);
+    }
+
+    /**
+     * 填充Mobile文件
+     * @desc
+     * @param $data
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function putMobileControllerFile($data){
+        $mobile_file = <<<str
+<?php
+
+namespace Addons\\{$data['bzname']}\Controller;
+use Mp\Controller\MobileBaseController;
+
+/**
+ * {$data['name']}移动端控制器
+ * @author {$data['author']}
+ */
+class MobileController extends MobileBaseController {
+
+}
+
+?>
+str;
+        file_put_contents("{$this->addon_dir}Controller/MobileController.class.php", $mobile_file);
+    }
+
+    /**
+     * 填充ApiController文件
+     * @desc
+     * @param $data
+     * @author 16
+     * @date 2018/5/10
+     */
+    private function putApiControllerFile($data){
+        $api_file = <<<str
+<?php
+
+namespace Addons\\{$data['bzname']}\Controller;
+use Mp\Controller\ApiBaseController;
+
+/**
+ * {$data['name']}插件Api控制器
+ * @author {$data['author']}
+ */
+class ApiController extends ApiBaseController {
 
 
+}
+
+?>
+str;
+        file_put_contents("{$this->addon_dir}Controller/ApiController.class.php", $api_file);
+    }
+
+}
  ?>
