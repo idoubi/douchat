@@ -6,7 +6,7 @@ use Think\Model;
 /**
  * access_key模型
  */
-class AddonsModel extends Model {
+class AccessKeyModel extends Model {
 
     /**
      * 获取公众号的一个access_key
@@ -18,7 +18,7 @@ class AddonsModel extends Model {
         $map['mpid'] = get_mpid();
         $map['status'] = 1;
 
-       return $this->field('ak,sk')->where($map)->order('update_at DESC')->find();
+       return $this->field('ak,sk')->where($map)->order('updated_at DESC')->find();
     }
 }
 
