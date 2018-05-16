@@ -9,6 +9,7 @@ use Admin\Controller\BaseController;
 
 class AddonsController extends BaseController {
     private $addon_dir;
+    private $wx_dir;
 
 	/**
 	 * 已安装插件
@@ -237,6 +238,7 @@ class AddonsController extends BaseController {
 	public function add() {
 		if (IS_POST) {
 			$addons_path = ADDON_PATH;
+			$wx_template_path = './Wxapps/';
 			$addon_model = D('Addons');
             $data = I('post.');
             $data['type'] = implode(',',$data['type']);
@@ -248,6 +250,15 @@ class AddonsController extends BaseController {
 			if (!is_writable($addons_path)) {
 				$this->error('插件目录没有写入权限');
 			}
+
+			if(strpos($data['type'],'2') !== false){
+			    if(!is_writable($wx_template_path)){
+                    $this->error('小程序模板目录没有写入权限');
+                }elseif (is_dir($wx_template_path . "{$data['bzname']}")){
+                    $this->error('相同名称的小程序文件夹已存在');
+                }
+            }
+
 
             $this->addon_dir = ADDON_PATH . "{$data['bzname']}/";
 			$this->createDirOrFiles($data); // 生成插件文件夹及文件
@@ -264,6 +275,9 @@ class AddonsController extends BaseController {
 			}
 			if (strpos($data['type'],'2') !== false) {
 			    $this->putApiControllerFile($data);
+			    //生成小程序模板
+                $this->wx_dir = $wx_template_path . "{$data['bzname']}/";
+                $this->createTemplateOfWx($data);
 			}
 			$this->success('创建插件成功', U('not_install'));
 		} else {
@@ -595,5 +609,633 @@ str;
         file_put_contents("{$this->addon_dir}Controller/ApiController.class.php", $api_file);
     }
 
+    /**
+     * 生成小程序模板
+     * @desc
+     * @author 16
+     * @date 2018/5/15
+     */
+    private function createTemplateOfWx($info){
+        $this->createDirOrFilesOfWx();
+        $this->putCommonPagesFile();
+        $this->putUtilJsFile();
+        $this->putAppFile();
+        $this->putConfigFile($info);
+    }
+
+    /**
+     * 生成相应的小程序模板文件
+     * @desc
+     * @author 16
+     * @date 2018/5/15
+     */
+    private function createDirOrFilesOfWx(){
+        $files = array();
+        $files[] = "{$this->wx_dir}";
+        $files[] = "{$this->wx_dir}pages/";
+        $files[] = "{$this->wx_dir}pages/index/";
+        $files[] = "{$this->wx_dir}pages/index/index.js";
+        $files[] = "{$this->wx_dir}pages/index/index.wxml";
+        $files[] = "{$this->wx_dir}pages/index/index.wxss";
+        $files[] = "{$this->wx_dir}pages/logs/";
+        $files[] = "{$this->wx_dir}pages/logs/logs.js";
+        $files[] = "{$this->wx_dir}pages/logs/logs.wxml";
+        $files[] = "{$this->wx_dir}pages/logs/logs.wxss";
+        $files[] = "{$this->wx_dir}utils/";
+        $files[] = "{$this->wx_dir}utils/util.js";
+        $files[] = "{$this->wx_dir}app.js";
+        $files[] = "{$this->wx_dir}ext.js";
+        $files[] = "{$this->wx_dir}app.json";
+        $files[] = "{$this->wx_dir}app.wxss";
+        $files[] = "{$this->wx_dir}project.config.json";
+
+        $res = create_dir_or_files($files);
+    }
+
+    /**
+     * 填充基础的pages目录内容
+     * @desc
+     * @author 16
+     * @date 2018/5/15
+     */
+    private function putCommonPagesFile(){
+        //index.js
+        $index_js_file = <<<str
+//index.js
+//获取应用实例
+const app = getApp()
+
+Page({
+  data: {
+    motto: 'Hello World',
+    userInfo: {},
+    hasUserInfo: false,
+    canIUse: wx.canIUse('button.open-type.getUserInfo')
+  },
+  //事件处理函数
+  bindViewTap: function() {
+    wx.navigateTo({
+      url: '../logs/logs'
+    })
+  },
+  onLoad: function () {
+    if (app.globalData.userInfo) {
+      this.setData({
+        userInfo: app.globalData.userInfo,
+        hasUserInfo: true
+      })
+    } else if (this.data.canIUse){
+      // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+      // 所以此处加入 callback 以防止这种情况
+      app.userInfoReadyCallback = res => {
+        this.setData({
+          userInfo: res.userInfo,
+          hasUserInfo: true
+        })
+      }
+    } else {
+      // 在没有 open-type=getUserInfo 版本的兼容处理
+      wx.getUserInfo({
+        success: res => {
+          app.globalData.userInfo = res.userInfo
+          this.setData({
+            userInfo: res.userInfo,
+            hasUserInfo: true
+          })
+        }
+      })
+    }
+  },
+  getUserInfo: function(e) {
+    console.log(e)
+    app.globalData.userInfo = e.detail.userInfo
+    this.setData({
+      userInfo: e.detail.userInfo,
+      hasUserInfo: true
+    })
+  }
+})
+str;
+        file_put_contents("{$this->wx_dir}pages/index/index.js", $index_js_file);
+
+        //index.wxml
+        $index_wxml_file = <<<str
+<!--index.wxml-->
+<view class="container">
+  <view class="userinfo">
+    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
+    <block wx:else>
+      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
+    </block>
+  </view>
+  <view class="usermotto">
+    <text class="user-motto">{{motto}}</text>
+  </view>
+</view>
+str;
+        file_put_contents("{$this->wx_dir}pages/index/index.wxml", $index_wxml_file);
+
+        //index.wxss
+        $index_wxss_file = <<<str
+/**index.wxss**/
+.userinfo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
- ?>
+
+.userinfo-avatar {
+  width: 128rpx;
+  height: 128rpx;
+  margin: 20rpx;
+  border-radius: 50%;
+}
+
+.userinfo-nickname {
+  color: #aaa;
+}
+
+.usermotto {
+  margin-top: 200px;
+}
+str;
+        file_put_contents("{$this->wx_dir}pages/index/index.wxss", $index_wxss_file);
+
+        //logs.js
+        $logs_js_file = <<<str
+//logs.js
+const util = require('../../utils/util.js')
+
+Page({
+  data: {
+    logs: []
+  },
+  onLoad: function () {
+    this.setData({
+      logs: (wx.getStorageSync('logs') || []).map(log => {
+        return util.formatTime(new Date(log))
+      })
+    })
+  }
+})
+
+str;
+        file_put_contents("{$this->wx_dir}pages/logs/logs.js", $logs_js_file);
+
+        //logs.wxml
+        $logs_wxml_file = <<<str
+<!--logs.wxml-->
+<view class="container log-list">
+  <block wx:for="{{logs}}" wx:for-item="log">
+    <text class="log-item">{{index + 1}}. {{log}}</text>
+  </block>
+</view>
+str;
+        file_put_contents("{$this->wx_dir}pages/logs/logs.wxml", $logs_wxml_file);
+
+        //logs.wxss
+        $logs_wxss_file = <<<str
+.log-list {
+  display: flex;
+  flex-direction: column;
+  padding: 40rpx;
+}
+.log-item {
+  margin: 10rpx;
+}
+
+str;
+        file_put_contents("{$this->wx_dir}pages/logs/logs.wxss", $logs_wxss_file);
+
+        //logs.json
+        $logs_json_file = <<<str
+{
+  "navigationBarTitleText": "查看启动日志"
+}
+str;
+        file_put_contents("{$this->wx_dir}pages/logs/logs.json", $logs_json_file);
+    }
+
+    /**
+     * 填充util文件
+     * @desc
+     * @author 16
+     * @date 2018/5/15
+     */
+    private function putUtilJsFile(){
+        //util.js
+        $util_js_file = <<<str
+var apiBase = {
+    domain: '',
+    mpid: 0,
+    addon: '',
+    version: '',
+    ak: '',
+    sk: ''
+};
+
+// 初始化
+function init() {
+    var ext = require('../ext.js')
+    if (ext && ext.apiType == 1) {  // 手动接入的方式
+        apiBase = ext.apiBase;
+    }
+}
+
+// 发起请求
+function request(options) {
+    var url = options.url || '';    // 请求地址
+    if (url.indexOf('http') != 0) {     // 通过相对地址发起请求
+        url = apiBase.domain + '/addon/' + apiBase.addon + '/api/' + url + '/mpid/' + apiBase.mpid;
+    }
+    var data = options.data || {};          // 请求数据
+    var header = options.header || {};      // 请求头
+    if (!header['content-type']) {
+        header['content-type'] = 'application/x-www-form-urlencoded';
+    }
+    if (!header['ak']) {
+        header['ak'] = apiBase.ak;
+    }
+    if (!header['sk']) {
+        header['sk'] = apiBase.sk;
+    }
+    if (!header['version']) {
+        header['version'] = apiBase.version;
+    }
+    if (!header['User-Token']) {
+        header['User-Token'] = wx.getStorageSync('userToken');
+    }
+    var method = (options.method || 'get').toUpperCase();   // 请求方式
+    var dataType = options.dataType || 'json';              // 请求数据的格式
+    var responseType = options.responseType || 'text';      // 响应数据格式
+    wx.request({
+        url: url,
+        method: method,
+        data: data,
+        header: header,
+        dataType: dataType,
+        responseType: responseType,
+        success: function(res) {
+            if (options.success && typeof options.success == 'function') {
+                options.success(res.data);
+            }
+        },
+        fail: function(res) {
+            if (options.fail && typeof options.fail == 'function') {
+                options.fail(res.data);
+            }
+        },
+        complete: function(res) {
+            if (options.complete && typeof options.complete == 'function') {
+                options.complete(res.data);
+            }
+        }
+    });
+}
+
+// 获取配置
+function getSettings(cb, refresh) {
+    var settings = wx.getStorageSync('settings');
+    if (!settings || refresh == true) {
+        request({
+            url: 'getSettings',
+            method: 'get',
+            success: function (res) {
+                if (res && res.errcode == 0 && res.items) {
+                    wx.setStorageSync('settings', res.items);
+                    if (typeof cb == 'function') {
+                        cb(res.items);
+                    }
+                }
+            }
+        });
+    } else {
+        if (typeof cb == 'function') {
+            cb(settings);
+        }
+    }
+}
+
+// 获取用户信息
+function getUserInfo(cb, refresh) {
+    if (refresh == true) {
+        login(cb)
+    } else {
+        var userInfo = wx.getStorageSync('userInfo');
+        if (typeof cb == 'function') {
+            cb(userInfo);
+        }
+    }
+}
+
+// 登录检测
+function checkLogin(options) {
+    wx.checkSession({
+       success: function() {
+           var userInfo = wx.getStorageSync('userInfo');
+           var userToken = wx.getStorageSync('userToken');
+           if (!userInfo || !userToken) {
+               if (options && typeof options.fail == 'function') {
+                   options.fail();
+               }
+           } else {
+               request({
+                   url: 'isLogin',
+                   method: 'post',
+                   header: {
+                       'User-Token': userToken
+                   },
+                   success: function (res) {
+                       if (res && res.errcode == 0) {  // 登录有效
+                           if (options && typeof options.success == 'function') {
+                               options.success();
+                           }
+                       } else {
+                           if (options && typeof options.fail == 'function') {
+                               options.fail();
+                           }
+                       }
+                   },
+                   fail: function () {
+                       if (options && typeof options.fail == 'function') {
+                           options.fail();
+                       }
+                   }
+               });
+           }
+       },
+       fail: function() {
+           if (options && typeof options.fail == 'function') {
+               options.fail();
+           }
+       } 
+    });
+}
+
+// 用户登录
+function login(cb) {
+    wx.login({
+       success: function(res) {     // 本地登录成功
+            wx.getUserInfo({    // 获取用户信息
+                success: function(ret) {
+                    request({       // 远程登录
+                        url: 'login',
+                        method: 'post',
+                        data: {
+                            code: res.code,
+                            encryptedData: ret.encryptedData,
+                            iv: ret.iv
+                        },
+                        success: function(data) {
+                            if (data.errcode == 0 && data.items) { // 登录成功
+                                // 缓存用户信息和登录态sk
+                                wx.setStorageSync('userInfo', data.items.user_info);
+                                wx.setStorageSync('userToken', data.items.user_token);
+                                if (typeof cb == 'function') {
+                                    cb(data.items.user_info);
+                                }
+                            } else {
+                                loginFail();
+                            }
+                        },
+                        fail: function() {
+                            loginFail();
+                        }
+                    });
+                },
+                fail: function() {
+                    loginFail();
+                }
+            });
+       },
+       fail: function() {   // 登录失败
+           loginFail();
+       }
+    });
+}
+
+// 登录失败
+function loginFail() {
+    wx.showModal({
+        content: '登录失败，请允许获取用户信息,如不显示请删除小程序重新进入',
+        showCancel: false
+    });
+}
+
+function showTip(sms, icon, fun, t) {
+    if (!t) {
+        t = 1000;
+    }
+    wx.showToast({
+        title: sms,
+        icon: icon,
+        duration: t,
+        success: fun
+    })
+}
+
+function showModal(c, t, fun) {
+    if (!t)
+        t = '提示'
+    wx.showModal({
+        title: t,
+        content: c,
+        showCancel: false,
+        success: fun
+    })
+}
+
+function formatTime(date) {
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
+    var hour = date.getHours();
+    var minute = date.getMinutes();
+    var second = date.getSeconds();
+
+    return [year, month, day].map(formatNumber).join('/') + ' ' + [hour, minute, second].map(formatNumber).join(':');
+}
+
+function formatNumber(n) {
+    n = n.toString();
+    return n[1] ? n : '0' + n
+}
+
+module.exports = {
+    formatTime: formatTime,
+    init: init,
+    checkLogin: checkLogin,
+    login: login,
+    getSettings: getSettings,
+    getUserInfo: getUserInfo,
+    request: request,
+    showTip: showTip,
+    showModal: showModal
+};
+
+str;
+        file_put_contents("{$this->wx_dir}utils/util.js", $util_js_file);
+    }
+
+    /**
+     * 填充主要文件
+     * @desc
+     * @author 16
+     * @date 2018/5/15
+     */
+    private function putAppFile(){
+        //app.js
+        $app_js_file = <<<str
+//app.js
+App({
+  onLaunch: function () {
+    // 展示本地存储能力
+    var logs = wx.getStorageSync('logs') || []
+    logs.unshift(Date.now())
+    wx.setStorageSync('logs', logs)
+
+    // 登录
+    wx.login({
+      success: res => {
+        // 发送 res.code 到后台换取 openId, sessionKey, unionId
+      }
+    })
+    // 获取用户信息
+    wx.getSetting({
+      success: res => {
+        if (res.authSetting['scope.userInfo']) {
+          // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
+          wx.getUserInfo({
+            success: res => {
+              // 可以将 res 发送给后台解码出 unionId
+              this.globalData.userInfo = res.userInfo
+
+              // 由于 getUserInfo 是网络请求，可能会在 Page.onLoad 之后才返回
+              // 所以此处加入 callback 以防止这种情况
+              if (this.userInfoReadyCallback) {
+                this.userInfoReadyCallback(res)
+              }
+            }
+          })
+        }
+      }
+    })
+  },
+  globalData: {
+    userInfo: null
+  }
+})
+str;
+        file_put_contents("{$this->wx_dir}app.js", $app_js_file);
+        //app.json
+        $app_json_file = <<<str
+{
+  "pages":[
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle":"black"
+  }
+}
+
+str;
+        file_put_contents("{$this->wx_dir}app.json", $app_json_file);
+        //app.wxss
+        $app_wxss_file = <<<str
+/**app.wxss**/
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 200rpx 0;
+  box-sizing: border-box;
+}
+str;
+        file_put_contents("{$this->wx_dir}app.wxss", $app_wxss_file);
+        //project.config.json
+        $project_config_json_file = <<<str
+{
+	"description": "项目配置文件。",
+	"packOptions": {
+		"ignore": []
+	},
+	"setting": {
+		"urlCheck": true,
+		"es6": true,
+		"postcss": true,
+		"minified": true,
+		"newFeature": true
+	},
+	"compileType": "miniprogram",
+	"libVersion": "1.9.98",
+	"appid": "touristappid",
+	"projectname": "demo",
+	"condition": {
+		"search": {
+			"current": -1,
+			"list": []
+		},
+		"conversation": {
+			"current": -1,
+			"list": []
+		},
+		"game": {
+			"currentL": -1,
+			"list": []
+		},
+		"miniprogram": {
+			"current": -1,
+			"list": []
+		}
+	}
+}
+str;
+        file_put_contents("{$this->wx_dir}project.config.json", $project_config_json_file);
+    }
+
+    /**
+     * 填充配置文件
+     * @desc
+     * @param $info
+     * @author 16
+     * @date 2018/5/15
+     */
+    private function putConfigFile($info){
+        //ext.js
+        $site_url = SITE_URL;
+        $mpid = get_mpid();
+        list($ak,$sk) = $this->get_secret_key();
+        $ext_js_file = <<<str
+    module.exports = {
+    apiType: 1, // 手动接入的方式
+    apiBase: {
+        domain: '{$site_url}',
+        mpid: {$mpid},
+        addon: '{$info['bzname']}',
+        version: '{$info['version']}',
+        ak: '{$ak}',
+        sk: '{$sk}'
+    }
+}
+str;
+        file_put_contents("{$this->wx_dir}ext.js", $ext_js_file);
+    }
+
+    /**
+     * 获取密钥
+     * @desc
+     * @author 16
+     * @date 2018/5/16
+     */
+    private function get_secret_key(){
+        return get_mpid() ? array_values(D('AccessKey')->get_mp_access_key()) : [0,0];
+    }
+
+}

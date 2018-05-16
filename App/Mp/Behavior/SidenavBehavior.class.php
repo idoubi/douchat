@@ -81,7 +81,7 @@ class SidenavBehavior extends Behavior {
 			$sidenav = [
 				[
 					'title' => '小程序管理',
-					'url' => 'javascript',
+					'url' => 'javascript:void(0)',
 					'class' => 'icon icon-signup',
 					'children' => [
 						[
