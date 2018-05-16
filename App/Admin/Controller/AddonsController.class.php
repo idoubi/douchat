@@ -255,7 +255,7 @@ class AddonsController extends BaseController {
 			    if(!is_writable($wx_template_path)){
                     $this->error('小程序模板目录没有写入权限');
                 }elseif (is_dir($wx_template_path . "{$data['bzname']}")){
-                    $this->error('相同名称的小程序文件夹已存在');
+                    $this->error('相同名称的小程序已存在');
                 }
             }
 
@@ -263,7 +263,6 @@ class AddonsController extends BaseController {
             $this->addon_dir = ADDON_PATH . "{$data['bzname']}/";
 			$this->createDirOrFiles($data); // 生成插件文件夹及文件
 			$logo = $this->uploadLogo();
-
 			$this->putInfoField($data,$logo);
             $this->putWebControllerFile($data);
 
@@ -277,7 +276,7 @@ class AddonsController extends BaseController {
 			    $this->putApiControllerFile($data);
 			    //生成小程序模板
                 $this->wx_dir = $wx_template_path . "{$data['bzname']}/";
-                $this->createTemplateOfWx($data);
+                $this->create_template_of_wx($data);
 			}
 			$this->success('创建插件成功', U('not_install'));
 		} else {
@@ -615,12 +614,12 @@ str;
      * @author 16
      * @date 2018/5/15
      */
-    private function createTemplateOfWx($info){
-        $this->createDirOrFilesOfWx();
-        $this->putCommonPagesFile();
-        $this->putUtilJsFile();
-        $this->putAppFile();
-        $this->putConfigFile($info);
+    private function create_template_of_wx($info){
+        $this->create_dir_or_files_of_wx();
+        $this->put_common_pages_file();
+        $this->put_util_js_file();
+        $this->put_app_file();
+        $this->put_config_file($info);
     }
 
     /**
@@ -629,7 +628,7 @@ str;
      * @author 16
      * @date 2018/5/15
      */
-    private function createDirOrFilesOfWx(){
+    private function create_dir_or_files_of_wx(){
         $files = array();
         $files[] = "{$this->wx_dir}";
         $files[] = "{$this->wx_dir}pages/";
@@ -658,7 +657,7 @@ str;
      * @author 16
      * @date 2018/5/15
      */
-    private function putCommonPagesFile(){
+    private function put_common_pages_file(){
         //index.js
         $index_js_file = <<<str
 //index.js
@@ -823,7 +822,7 @@ str;
      * @author 16
      * @date 2018/5/15
      */
-    private function putUtilJsFile(){
+    private function put_util_js_file(){
         //util.js
         $util_js_file = <<<str
 var apiBase = {
@@ -1084,7 +1083,7 @@ str;
      * @author 16
      * @date 2018/5/15
      */
-    private function putAppFile(){
+    private function put_app_file(){
         //app.js
         $app_js_file = <<<str
 //app.js
@@ -1207,7 +1206,7 @@ str;
      * @author 16
      * @date 2018/5/15
      */
-    private function putConfigFile($info){
+    private function put_config_file($info){
         //ext.js
         $site_url = SITE_URL;
         $mpid = get_mpid();
