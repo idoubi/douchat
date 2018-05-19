@@ -354,18 +354,6 @@ class Wechat
 	}
 	
 	/**
-	 * 日志记录，可被重载。
-	 * @param mixed $log 输入日志
-	 * @return mixed
-	 */
-	protected function log($log){
-		if ($this->debug && function_exists($this->logcallback)) {
-			if (is_array($log)) $log = print_r($log,true);
-			return call_user_func($this->logcallback,$log);
-		}
-	}
-	
-	/**
 	 * 获取微信服务器发来的信息
 	 */
 	public function getRev()

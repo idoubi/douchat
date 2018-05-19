@@ -56,10 +56,10 @@ class MpModel extends Model {
 	 */
 	public function get_mp_lists($user_id) {
 		if (empty($user_id)) {
-			return false;
+			$user_id = get_user_id();
 		}
 		$map['user_id'] = $user_id;
-		$mp_lists = M('mp')->where($map)->select();
+		$mp_lists = M('mp')->where($map)->order('mp_type desc, create_time desc')->select();
 		return $mp_lists;
 	}
 

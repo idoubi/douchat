@@ -322,6 +322,16 @@ CREATE TABLE IF NOT EXISTS `dc_mp_setting` (
 
 -- --------------------------------------------------------
 
+CREATE TABLE IF NOT EXISTS `dc_mp_tempmsg` (
+  `id` int(10) NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+  `mpid` int(10) NOT NULL DEFAULT '0' COMMENT '账号ID',
+  `openid` varchar(50) NOT NULL DEFAULT '' COMMENT '用户标识',
+  `formid` varchar(255) NOT NULL DEFAULT '' COMMENT 'FormId',
+  `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模板消息';
+
 --
 -- 表的结构 `dc_rbac_access`
 --

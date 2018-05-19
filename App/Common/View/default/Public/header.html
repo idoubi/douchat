@@ -126,15 +126,20 @@
                 </a>
                 </if>
                 <ul class="dropdown-menu mod-user">
-                    <li>
-                        <a href="{:U('Mp/Index/index', ['mpid'=>$mp_info['id']])}"><i class="icon icon-home"></i>账号首页</a>
-                    </li>
-                    <li>
-                        <a href="{:U('Mp/Mp/edit', ['id'=>$mp_info['id'], 'mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-edit"></i>编辑当前账号</a>
-                    </li>
-                    <li>
-                        <a href="{:U('Mp/Mp/lists', ['mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-ul"></i>管理其他账号</a>
-                    </li>
+                    <!--<li>-->
+                        <!--<a href="{:U('Mp/Index/index', ['mpid'=>$mp_info['id']])}"><i class="icon icon-home"></i>管理当前账号</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="{:U('Mp/Mp/edit', ['id'=>$mp_info['id'], 'mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-edit"></i>编辑当前账号</a>-->
+                    <!--</li>-->
+                    <!--<li>-->
+                        <!--<a href="{:U('Mp/Mp/lists', ['mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-ul"></i>管理其他账号</a>-->
+                    <!--</li>-->
+                    <volist name="mp_list" id="vo">
+                        <li>
+                            <a href="{:U('Mp/Mp/lists', ['mp_type'=>$mp_info['mp_type']])}">{$vo.name}</a>
+                        </li>
+                    </volist>
                 </ul>
             </li>
             <volist name="topnav" id="vo">
