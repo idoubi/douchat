@@ -24,7 +24,7 @@ class MpFansModel extends Model {
 		$fans_wechat_info = get_fans_wechat_info($openid);
 		if ($fans_wechat_info) {			// 如果拉取到了微信粉丝信息
 			$data['is_subscribe'] = $fans_wechat_info['subscribe'];
-			$data['nickname'] = $fans_wechat_info['nickname'];
+			$data['nickname'] = text_encode($fans_wechat_info['nickname']);
 			$data['sex'] = $fans_wechat_info['sex'];
 			$data['language'] = $fans_wechat_info['language'];
 			$data['city'] = $fans_wechat_info['city'];
@@ -90,6 +90,9 @@ class MpFansModel extends Model {
 		$map['openid'] = $openid;
 		$map['mpid'] = $mpid;
 		$fansInfo = $this->where($map)->find();
+		if ($fansInfo) {
+			$fansInfo['nickname'] = text_decode($fansInfo['nickname']);
+		}
 		if ($field) {
 			return $fansInfo[$field];
 		} else {

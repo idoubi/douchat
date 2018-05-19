@@ -11,6 +11,7 @@ define('THINK_PATH', './ThinkPHP/');						// 定义thinkphp框架路径
 define('APP_PATH', './App/');								// 定义应用目录
 define('RUNTIME_PATH', './Runtime/');						// 定义缓存目录
 define('ADDON_PATH', './Addons/'); 							// 定义插件目录
+define('UPLOAD_PATH', './Uploads/');						// 上传目录
 define('SITE_PATH', dirname(__FILE__));						// 定义网站物理路径
 define('SITE_URL', str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']));
 define('APP_DEBUG', true);									// 开启调试模式

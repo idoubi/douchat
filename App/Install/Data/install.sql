@@ -169,7 +169,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_auto_reply` (
 CREATE TABLE IF NOT EXISTS `dc_mp_fans` (
   `id` int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY COMMENT '自增ID',
   `mpid` int(10) NOT NULL COMMENT '公众号标识',
-  `openid` varchar(255) NOT NULL COMMENT '粉丝标识',
+  `openid` varchar(255) NOT NULL unique COMMENT '粉丝标识',
   `is_subscribe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否关注',
   `subscribe_time` int(10) DEFAULT NULL COMMENT '关注时间',
   `unsubscribe_time` int(10) DEFAULT NULL COMMENT '取消关注时间',
@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_fans` (
   `latitude` varchar(50) DEFAULT NULL COMMENT '纬度',
   `longitude` varchar(50) DEFAULT NULL COMMENT '经度',
   `location_precision` varchar(50) DEFAULT NULL COMMENT '精度'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号粉丝表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公众号粉丝表';
 
 -- --------------------------------------------------------
 

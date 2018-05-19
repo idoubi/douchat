@@ -42,11 +42,11 @@ class AddonsController extends BaseController {
 		add_hook('nav', 'Mp\Behavior\NavBehavior');							// 添加生成插件导航的钩子
 		$this->nav = hook('nav');											// 执行钩子，获取插件导航数据
 		if ($_G['action'] == 'entry') {										// 获取子导航
-			$this->subnav = $this->nav['entry']['children'];
+			$this->subnav = [];
 		} elseif ($_G['action'] == 'setting') {
-			$this->subnav = $this->nav['setting']['children'];
+			$this->subnav = [];
 		} else {
-			$this->subnav = $this->nav['menu']['children'];
+			$this->subnav = [];
 		}
 	}
 	
@@ -241,9 +241,7 @@ class AddonsController extends BaseController {
             'value' => $type,
             'type' => 'hidden'
         ];
-
-        $this->subnav = $nav;
-
+		
         if (IS_POST) {
             $post = I('post.');
             $map = [

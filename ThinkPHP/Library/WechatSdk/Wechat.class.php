@@ -1171,6 +1171,23 @@ class Wechat
 	}
 	
 	/**
+	 * log overwrite
+	 * @see Wechat::log()
+	 */
+	protected function log($log){
+		if ($this->debug) {
+			if (function_exists($this->logcallback)) {
+				if (is_array($log)) $log = print_r($log,true);
+				return call_user_func($this->logcallback,$log);
+			}elseif (class_exists('Log')) {
+				Log::write('wechat：'.$log, Log::DEBUG);
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	/**
 	 * 设置缓存，按需重载
 	 * @param string $cachename
 	 * @param mixed $value
@@ -1178,8 +1195,7 @@ class Wechat
 	 * @return boolean
 	 */
 	protected function setCache($cachename,$value,$expired){
-		//TODO: set cache implementation
-		return false;
+		return S($cachename,$value,$expired);
 	}
 	
 	/**
@@ -1188,8 +1204,7 @@ class Wechat
 	 * @return mixed
 	 */
 	protected function getCache($cachename){
-		//TODO: get cache implementation
-		return false;
+		return S($cachename);
 	}
 	
 	/**
@@ -1198,8 +1213,7 @@ class Wechat
 	 * @return boolean
 	 */
 	protected function removeCache($cachename){
-		//TODO: remove cache implementation
-		return false;
+		return S($cachename,null);
 	}
 	
 	/**
@@ -1218,7 +1232,7 @@ class Wechat
 			return $this->access_token;
 		}
 		
-		$authname = 'wechat_access_token'.$appid;
+		$authname = 'wechat_access_token_'.$appid;
 		if ($rs = $this->getCache($authname))  {
 			$this->access_token = $rs;
 			return $rs;

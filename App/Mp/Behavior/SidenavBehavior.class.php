@@ -56,27 +56,21 @@ class SidenavBehavior extends Behavior {
 				]
 			];
 		} elseif (in_array($ctl, ['addons']) || get_addon()) {
-			foreach ($access_addons as $k => $v) {
-				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
-					if (isset($v['config']['sidebar_list']['addon'])) {
-						$mp_sidebar = $v['config']['sidebar_list']['mp'];
-						foreach ($mp_sidebar as $kk => $vv) {
-							$sidenav[] = $vv;
-						}
-					}
-				}
-				if (get_addon() == $v['bzname']) {
-					$v['class'] = 'active';
-				}
-				$addons[] = $v;
+			if ($act == 'manage') {
+				$sidenav[] = [
+					'title' => '全部应用',
+					'url' => U('Addons/manage'),
+					'class' => 'icon icon-list active'
+				];
+			} else {
+				$sidenav[] = [
+					'title' => get_addon_name(),
+					'url' => 'javascript:;',
+					'class' => 'icon icon-home',
+					'attr' => 'data="icon"',
+					'children' => D('Addons')->get_addon_nav()
+				];
 			}
-			$sidenav[] = [
-				'title' => '全部应用',
-				'url' => 'javascript:;',
-				'class' => 'icon icon-ul',
-				'attr' => 'data="icon"',
-				'children' => $addons
-			];
 		} elseif ($params['mp_type'] == 2) {
 			$sidenav = [
 				[

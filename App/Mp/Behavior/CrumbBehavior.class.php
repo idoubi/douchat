@@ -44,7 +44,7 @@ class CrumbBehavior extends Behavior {
 				);
 			} else {
 				$crumb[] = array(
-					'title' => '业务导航',
+					'title' => '功能导航',
 					'url' => '',
 					'class' => 'active'
 				);
