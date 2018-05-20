@@ -154,7 +154,7 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
     public function setting($settings = array()) {
-        $mpid = get_mpid();
+		$mpid = get_mpid();
         $addon = get_addon();
         $addon_config = D('Mp/Addons')->get_addon_config($addon);
         $type = I('type', '');
@@ -267,6 +267,24 @@ class AddonsController extends BaseController {
             if (!empty($datas)) {
                 M('addon_setting')->addAll($datas);
             }
+			try {
+				$redisHost = C('REDIS_HOST', null, '127.0.0.1');
+				$redisPort = C('REDIS_PORT', null, '6379');
+				$redisPrefix = C('REDIS_PREFIX', null, 'dc_');
+				$redisDB = C('REDIS_DB', null, 0);
+				$redis = new \Redis();
+				$redis->connect($redisHost,$redisPort);
+				$redis->select($redisDB);
+				$settingsKey = $redisPrefix . 'settings_raw:' . $addon . ':' . $mpid;
+				$settingsValue = M('addon_setting')->where([
+					'addon' => $addon,
+					'mpid' => $mpid,
+					'name' => ['in', $keys]
+				])->select();
+				$redis->set($settingsKey, json_encode($settingsValue));
+			} catch (\Exception $e) {
+		
+			}
             $this->success('编辑成功', U('/addon/'.$addon.'/setting?type='.$type.'&theme='.$theme));
         } else {
             $this->setCrumb($this->crumb)
