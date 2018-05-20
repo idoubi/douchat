@@ -279,7 +279,7 @@ class AddonsController extends BaseController {
 				$settingsValue = M('addon_setting')->where([
 					'addon' => $addon,
 					'mpid' => $mpid,
-					'name' => ['in', $keys]
+//					'name' => ['in', $keys]
 				])->select();
 				$redis->set($settingsKey, json_encode($settingsValue));
 			} catch (\Exception $e) {
