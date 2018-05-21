@@ -24,7 +24,7 @@ class FansController extends BaseController {
 			 ->addListItem('headimgurl', '头像', 'image', array('attr'=>'width=50 height=50','placeholder'=>__ROOT__ . '/Public/Admin/img/noname.jpg'))
 			 ->addListItem('nickname', '昵称', 'function', array('placeholder'=>'匿名','function_name'=>'text_decode'))
 			 ->addListItem('sex', '性别', 'enum', array('options'=>array(''=>'未知',0=>'未知',1=>'男',2=>'女')))
-			 ->addListItem('is_subscribe', '是否关注', 'enum', array('options'=>array(0=>'未关注',1=>'已关注')))
+			 ->addListItem('is_subscribe', '是否关注', $this->mp_type == 2 ? 'hidden' : 'enum', array('options'=>array(0=>'未关注',1=>'已关注')))
 			 ->addListItem('mobile', '手机号', '', ['placeholder'=>'-'])
 			 ->addListItem('id', '操作', 'custom', array('options'=>array(
 			     'edit_fans'=>array('编辑粉丝资料', U('Mp/Fans/edit', array('openid'=>'{openid}')),'btn btn-primary btn-sm',''),

@@ -271,6 +271,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_payment` (
   `detail` text COMMENT '支付详情',
   `price` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '支付金额',
   `notify` varchar(255) NOT NULL DEFAULT '' COMMENT '支付结果处理方法',
+  `prepay_id` varchar(50) NOT NULL DEFAULT '' COMMENT '预支付ID',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '支付状态',
   `mchid` varchar(50) NOT NULL DEFAULT '' COMMENT '商户id'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号支付配置';
@@ -328,6 +329,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_tempmsg` (
   `openid` varchar(50) NOT NULL DEFAULT '' COMMENT '用户标识',
   `formid` varchar(255) NOT NULL DEFAULT '' COMMENT 'FormId',
   `status` tinyint(1) NOT NULL DEFAULT '0' COMMENT '状态',
+  `type` tinyint(1) NOT NULL DEFAULT '1' COMMENT '类型',
   `created_at` int(10) NOT NULL DEFAULT '0' COMMENT '创建时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='模板消息';

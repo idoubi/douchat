@@ -219,7 +219,7 @@ class AddonsController extends BaseController {
         } else {
             $fields = $theme_config['setting_list'];
         }
-
+		
         $keys = [];
         foreach ($fields as $k => $v) {
             if (isset($v['name']) && !empty($v['name'])) {
@@ -228,7 +228,7 @@ class AddonsController extends BaseController {
                 $keys[] = $k;
             }
         }
-
+		
         $fields[] = [
             'name' => 'theme',
             'title' => '当前主题',

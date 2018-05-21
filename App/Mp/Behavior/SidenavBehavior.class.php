@@ -87,7 +87,12 @@ class SidenavBehavior extends Behavior {
                             'title' => '粉丝管理',
                             'url' => U('Fans/lists') ,
                             'class' => $ctl == 'fans' ? 'active' : ''
-                        ]
+                        ],
+						[
+							'title' => '模板消息',
+							'url' => U('Tempmsg/lists') ,
+							'class' => $ctl == 'tempmsg' ? 'active' : ''
+						]
 					]
 				]
 			];

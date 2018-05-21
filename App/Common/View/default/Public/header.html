@@ -137,7 +137,7 @@
                     <!--</li>-->
                     <volist name="mp_list" id="vo">
                         <li>
-                            <a href="{:U('Mp/Mp/lists', ['mp_type'=>$mp_info['mp_type']])}">{$vo.name}</a>
+                            <a href="{:U('Mp/Index/index', ['mpid'=>$vo['id']])}">{$vo.name}</a>
                         </li>
                     </volist>
                 </ul>
