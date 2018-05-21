@@ -89,6 +89,11 @@ class SidenavBehavior extends Behavior {
                             'class' => $ctl == 'fans' ? 'active' : ''
                         ],
 						[
+							'title' => '支付管理',
+							'url' => U('Payment/wechat') ,
+							'class' => $ctl == 'payment' ? 'active' : ''
+						],
+						[
 							'title' => '模板消息',
 							'url' => U('Tempmsg/lists') ,
 							'class' => $ctl == 'tempmsg' ? 'active' : ''
@@ -110,7 +115,7 @@ class SidenavBehavior extends Behavior {
 							'class' => ''
 						],
 						[
-							'title' => '微信支付',
+							'title' => '支付管理',
 							'url' => U('Payment/wechat'),
 							'class' => ''
 						],
