@@ -49,6 +49,7 @@ class TempmsgController extends BaseController {
 				]
 			])
 			->setListOrder('created_at desc')
+			->addListItem('id', 'ID')
 			->addListItem('openid', '粉丝昵称', 'function', ['function_name'=>'get_fans_nickname'])
 			->addListItem('openid', '粉丝头像', 'function', ['function_name'=>'get_fans_headimg'])
 			->addListItem('formid', $type == 2 ? 'prepay_id' : 'formid')
