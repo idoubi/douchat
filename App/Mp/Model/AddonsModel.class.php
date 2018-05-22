@@ -296,6 +296,16 @@ class AddonsModel extends Model {
 		return $addonnav;
 	}
 	
+	private function parse_entry($entry_list) {
+		foreach ($entry_list as $k => $v) {
+			$arr['title'] = $v;
+			$arr['url'] = U('/addon/'.get_addon().'/entry/'.$k);
+			$arr['class'] = I('act') == $k ? 'active' : '';
+			$children[] = $arr;
+		}
+		return $children;
+	}
+	
 	private function parse_menu($menu_list) {
 		foreach ($menu_list as $k => $v) {
 			$arr['title'] = $v;
