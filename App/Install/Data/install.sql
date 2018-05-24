@@ -192,7 +192,7 @@ CREATE TABLE IF NOT EXISTS `dc_mp_fans` (
   `latitude` varchar(50) DEFAULT NULL COMMENT '纬度',
   `longitude` varchar(50) DEFAULT NULL COMMENT '经度',
   `location_precision` varchar(50) DEFAULT NULL COMMENT '精度'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='公众号粉丝表';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='公众号粉丝表';
 
 -- --------------------------------------------------------
 
