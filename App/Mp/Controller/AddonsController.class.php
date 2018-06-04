@@ -42,11 +42,11 @@ class AddonsController extends BaseController {
 		add_hook('nav', 'Mp\Behavior\NavBehavior');							// 添加生成插件导航的钩子
 		$this->nav = hook('nav');											// 执行钩子，获取插件导航数据
 		if ($_G['action'] == 'entry') {										// 获取子导航
-			$this->subnav = $this->nav['entry']['children'];
+			$this->subnav = [];
 		} elseif ($_G['action'] == 'setting') {
-			$this->subnav = $this->nav['setting']['children'];
+			$this->subnav = [];
 		} else {
-			$this->subnav = $this->nav['menu']['children'];
+			$this->subnav = [];
 		}
 	}
 	
@@ -154,7 +154,7 @@ class AddonsController extends BaseController {
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
     public function setting($settings = array()) {
-        $mpid = get_mpid();
+		$mpid = get_mpid();
         $addon = get_addon();
         $addon_config = D('Mp/Addons')->get_addon_config($addon);
         $type = I('type', '');
@@ -219,7 +219,7 @@ class AddonsController extends BaseController {
         } else {
             $fields = $theme_config['setting_list'];
         }
-
+		
         $keys = [];
         foreach ($fields as $k => $v) {
             if (isset($v['name']) && !empty($v['name'])) {
@@ -228,7 +228,7 @@ class AddonsController extends BaseController {
                 $keys[] = $k;
             }
         }
-
+		
         $fields[] = [
             'name' => 'theme',
             'title' => '当前主题',
@@ -241,9 +241,7 @@ class AddonsController extends BaseController {
             'value' => $type,
             'type' => 'hidden'
         ];
-
-        $this->subnav = $nav;
-
+		
         if (IS_POST) {
             $post = I('post.');
             $map = [
@@ -269,6 +267,24 @@ class AddonsController extends BaseController {
             if (!empty($datas)) {
                 M('addon_setting')->addAll($datas);
             }
+			try {
+				$redisHost = C('REDIS_HOST', null, '127.0.0.1');
+				$redisPort = C('REDIS_PORT', null, '6379');
+				$redisPrefix = C('REDIS_PREFIX', null, 'dc_');
+				$redisDB = C('REDIS_DB', null, 0);
+				$redis = new \Redis();
+				$redis->connect($redisHost,$redisPort);
+				$redis->select($redisDB);
+				$settingsKey = $redisPrefix . 'settings_raw:' . $addon . ':' . $mpid;
+				$settingsValue = M('addon_setting')->where([
+					'addon' => $addon,
+					'mpid' => $mpid,
+//					'name' => ['in', $keys]
+				])->select();
+				$redis->set($settingsKey, json_encode($settingsValue));
+			} catch (\Exception $e) {
+		
+			}
             $this->success('编辑成功', U('/addon/'.$addon.'/setting?type='.$type.'&theme='.$theme));
         } else {
             $this->setCrumb($this->crumb)

@@ -63,7 +63,7 @@ class ApiBaseController extends Controller {
 		}
 		try {
 			$post = I('post.');
-			if (empty($post['code']) || empty($post['encryptedData']) || empty($post['iv'])) {
+			if (empty($post['code'])) {
 				$this->response(1001, 'Invalid params');
 			}
 			$mp_info = get_mp_info();
@@ -84,23 +84,68 @@ class ApiBaseController extends Controller {
 				
 				$sessionData = $Wxapp->getSessionKey($post['code']);
 				if (empty($sessionData['session_key']) || empty($sessionData['openid'])) {
-					$this->response(1001, 'Fail to get session key');
+					$this->response(1001, $Wxapp->errMsg);
 				}
 				get_openid($sessionData['openid']);		// 缓存当前登录的用户openid
+				
+				$user_token = md5($sessionData['openid'] . get_nonce(168));		// 用户登录态标识3rdSessionKey
+				$expires = 30 * 24 * 3600;				// 登录态一个月内有效
+				S($user_token, [
+					'openid' => $sessionData['openid'],
+					'session_key' => $sessionData['session_key']
+				], $expires);
+				$this->response(0, '登录成功', [
+					'user_token' => $user_token,
+					'expires' => $expires
+				]);
+			}
+		} catch (\Exception $e) {
+			$this->response(1001, $e->getMessage());
+		}
+	}
+	
+	// 获取用户信息
+	public function getUserInfo() {
+		if (!IS_POST) {
+			$this->response(1001, 'Access Denied');
+		}
+		try {
+			$this->checkLogin();	// 检测登录态
+			
+			$post = I('post.');
+			if (empty($post['encryptedData']) || empty($post['iv'])) {
+				$this->response(1001, 'Invalid params');
+			}
+			$mp_info = get_mp_info();
+			
+			if (empty($mp_info) || empty($mp_info['appid']) || empty($mp_info['appsecret']) || !in_array($mp_info['mp_type'], [1, 2])) {
+				$this->response(1001, 'Invalid mpinfo');
+			}
+			$appid = $mp_info['appid'];
+			$appsecret = $mp_info['appsecret'];
+			$join_type = $mp_info['join_type'];
+			if ($join_type == 2) {		// 授权接入
+			
+			} else {		// 手动接入
+				$user_token = $this->headers['User-Token'];
+				$cache = S($user_token);
+				if (empty($cache['session_key'])) {
+					$this->response(2002, 'Fail to get session key');
+				}
 				$fansInfo = D('MpFans')->where([
 					'mpid' => $this->mpid,
-					'openid' => $sessionData['openid']
+					'openid' => $this->openid
 				])->find();
 				$decodeData = [];
 				if (empty($fansInfo)) {
-					$crypt = new WXBizDataCrypt($appid, $sessionData['session_key']);
+					$crypt = new WXBizDataCrypt($appid, $cache['session_key']);
 					$errCode = $crypt->decryptData($post['encryptedData'], $post['iv'], $decodeData);
 					if ($errCode == 0) {
 						$decodeData = json_decode($decodeData, true);
 						if (is_array($decodeData) && count($decodeData) > 0) {
 							$fansInfo['mpid'] = $this->mpid;
 							$fansInfo['openid'] = $decodeData['openId'];
-							$fansInfo['nickname'] = $decodeData['nickName'];
+							$fansInfo['nickname'] = text_encode($decodeData['nickName']);
 							$fansInfo['headimgurl'] = $decodeData['avatarUrl'];
 							$fansInfo['province'] = $decodeData['province'];
 							$fansInfo['city'] = $decodeData['city'];
@@ -111,9 +156,12 @@ class ApiBaseController extends Controller {
 							$fansInfo['subscribe_time'] = time();
 							D('MpFans')->add($fansInfo);       // 登录成功写到数据表
 						}
+					} else {
+						$this->response(1001, '解密用户信息失败');
 					}
 				} else {
-					$decodeData['nickName'] = $fansInfo['nickname'];
+					$decodeData['openId'] = $fansInfo['openid'];
+					$decodeData['nickName'] = text_decode($fansInfo['nickname']);
 					$decodeData['avatarUrl'] = $fansInfo['headimgurl'];
 					$decodeData['gender'] = $fansInfo['sex'];
 					$decodeData['language'] = $fansInfo['language'];
@@ -124,23 +172,13 @@ class ApiBaseController extends Controller {
 					$decodeData['mobile'] = $fansInfo['mobile'];
 					$decodeData['signature'] = $fansInfo['signature'];
 				}
-				$user_token = get_nonce(64);			// 用户登录态标识3rdSessionKey
-				$expires = 24 * 3600;
-				S($user_token, [
-					'openid' => $sessionData['openid'],
-					'session_key' => $sessionData['session_key']
-				], $expires);
-				$this->response(0, '获取成功', [
-					'user_info' => $decodeData,
-					'user_token' => $user_token,
-					'expires' => $expires
-				]);
+				
+				$this->response(0, '获取成功', $decodeData);
 			}
 		} catch (\Exception $e) {
 			$this->response(1001, $e->getMessage());
 		}
 	}
-	
 	
 	/**
 	 * 登录检测。调用此方法的api必须要微信端用户登录后才能请求
@@ -151,7 +189,7 @@ class ApiBaseController extends Controller {
 		if (isset($headers['User-Token']) && !empty($headers['User-Token'])) {
 			$user_token = $headers['User-Token'];
 			$cache = S($user_token);
-			if (!empty($cache) && !empty($cache['openid'])) {
+			if (!empty($cache) && !empty($cache['openid']) && !empty($cache['session_key'])) {
 				$this->openid = $cache['openid'];
 				$access = true;
 			}
@@ -177,7 +215,7 @@ class ApiBaseController extends Controller {
 			}
 		}
 		if (!$access) {
-			$this->response(1001, '登录无效');
+			$this->response(2002, '登录无效');
 		}
 	}
 	
@@ -250,29 +288,66 @@ class ApiBaseController extends Controller {
 		}
 	}
 	
+	// 获取小程序码
+	public function getQrcode() {
+		try {
+			$path = I('path', '');
+			if (empty($path)) {
+				$this->response(1001, '参数path必需');
+			}
+			$type = I('type', 1, 'intval');
+			if (!in_array($type, [1,2,3])) {
+				$type = 1;
+			}
+			$options = I('options', '');
+			if (empty($options) || !is_array($options)) {
+				$options = [];
+			}
+			$filename = I('filename', '');
+			$res = get_wxa_qrcode($path, $type, $options, $filename);
+			if (!$res || !is_file($res)) {
+				$this->response(1001, '生成小程序码失败');
+			}
+			$this->response(0, '获取成功', [
+				'path' => $res,
+				'url' => str_replace('./', SITE_URL, $res)
+			]);
+		} catch (\Exception $e) {
+			$this->response(1001, $e->getMessage());
+		}
+	}
+	
 	// 获取插件配置
 	public function getSettings() {
-		$mpid = $this->mpid;
-		$addon = I('addon', get_addon());
-		$type = I('type', '');
-		$theme = I('theme', '');
-		
-		$this->response(0, '获取成功', D('Mp/AddonSetting')->get_addon_settings($addon, $mpid, $theme, $type));
+		try {
+			$mpid = $this->mpid;
+			$addon = I('addon', get_addon());
+			$type = I('type', '');
+			$theme = I('theme', '');
+			$expand = I('expand', 0);	// 是否展开
+			
+			$settings = [];
+			$data = D('Mp/AddonSetting')->get_addon_settings($addon, $mpid, $theme, $type);
+			if ($expand) {
+				foreach ($data as $k => $v) {
+					if (is_array($v)) {
+						foreach ($v as $kk => $vv) {
+							$settings[$k.'_'.$kk] = $vv;
+						}
+					} else {
+						$settings[$k] = $v;
+					}
+				}
+			} else {
+				$settings = $data;
+			}
+			$this->response(0, '获取成功', $settings);
+		} catch (\Exception $e) {
+			$this->response(1001, $e->getMessage());
+		}
 	}
 	
-	/**
-	 * 生成返回给客户端的3rdsession
-	 * 此方法暂时启用
-	 */
-	private function get3rdSession($openid) {
-		$session3rd = get_nonce(168);
-		S($session3rd, $openid,2592000);
-		return $session3rd;
-	}
-	
-	/**
-	 * 接口响应
-	 */
+	// 接口响应
 	public function response($errcode, $errmsg, $items = null) {
 		$res['errcode'] = intval($errcode);
 		$res['errmsg'] = $errmsg;
@@ -280,16 +355,12 @@ class ApiBaseController extends Controller {
 		$this->ajaxReturn($res);
 	}
 	
-	/**
-	 * 成功返回
-	 */
+	// 成功返回
 	public function responseOk($items = null) {
-		$this->response(0, 'ok', $items);
+		$this->response(0, 'success', $items);
 	}
 	
-	/**
-	 * 失败返回
-	 */
+	// 失败返回
 	public function responseFail($items = null) {
 		$this->response(1001, 'fail', $items);
 	}

@@ -606,7 +606,7 @@ class CommonController extends Controller {
 	 * 添加表单字段
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addFormField($name, $title, $type, $extra = null) {
+	public function addFormField($name, $title, $type = 'text', $extra = []) {
 		if (is_array($name)) {
 			$this->model['fields'][] = $name;
 		} else {
@@ -755,7 +755,7 @@ class CommonController extends Controller {
 	 * 添加显示项
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addListItem($name, $title, $format, $extra) {
+	public function addListItem($name, $title = '', $format = '', $extra = []) {
 		if (is_array($name)) {
 			$this->model['lists'][] = $name;
 		} else {
@@ -774,7 +774,7 @@ class CommonController extends Controller {
 	 * 添加面包屑
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addCrumb($title, $url, $class) {
+	public function addCrumb($title, $url = '', $class = '') {
 		if (is_array($title)) {
 			$this->model['crumb'][] = $title;
 		} else {
@@ -787,11 +787,7 @@ class CommonController extends Controller {
 		}
 		return $this;
 	}
-
-	/**
-	 * 设置面包屑
-	 * @author 艾逗笔<765532665@qq.com>
-	 */
+	
 	public function setCrumb($crumb) {
 		$this->model['crumb'] = $crumb;
 		return $this;
@@ -799,9 +795,8 @@ class CommonController extends Controller {
 
 	/**
 	 * 添加导航
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addNav($title, $url, $class) {
+	public function addNav($title, $url = '', $class = '') {
 		if (is_array($title)) {			
 			$this->model['nav'][] = $title;
 		} else {
@@ -817,7 +812,6 @@ class CommonController extends Controller {
 
 	/**
 	 * 设置导航
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function setNav($nav) {
 		$this->model['nav'] = $nav;
@@ -826,9 +820,8 @@ class CommonController extends Controller {
 
 	/**
 	 * 添加子导航
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addSubNav($title, $url, $class) {
+	public function addSubNav($title, $url = '', $class = '') {
 		if (is_array($title)) {
 			$this->model['subnav'][] = $title;
 		} else {
@@ -844,7 +837,6 @@ class CommonController extends Controller {
 
 	/**
 	 * 设置子导航
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function setSubNav($subnav) {
 		$this->model['subnav'] = $subnav;
@@ -861,9 +853,8 @@ class CommonController extends Controller {
 
 	/**
 	 * 添加操作按钮
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addButton($title, $url, $class = 'btn btn-primary', $attr = '') {
+	public function addButton($title, $url = '', $class = 'btn btn-primary', $attr = '') {
 		if (is_array($title)) {
 			$this->model['btn'][] = $title; 
 		} else {
@@ -880,7 +871,6 @@ class CommonController extends Controller {
 
 	/**
 	 * 设置提示信息
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function setTip($tip) {
 		$this->model['tip'] = $tip;
@@ -889,7 +879,6 @@ class CommonController extends Controller {
 
 	/**
 	 * 显示模板
-	 * @author 艾逗笔<765532665@qq.com>
 	 */
 	public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
 		global $_G;

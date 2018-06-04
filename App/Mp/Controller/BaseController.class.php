@@ -62,6 +62,15 @@ class BaseController extends CommonController {
 		$sidenav = hook('sidenav', $_G);										// 执行钩子，获取侧边栏数据
 		$addons = D('Admin/Addons')->get_installed_addons();
 		
+		$mp_list = D('Mp/Mp')->get_mp_lists();
+		foreach ($mp_list as &$v) {
+			$v['mp_type_name'] = '公众号';
+			if ($v['mp_type'] == 2) {
+				$v['mp_type_name'] = '小程序';
+			}
+		}
+		
+		$this->assign('mp_list', $mp_list);
 		$this->assign('system_settings', $_G['system_settings']);
 		$this->assign('topnav', $topnav);
 		$this->assign('sidenav', $sidenav);

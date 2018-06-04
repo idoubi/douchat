@@ -16,9 +16,14 @@ class AddonsModel extends Model {
 	protected $_validate = array(
 		array('name', 'require', '插件名称不能为空'),
 		array('bzname', 'require', '插件标识名不能为空'),
+        array('bzname','/^[a-zA-Z][a-zA-Z]{1,29}$/','插件标识名不合法',0,'regex'),// 必填
+        array('bzname','isExist','相同名称的插件文件夹已存在',0,'callback',4), // 自定义函数验证密码格式
 		array('bzname', '', '标识名相同的插件已安装', 0, 'unique', 1),
 		array('version', 'require', '插件版本号不能为空'),
-		array('author', 'require', '作者姓名不能为空')
+        array('version','/^[0-20]\.([0-9]\.){0,1}[0-9]$/','插件版本号格式不正确',0,'regex'),// 必填
+		array('author', 'require', '作者姓名不能为空'),
+		array('desc', 'require', '插件描述必须'),
+		array('type', 'require', '请选择插件类型',1),
 	);
 
 	/**
@@ -28,6 +33,16 @@ class AddonsModel extends Model {
 	protected $_auto = array(
 		array('status', 1, 3)
 	);
+
+    /**
+     * 判断插件是否已经存在
+     * @desc
+     * @author 16
+     * @date 2018/5/10
+     */
+	public function isExist($value){
+	    return is_dir(ADDON_PATH."{$value}") ? false : true;
+    }
 
 	/**
 	 * 根据插件标识名获取插件信息

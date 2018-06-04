@@ -2,6 +2,7 @@
 
 use WechatSdk\Wechat;
 use WechatSdk\JsSdk;
+use WechatSdk\Wxapp;
 
 /**
  * 添加钩子
@@ -764,7 +765,7 @@ function get_fans_nickname($openid) {
     if (empty($nickname)) {
         $nickname = '匿名';
     }
-    return $nickname;
+    return text_decode($nickname);
 }
 
 function get_nickname($openid) {
@@ -968,6 +969,14 @@ function get_addon() {
     return $m[1];
 }
 
+// 获取插件名称
+function get_addon_name($addon = '') {
+	if (empty($addon)) {
+		$addon = get_addon();
+	}
+	return M('addons')->where(['bzname'=>$addon])->getField('name');
+}
+
 function get_agent() {
     $agent = $_SERVER ['HTTP_USER_AGENT']; 
     return $agent;
@@ -1040,5 +1049,66 @@ function curl($url, $method = 'get', $param = null, $headers = null) {
 		return $sContent;
 	}else{
 		return false;
+	}
+}
+
+/**
+ * 小程序相关函数
+ */
+
+if (!function_exists('get_wxa_qrcode')) {
+	/**
+	 * 获取小程序码
+	 * 接口文档：https://developers.weixin.qq.com/miniprogram/dev/api/qrcode.html
+	 * @param $path 场景值/页面路径
+	 * @param $type 类型。1：A类型二维码 2：B类型二维码 3：C类型二维码
+	 * @param $options 额外参数
+	 * @param $filename 要保存的文件名（绝对路径，默认保存到Uploads文件夹下面）
+	 */
+	function get_wxa_qrcode($path, $type=1, $options=[], $filename='') {
+		try {
+			$mp_info = get_mp_info();
+			if (empty($mp_info) || empty($mp_info['appid']) || empty($mp_info['appsecret']) || !in_array($mp_info['mp_type'], [1, 2])) {
+				return false;
+			}
+			$appid = $mp_info['appid'];
+			$appsecret = $mp_info['appsecret'];
+			$join_type = $mp_info['join_type'];
+			if ($join_type == 2) {		// 授权接入
+				return false;
+			} else {        // 手动接入
+				$Wxapp = new Wxapp([
+					'appid' => $appid,
+					'appsecret' => $appsecret
+				]);
+				$res = $Wxapp->getQrcode($path, $type, $options, $filename);
+				return $res;
+			}
+		} catch (\Exception $e) {
+			return false;
+		}
+	}
+}
+
+if (!function_exists('text_decode')) {
+	function text_decode($str){
+		$text = json_encode($str);
+		$text = preg_replace_callback('/\\\\\\\\/i',function($str){
+			return '\\';
+		},$text);
+		return json_decode($text);
+	}
+}
+
+if (!function_exists('text_encode')) {
+	function text_encode($str){
+		if(!is_string($str))return $str;
+		if(!$str || $str=='undefined')return '';
+		
+		$text = json_encode($str);
+		$text = preg_replace_callback("/(\\\u[ed][0-9a-f]{3})/i",function($str){
+			return addslashes($str[0]);
+		},$text);
+		return json_decode($text);
 	}
 }
