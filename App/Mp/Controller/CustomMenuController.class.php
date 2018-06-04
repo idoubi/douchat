@@ -72,6 +72,7 @@ class CustomMenuController extends BaseController {
 					}
 					$two['name'] = $vv['name'];
 					$two['type'] = $vv['type'];
+					echo $vv['type'];
 					if ($vv['type'] == 'view') {
 						if (!$vv['url']) {
 							$return['errcode'] = 1002;
@@ -93,7 +94,23 @@ class CustomMenuController extends BaseController {
 							$this->ajaxReturn($return);
 						}
 						$two['key'] = $vv['key'];
-					} else {
+					} elseif ($vv['type'] == 'miniprogram') {
+                        if (!$vv['url']) {
+                            $return['errcode'] = 1002;
+                            $return['errmsg'] = '菜单链接不能为空';
+                            $return['data_id'] = $kk;
+                            $this->ajaxReturn($return);
+                        } elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $vv['url'])) {
+                            $return['errcode'] = 1004;
+                            $return['errmsg'] = '菜单链接地址不合法';
+                            $return['data_id'] = $kk;
+                            $this->ajaxReturn($return);
+                        }
+
+                        $two['url'] = $vv['url'];
+                        $two['appid'] = $vv['appid'];
+                        $two['pagepath'] = $vv['pagepath'];
+                    }else {
 						$return['errcode'] = 1001;
 						$return['errmsg'] = '菜单动作必选';
 						$return['data_id'] = $kk;
@@ -125,7 +142,23 @@ class CustomMenuController extends BaseController {
 							$this->ajaxReturn($return);
 						}
 						$item['key'] = $v['key'];
-					} else {
+					} elseif ($vv['type'] == 'miniprogram') {
+                        if (!$vv['url']) {
+                            $return['errcode'] = 1002;
+                            $return['errmsg'] = '菜单链接不能为空';
+                            $return['data_id'] = $kk;
+                            $this->ajaxReturn($return);
+                        } elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $vv['url'])) {
+                            $return['errcode'] = 1004;
+                            $return['errmsg'] = '菜单链接地址不合法';
+                            $return['data_id'] = $kk;
+                            $this->ajaxReturn($return);
+                        }
+
+                        $item['url'] = $v['url'];
+                        $item['appid'] = $v['appid'];
+                        $item['pagepath'] = $v['pagepath'];
+                    }else {
 						$return['errcode'] = 1001;
 						$return['errmsg'] = '菜单动作必选';
 						$return['data_id'] = $k;
@@ -158,7 +191,22 @@ class CustomMenuController extends BaseController {
 						$this->ajaxReturn($return);
 					}
 					$item['key'] = $v['key'];
-				} else {
+				} elseif ($v['type'] == 'miniprogram') {
+                    if (!$v['url']) {
+                        $return['errcode'] = 1002;
+                        $return['errmsg'] = '菜单链接不能为空';
+                        $return['data_id'] = $k;
+                        $this->ajaxReturn($return);
+                    } elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $v['url'])) {
+                        $return['errcode'] = 1004;
+                        $return['errmsg'] = '菜单链接地址不合法';
+                        $return['data_id'] = $k;
+                        $this->ajaxReturn($return);
+                    }
+                    $item['url'] = $v['url'];
+                    $item['appid'] = $v['appid'];
+                    $item['pagepath'] = $v['pagepath'];
+                }else {
 					$return['errcode'] = 1001;
 					$return['errmsg'] = '菜单动作必选';
 					$return['data_id'] = $k;

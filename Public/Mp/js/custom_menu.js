@@ -93,6 +93,21 @@ $(function() {
         }
     });
 
+    $('.menu_miniprogram input').on({
+        keydown : function() {
+            param_change($(this));
+        },
+        keyup : function() {
+            param_change($(this));
+        },
+        keypress : function() {
+            param_change($(this));
+        },
+        blur : function() {
+            param_change($(this));
+        }
+    });
+
     // 重新编辑菜单
     $('.edit_menu').on('click', function() {
         empty_menu();           // 清空菜单
@@ -213,12 +228,19 @@ $(function() {
             var menu_url = menu['button'][data_id]['url'];
         }
         $('.menu_act input').val('');
+        $('.menu_miniprogram input').val('');
+        $('.menu_miniprogram').hide();
         if (type == 'view') {
             $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
             $('.menu_act .help-block').html('格式例如：http://baidu.com/');
         } else if (type == 'click') {
             $('.menu_act input').attr('placeholder', '请填写关键词').val(menu_key);
             $('.menu_act .help-block').html('');
+        }else if (type == 'miniprogram') {
+
+            $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
+            $('.menu_act .help-block').html('格式例如：http://baidu.com/');
+            $('.menu_miniprogram').show();
         }
         $('.menu_act').show();
 
@@ -236,18 +258,30 @@ $(function() {
             menu['button'][parent_id]['sub_button'][data_id]['type'] = type;
             var menu_key = menu['button'][parent_id]['sub_button'][data_id]['key'];
             var menu_url = menu['button'][parent_id]['sub_button'][data_id]['url'];
+            var appid = menu['button'][parent_id]['sub_button'][data_id]['appid'];
+            var pagepath = menu['button'][parent_id]['sub_button'][data_id]['pagepath'];
         } else {
             menu['button'][data_id]['type'] = type; 
             var menu_key = menu['button'][data_id]['key'];
             var menu_url = menu['button'][data_id]['url'];
+            var appid = menu['button'][data_id]['appid'];
+            var pagepath = menu['button'][data_id]['pagepath'];
         }
         $('.menu_act input').val('');
+        $('.menu_miniprogram input').val('');
+        $('.menu_miniprogram').hide();
         if (type == 'view') {
             $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
             $('.menu_act .help-block').html('格式例如：http://baidu.com/');
         } else if (type == 'click') {
             $('.menu_act input').attr('placeholder', '请填写关键词').val(menu_key);
             $('.menu_act .help-block').html('');
+        }else if (type == 'miniprogram') {
+            $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
+            $('.menu_miniprogram input[name="appid"]').val(appid);
+            $('.menu_miniprogram input[name="pagepath"]').val(pagepath);
+            $('.menu_act .help-block').html('格式例如：http://baidu.com/');
+            $('.menu_miniprogram').show();
         }
         $('.menu_act').show();
 
@@ -265,7 +299,7 @@ function empty_menu() {
     };
 }
 
-// 显示菜单
+// 显示菜单 ok
 function show_menu(data) {
     if (!data) {
         return false;
@@ -299,6 +333,8 @@ function show_menu(data) {
             type : '',
             key : '',
             url : '',
+            appid:'',
+            pagepath:'',
             sub_button : {}
         };
         if (sub_btn_len == 0) {     // 没有二级菜单的一级菜单
@@ -310,6 +346,10 @@ function show_menu(data) {
                 menu['button'][btn_index]['url'] = btn[i]['url'];
             } else if (btn[i]['type'] == 'click') {
                 menu['button'][btn_index]['key'] = btn[i]['key'];
+            } else if (btn[i]['type'] == 'miniprogram'){
+                menu['button'][btn_index]['url'] = btn[i]['url'];
+                menu['button'][btn_index]['appid'] = btn[i]['appid'];
+                menu['button'][btn_index]['pagepath'] = btn[i]['pagepath'];
             }
             hash += 2;
         } else {                    // 有二级菜单的一级菜单
@@ -321,6 +361,10 @@ function show_menu(data) {
                 menu['button'][btn_index]['url'] = btn[i]['url'];
             } else if (btn[i]['type'] == 'click') {
                 menu['button'][btn_index]['key'] = btn[i]['key'];
+            }else if (btn[i]['type'] == 'miniprogram'){
+                menu['button'][btn_index]['url'] = btn[i]['url'];
+                menu['button'][btn_index]['appid'] = btn[i]['appid'];
+                menu['button'][btn_index]['pagepath'] = btn[i]['pagepath'];
             }
             hash += 2;
             if (sub_btn_len >= 5) {
@@ -335,6 +379,8 @@ function show_menu(data) {
                     type : '',
                     key : '',
                     url : '',
+                    appid:'',
+                    pagepath:'',
                     sub_button : {}
                 };
                 var sub_btn_item = '<dd class="sub-button js-sortable ng-scope" id="sub_btn_'+sub_btn_index+'" data-id="'+sub_btn_index+'" data-name="'+sub_btn[j]['name']+'" data-type="sub_button"><a href="javascript:void(0)" onclick="selectMenu(this)" class="ng-binding">'+sub_btn[j]['name']+'</a></dd>';
@@ -345,6 +391,10 @@ function show_menu(data) {
                     menu['button'][btn_index]['sub_button'][sub_btn_index]['url'] = sub_btn[j]['url'];
                 } else if (sub_btn[j]['type'] == 'click') {
                     menu['button'][btn_index]['sub_button'][sub_btn_index]['key'] = sub_btn[j]['key'];
+                }else if (btn[i]['type'] == 'miniprogram'){
+                    menu['button'][btn_index]['sub_button'][sub_btn_index]['url'] = btn[i]['url'];
+                    menu['button'][btn_index]['sub_button'][sub_btn_index]['appid'] = btn[i]['appid'];
+                    menu['button'][btn_index]['sub_button'][sub_btn_index]['pagepath'] = btn[i]['pagepath'];
                 }
                 hash += 2;
             }
@@ -388,15 +438,35 @@ function act_change(ele) {
             menu['button'][data_id]['url'] = _this.val();
         } else if (menu_type == 'click') {
             menu['button'][data_id]['key'] = _this.val();
-        }            
+        }else if (menu_type == 'miniprogram') {
+            menu['button'][data_id]['url'] = _this.val();
+        }
     } else if(data_type == 'sub_button') {
         var parent_data_id = $('.sub-button[data-id="'+data_id+'"]').parent().parent().attr('data-id');
         if (menu_type == 'view') {
             menu['button'][parent_data_id]['sub_button'][data_id]['url'] = _this.val();
-        } else {
+        } else if(menu_type == 'miniprogram')
+        {
+            menu['button'][parent_data_id]['sub_button'][data_id]['url'] = _this.val();
+        }else
+         {
             menu['button'][parent_data_id]['sub_button'][data_id]['key'] = _this.val();
         }  
     } 
+}
+
+function param_change(ele) {
+    var _this = $(ele);
+    var param = _this.attr('name');
+    var menu_type = $('.radio-inline .checked input[name=menu_type]').val();
+    var data_id = $('#menu_info').attr('data-id');
+    var data_type = $('#menu_info').attr('data-type');
+    if (data_type == 'button') {
+        menu['button'][data_id][param] = _this.val();
+    } else if(data_type == 'sub_button') {
+        var parent_data_id = $('.sub-button[data-id="'+data_id+'"]').parent().parent().attr('data-id');
+        menu['button'][parent_data_id]['sub_button'][data_id][param] = _this.val();
+    }
 }
 
 // 添加一级按钮
@@ -427,10 +497,13 @@ function addMenu(ele) {
         type : '',
         key : '',
         url : '',
+        appid : '',
+        pagepath : '',
         sub_button : {}
     };
     $('.menu_act input').attr('placeholder', '').val('');
     $('.menu_act').hide();
+    $('.menu_miniprogram').hide();
     var item_num = _this.siblings().length;
     if (item_num >= 3) {
         _this.remove();
@@ -469,10 +542,13 @@ function addSubMenu(ele) {
         type : '',
         key : '',
         url : '',
+        appid : '',
+        pagepath : '',
         sub_button : {}
     };
     $('.menu_act input').attr('placeholder', '').val('');
     $('.menu_act').hide();
+    $('.menu_miniprogram').hide();
     $('.extra').show();
     var item_num = _this.siblings().length;
     if (item_num >= 5) {
@@ -498,21 +574,35 @@ function selectMenu(ele) {
         var menu_type = menu['button'][parent_data_id]['sub_button'][data_id]['type'];
         var menu_key = menu['button'][parent_data_id]['sub_button'][data_id]['key'];
         var menu_url = menu['button'][parent_data_id]['sub_button'][data_id]['url'];
+        var appid = menu['button'][parent_data_id]['sub_button'][data_id]['appid'];
+        var pagepath = menu['button'][parent_data_id]['sub_button'][data_id]['pagepath'];
     } else {
         var menu_name = menu['button'][data_id]['name'];
         var menu_type = menu['button'][data_id]['type'];
         var menu_key = menu['button'][data_id]['key'];
         var menu_url = menu['button'][data_id]['url'];
+        var appid = menu['button'][data_id]['appid'];
+        var pagepath = menu['button'][data_id]['pagepath'];
     }
+    $('.menu_miniprogram').hide();
     $('#menu_info').attr('data-id', data_id).attr('data-type', data_type).find('input[name=menu_name]').val(menu_name);
     if (menu_type == 'view') {
         $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
         $('.menu_act').show();
     } else if (menu_type == 'click') {
+        console.log(12333);
         $('.menu_act input').attr('placeholder', '请填写关键词').val(menu_key);
         $('.menu_act').show();
-    } else {
+    }else if (menu_type == 'miniprogram') {
+        $('.menu_act input').attr('placeholder', '请输入链接地址').val(menu_url);
+        $('.menu_miniprogram input[name="appid"]').val(appid);
+        $('.menu_miniprogram input[neme="pagepath"]').val(pagepath);
+        $('.menu_miniprogram').show();
+        $('.menu_act').show();
+    }else {
         $('.menu_act input').attr('placeholder', '').val('');
+        $('.menu_miniprogram input[name="appid"]').val('');
+        $('.menu_miniprogram input[neme="pagepath"]').val('');
         $('.menu_act').hide();
     }
     $('input[name=menu_type]').attr('checked', false);
