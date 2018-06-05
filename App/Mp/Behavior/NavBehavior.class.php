@@ -86,6 +86,8 @@ class NavBehavior extends Behavior {
 				return isset($addonnav['entry']['children']) ? $addonnav['entry']['children'] : [];
 			case 'setting':
 				return isset($addonnav['setting']['children']) ? $addonnav['setting']['children'] : [];
+            case 'index':
+                return isset($addonnav['setting']['children']) ? $addonnav : [];
 			default:
 				return isset($addonnav['menu']['children']) ? $addonnav['menu']['children'] : [];
 		}
