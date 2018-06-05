@@ -13,9 +13,10 @@ define('RUNTIME_PATH', './Runtime/');						// 定义缓存目录
 define('ADDON_PATH', './Addons/'); 							// 定义插件目录
 define('UPLOAD_PATH', './Uploads/');						// 上传目录
 define('SITE_PATH', dirname(__FILE__));						// 定义网站物理路径
-define('SITE_URL', str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']));
 define('APP_DEBUG', true);									// 开启调试模式
 define('NOW_TIME', time());									// 定义脚本执行时间
+$http_type = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https')) ? 'https://' : 'http://';
+define('SITE_URL', str_replace('index.php', '', $http_type.$_SERVER['HTTP_HOST'].$_SERVER['SCRIPT_NAME']));
 
 if (!is_file(SITE_PATH.'/Data/install.lock')) {				// 如果框架未安装，则跳转到安装页面
 	$_GET['m'] = 'install';
