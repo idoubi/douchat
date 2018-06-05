@@ -12,7 +12,8 @@ use WechatSdk\WXBizDataCrypt;
 class ApiBaseController extends Controller {
 	
 	public $user_id;				// 当前后台用户
-	public $mpid;					// 当前请求的账号
+	public $mpid;					// 当前请求的账号id
+	public $mp_info;				// 当前请求的账号信息
 	public $addon;					// 当前请求的插件
 	public $version;				// 当前请求的接口版本
 	public $openid;					// 当前请求的用户openid
@@ -27,6 +28,23 @@ class ApiBaseController extends Controller {
 		$this->controller = strtolower(CONTROLLER_NAME);
 		$this->action = strtolower(ACTION_NAME);
 		$this->headers = getallheaders();		// 获取请求头
+		$this->user_id = get_user_id();
+		$this->checkMp();						// 账号检测
+		$this->mpid = get_mpid();
+		$this->mp_info = get_mp_info($this->mpid);
+		$this->addon = get_addon();
+		$this->openid = '';
+		if (isset($this->headers['version']) && !empty($this->headers['version'])) {
+			$this->version = $headers['version'];
+		}
+	}
+	
+	/**
+	 * 检测Api请求权限
+	 * 在需要检测Api请求权限的接口方法里面调用 $this->checkAccess();
+	 * 要求在发起请求的header头里面带上ak、sk秘钥参数
+	 */
+	protected function checkAccess() {
 		if (!get_user_id()) {			// 接口请求权限检测
 			$ak = isset($this->headers['Ak']) ? $this->headers['Ak'] : '';
 			$sk = isset($this->headers['Sk']) ? $this->headers['Sk'] : '';
@@ -40,148 +58,39 @@ class ApiBaseController extends Controller {
 			}
 			get_user_id($user_id);
 		}
-		$this->user_id = get_user_id();
+	}
+	
+	/**
+	 * 检测账号参数
+	 * 要求在发起请求的url中带上mpid参数
+	 */
+	protected function checkMp() {
 		$mpid = isset($_GET['mpid']) ? intval($_GET['mpid']) : 0;
 		if (empty($mpid)) {
-			$this->response(1001, 'Invalid mpid');
+			$this->response(1001, 'mpid参数必传');
 		}
-		$this->mpid = get_mpid($mpid);            // 将当前账号进行缓存
-		$this->addon = get_addon();
-		$this->openid = '';
-
-		if (isset($this->headers['version']) && !empty($this->headers['version'])) {
-			$this->version = $headers['version'];
+		$mp_info = get_mp_info($mpid);
+		if (empty($mp_info) || empty($mp_info['appid']) || empty($mp_info['appsecret'])) {
+			$this->response(1001, 'mpid对应的账号信息不存在或数据不完整');
 		}
+		get_mpid($mpid);
 	}
 	
 	/**
-	 * 用户登录
+	 * 检测post请求
+	 * 在需要进行post检测的接口方法里面使用 $this->checkPost();
+	 * 要求发起的必须为post请求
 	 */
-	public function login() {
+	protected function checkPost() {
 		if (!IS_POST) {
-			$this->response(1001, 'Access Denied');
-		}
-		try {
-			$post = I('post.');
-			if (empty($post['code'])) {
-				$this->response(1001, 'Invalid params');
-			}
-			$mp_info = get_mp_info();
-			
-			if (empty($mp_info) || empty($mp_info['appid']) || empty($mp_info['appsecret']) || !in_array($mp_info['mp_type'], [1, 2])) {
-				$this->response(1001, 'Invalid mpinfo');
-			}
-			$appid = $mp_info['appid'];
-			$appsecret = $mp_info['appsecret'];
-			$join_type = $mp_info['join_type'];
-			if ($join_type == 2) {		// 授权接入
-			
-			} else {		// 手动接入
-				$Wxapp = new Wxapp([
-					'appid' => $appid,
-					'appsecret' => $appsecret
-				]);
-				
-				$sessionData = $Wxapp->getSessionKey($post['code']);
-				if (empty($sessionData['session_key']) || empty($sessionData['openid'])) {
-					$this->response(1001, $Wxapp->errMsg);
-				}
-				get_openid($sessionData['openid']);		// 缓存当前登录的用户openid
-				
-				$user_token = md5($sessionData['openid'] . get_nonce(168));		// 用户登录态标识3rdSessionKey
-				$expires = 30 * 24 * 3600;				// 登录态一个月内有效
-				S($user_token, [
-					'openid' => $sessionData['openid'],
-					'session_key' => $sessionData['session_key']
-				], $expires);
-				$this->response(0, '登录成功', [
-					'user_token' => $user_token,
-					'expires' => $expires
-				]);
-			}
-		} catch (\Exception $e) {
-			$this->response(1001, $e->getMessage());
-		}
-	}
-	
-	// 获取用户信息
-	public function getUserInfo() {
-		if (!IS_POST) {
-			$this->response(1001, 'Access Denied');
-		}
-		try {
-			$this->checkLogin();	// 检测登录态
-			
-			$post = I('post.');
-			if (empty($post['encryptedData']) || empty($post['iv'])) {
-				$this->response(1001, 'Invalid params');
-			}
-			$mp_info = get_mp_info();
-			
-			if (empty($mp_info) || empty($mp_info['appid']) || empty($mp_info['appsecret']) || !in_array($mp_info['mp_type'], [1, 2])) {
-				$this->response(1001, 'Invalid mpinfo');
-			}
-			$appid = $mp_info['appid'];
-			$appsecret = $mp_info['appsecret'];
-			$join_type = $mp_info['join_type'];
-			if ($join_type == 2) {		// 授权接入
-			
-			} else {		// 手动接入
-				$user_token = $this->headers['User-Token'];
-				$cache = S($user_token);
-				if (empty($cache['session_key'])) {
-					$this->response(2002, 'Fail to get session key');
-				}
-				$fansInfo = D('MpFans')->where([
-					'mpid' => $this->mpid,
-					'openid' => $this->openid
-				])->find();
-				$decodeData = [];
-				if (empty($fansInfo)) {
-					$crypt = new WXBizDataCrypt($appid, $cache['session_key']);
-					$errCode = $crypt->decryptData($post['encryptedData'], $post['iv'], $decodeData);
-					if ($errCode == 0) {
-						$decodeData = json_decode($decodeData, true);
-						if (is_array($decodeData) && count($decodeData) > 0) {
-							$fansInfo['mpid'] = $this->mpid;
-							$fansInfo['openid'] = $decodeData['openId'];
-							$fansInfo['nickname'] = text_encode($decodeData['nickName']);
-							$fansInfo['headimgurl'] = $decodeData['avatarUrl'];
-							$fansInfo['province'] = $decodeData['province'];
-							$fansInfo['city'] = $decodeData['city'];
-							$fansInfo['country'] = $decodeData['country'];
-							$fansInfo['sex'] = $decodeData['gender'];
-							$fansInfo['language'] = $decodeData['language'];
-							$fansInfo['is_subscribe'] = 1;
-							$fansInfo['subscribe_time'] = time();
-							D('MpFans')->add($fansInfo);       // 登录成功写到数据表
-						}
-					} else {
-						$this->response(1001, '解密用户信息失败');
-					}
-				} else {
-					$decodeData['openId'] = $fansInfo['openid'];
-					$decodeData['nickName'] = text_decode($fansInfo['nickname']);
-					$decodeData['avatarUrl'] = $fansInfo['headimgurl'];
-					$decodeData['gender'] = $fansInfo['sex'];
-					$decodeData['language'] = $fansInfo['language'];
-					$decodeData['country'] = $fansInfo['country'];
-					$decodeData['city'] = $fansInfo['city'];
-					$decodeData['province'] = $fansInfo['province'];
-					$decodeData['relname'] = $fansInfo['relname'];
-					$decodeData['mobile'] = $fansInfo['mobile'];
-					$decodeData['signature'] = $fansInfo['signature'];
-				}
-				
-				$this->response(0, '获取成功', $decodeData);
-			}
-		} catch (\Exception $e) {
-			$this->response(1001, $e->getMessage());
+			die('Access Denied');
 		}
 	}
 	
 	/**
-	 * 登录检测。调用此方法的api必须要微信端用户登录后才能请求
+	 * 检测登录
+	 * 在需要检测用户登录状态的接口方法里面调用 $this->checkLogin();
+	 * 要求客户端必须在登录成功后才能发起请求
 	 */
 	protected function checkLogin() {
 		$access = false;
@@ -200,22 +109,108 @@ class ApiBaseController extends Controller {
 	}
 	
 	/**
-	 * api请求检测是否登录
+	 * 用户登录
+	 * 提供给小程序端调用的登录方法
 	 */
-	public function isLogin() {
-		$access = false;
-		$headers = $this->headers;		// 获取请求头
-		if (isset($headers['User-Token']) && !empty($headers['User-Token'])) {
-			$user_token = $headers['User-Token'];
-			$cache = S($user_token);
-			if (!empty($cache) && !empty($cache['openid'])) {
-				$this->openid = $cache['openid'];
-				$access = true;
-				$this->response(0, '登录有效');
+	public function login() {
+		$this->checkPost();
+		$this->checkAccess();
+		try {
+			$post = I('post.');
+			if (empty($post['code']) || empty($post['encryptedData']) || empty($post['iv'])) {
+				$this->response(1001, '参数code、encryptedData、iv必传');
 			}
+			$mp_info = $this->mp_info;
+			$appid = $mp_info['appid'];
+			$appsecret = $mp_info['appsecret'];
+			$join_type = $mp_info['join_type'];
+			if ($join_type == 2) {		// 授权接入
+			
+			} else {		// 手动接入
+				$Wxapp = new Wxapp([
+					'appid' => $appid,
+					'appsecret' => $appsecret
+				]);
+				
+				$sessionData = $Wxapp->getSessionKey($post['code']);
+				if (empty($sessionData['session_key']) || empty($sessionData['openid'])) {
+					$this->response(1001, $Wxapp->errMsg);
+				}
+				$this->openid = $sessionData['openid'];
+				get_openid($sessionData['openid']);		// 缓存当前登录的用户openid
+				
+				$user_token = md5($sessionData['openid'] . get_nonce(168));		// 用户登录态标识3rdSessionKey
+				S($user_token, [
+					'openid' => $sessionData['openid'],
+					'session_key' => $sessionData['session_key']
+				]);
+				
+				$fansInfo = D('MpFans')->where([
+					'mpid' => $this->mpid,
+					'openid' => $this->openid
+				])->find();
+				$decodeData = [];
+				if (empty($fansInfo)) {
+					$crypt = new WXBizDataCrypt($appid, $sessionData['session_key']);
+					$errCode = $crypt->decryptData($post['encryptedData'], $post['iv'], $decodeData);
+					if ($errCode == 0) {
+						$decodeData = json_decode($decodeData, true);
+						if (is_array($decodeData) && count($decodeData) > 0) {
+							$fansInfo['mpid'] = $this->mpid;
+							$fansInfo['openid'] = $decodeData['openId'];
+							$fansInfo['unionid'] = isset($decodeData['unionId']) ? $decodeData['unionId'] : $decodeData['openId'];
+							$fansInfo['nickname'] = text_encode($decodeData['nickName']);
+							$fansInfo['headimgurl'] = $decodeData['avatarUrl'];
+							$fansInfo['province'] = $decodeData['province'];
+							$fansInfo['city'] = $decodeData['city'];
+							$fansInfo['country'] = $decodeData['country'];
+							$fansInfo['sex'] = $decodeData['gender'];
+							$fansInfo['language'] = $decodeData['language'];
+							$fansInfo['is_subscribe'] = 1;
+							$fansInfo['subscribe_time'] = time();
+							D('MpFans')->add($fansInfo);       // 登录成功写到数据表
+						}
+					} else {
+						$this->response(1001, '解密用户信息失败');
+					}
+				} else {
+				
+				}
+				
+				$this->response(0, '登录成功', [
+					'user_token' => $user_token,
+				]);
+			}
+		} catch (\Exception $e) {
+			$this->response(1001, $e->getMessage());
 		}
-		if (!$access) {
-			$this->response(2002, '登录无效');
+	}
+	
+	// 获取用户信息
+	public function getUserInfo() {
+		try {
+			$this->checkLogin();	// 检测登录态
+			
+			$fansInfo = M('mp_fans')->where([
+				'mpid' => $this->mpid,
+				'openid' => $this->openid
+			])->find();
+			$decodeData = [];
+			if (!empty($fansInfo)) {
+				$decodeData['nickName'] = text_decode($fansInfo['nickname']);
+				$decodeData['avatarUrl'] = $fansInfo['headimgurl'];
+				$decodeData['gender'] = $fansInfo['sex'];
+				$decodeData['language'] = $fansInfo['language'];
+				$decodeData['country'] = $fansInfo['country'];
+				$decodeData['city'] = $fansInfo['city'];
+				$decodeData['province'] = $fansInfo['province'];
+				$decodeData['relname'] = $fansInfo['relname'];
+				$decodeData['mobile'] = $fansInfo['mobile'];
+				$decodeData['signature'] = $fansInfo['signature'];
+			}
+			$this->response(0, '获取成功', $decodeData);
+		} catch (\Exception $e) {
+			$this->response(1001, $e->getMessage());
 		}
 	}
 	
@@ -342,6 +337,34 @@ class ApiBaseController extends Controller {
 				$settings = $data;
 			}
 			$this->response(0, '获取成功', $settings);
+		} catch (\Exception $e) {
+			$this->response(1001, $e->getMessage());
+		}
+	}
+	
+	// 收集formid，用于发送模板消息
+	public function setFormid() {
+		if (!IS_POST) {
+			die('Access Denied');
+		}
+		try {
+			$this->checkLogin();
+			$formid = I('formid');
+			if (empty($formid)) {
+				$this->response(1001, 'formid必需');
+			}
+			$id = M('mp_tempmsg')->add([
+				'mpid' => $this->mpid,
+				'openid' => $this->openid,
+				'formid' => $formid,
+				'created_at' => time(),
+				'status' => 0,
+				'type' => 1
+			]);
+			if ($id) {
+				$this->response(0, '收集formid成功');
+			}
+			$this->response(1001, '收集formid失败');
 		} catch (\Exception $e) {
 			$this->response(1001, $e->getMessage());
 		}
