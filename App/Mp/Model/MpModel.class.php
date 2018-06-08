@@ -54,7 +54,7 @@ class MpModel extends Model {
 	 * 获取公众号列表
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_mp_lists($user_id) {
+	public function get_mp_lists($user_id=null) {
 		if (empty($user_id)) {
 			$user_id = get_user_id();
 		}
