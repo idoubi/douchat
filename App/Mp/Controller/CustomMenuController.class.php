@@ -72,7 +72,7 @@ class CustomMenuController extends BaseController {
 					}
 					$two['name'] = $vv['name'];
 					$two['type'] = $vv['type'];
-					echo $vv['type'];
+					
 					if ($vv['type'] == 'view') {
 						if (!$vv['url']) {
 							$return['errcode'] = 1002;
