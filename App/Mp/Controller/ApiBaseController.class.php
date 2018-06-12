@@ -342,6 +342,55 @@ class ApiBaseController extends Controller {
 		}
 	}
 	
+	// 获取支付参数
+	public function getPayParams() {
+		try {
+			$tradeType = I('trade_type', 'JSAPI');
+			$tradeType = strtoupper($tradeType);
+			if (!in_array($tradeType, ['JSAPI','NATIVE','APP'])) {
+				$this->response(1001, '支付类型不正确');
+			}
+			$fee = I('fee', 0, 'floatval');
+			if ($fee <= 0) {
+				$this->response(1001, '支付金额不正确');
+			}
+			$orderid = I('orderid', '');
+			if (empty($orderid)) {
+				$this->response(1001, '订单号必须');
+			}
+			$notify = I('notify', '');
+			if (empty($notify)) {
+				$this->response(1001, '支付成功异步通知地址必须');
+			}
+			$openid = I('openid', '');
+			$product_id = I('product_id', '');
+			if ($tradeType == 'JSAPI') {		// 网页支付
+				if (empty($openid)) {
+					$this->checkLogin();
+					$openid = $this->openid;
+				}
+			} elseif ($tradeType == 'NATIVE') {		// 扫码支付
+				if (empty($product_id)) {
+					$this->response(1001, '参数product_id必须');
+				}
+			}
+			$body = I('body', $orderid);
+			$payParams = get_jsapi_parameters([
+				'mpid' => $this->mpid,
+				'openid' => $openid,
+				'product_id' => $product_id,
+				'price' => $fee,
+				'orderid' => $orderid,
+				'trade_type' => $tradeType,
+				'body' => $body,
+				'notify' => $notify
+			]);
+			$this->response(0, '获取成功', $payParams);
+		} catch (\Exception $e) {
+			$this->response(1001, '获取支付参数失败');
+		}
+	}
+	
 	// 收集formid，用于发送模板消息
 	public function setFormid() {
 		if (!IS_POST) {

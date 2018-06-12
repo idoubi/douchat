@@ -320,31 +320,60 @@ function get_jsapi_parameters($data) {
 		'notify' => U('Mp/MobileBase/pay_notify@'.C('HTTP_HOST'))
 	];
     $unifiedOrder = new UnifiedOrder_pub($appid,$mchid,$paysignkey,$appsecret);
-    $unifiedOrder->setParameter("openid",$data['openid']);
-    $unifiedOrder->setParameter("body",$orderid);
+    if (isset($data['trade_type']) && strtoupper($data['trade_type']) == 'NATIVE') {	// 扫码支付
+		$unifiedOrder->setParameter("product_id",isset($data['product_id']) ? $data['product_id'] : '');
+	} else {
+		$unifiedOrder->setParameter("openid",isset($data['openid']) ? $data['openid'] : '');
+	}
+    $unifiedOrder->setParameter("body",isset($data['body']) ? $data['body'] : $orderid);
     $unifiedOrder->setParameter("out_trade_no",$orderid);
     $unifiedOrder->setParameter("total_fee",$price*100);
-    $unifiedOrder->setParameter("notify_url", C('HTTP_HOST') . '/Data/notify.php');
-    $unifiedOrder->setParameter("trade_type","JSAPI");
+    $unifiedOrder->setParameter("notify_url", SITE_URL . 'Data/notify.php');
+    $unifiedOrder->setParameter("trade_type",isset($data['trade_type']) ? $data['trade_type'] : "JSAPI");
     $unifiedOrder->setParameter("attach", json_encode($attach));//附加数据
-    $prepay_id = $unifiedOrder->getPrepayId();
-    $jsApi->setPrepayId($prepay_id);
-    $jsApiParameters = $jsApi->getParameters();
 	
-	if (M('mp_payment')->where(['mpid'=>$data['mpid'],'orderid'=>$data['orderid']])->find('id')) {
-	
+	$code_url = '';
+	$prepay_id = '';
+	if (strtoupper($data['trade_type']) == 'NATIVE') {	// 扫码支付
+		$code_url = $unifiedOrder->getCodeUrl();
+		if ($code_url) {
+			vendor('WechatPaySdk.phpqrcode');
+			$level = 'L';// 纠错级别：L、M、Q、H
+			$size = 10;
+			ob_start();
+			QRcode::png($code_url,false, $level, $size);
+			$imageString = base64_encode(ob_get_contents());
+			ob_end_clean();
+			$code_data = "data:image/png;base64,{$imageString}";
+		} else {
+			$code_data = '';
+		}
+		$jsApiParameters['code_data'] = $code_data;
+		$jsApiParameters['code_url'] = $code_url;
 	} else {
-		M('mp_payment')->add([
-			'mpid' => $data['mpid'],
-			'openid' => $data['openid'],
-			'orderid' => $data['orderid'],
-			'create_time' => time(),
-			'detail' => json_encode($data),
-			'price' => $data['price'],
-			'notify' => isset($data['notify']) ? $data['notify'] : '',
-			'status' => 0,
-			'mchid' => $mchid
-		]);
+		$prepay_id = $unifiedOrder->getPrepayId();
+		$jsApi->setPrepayId($prepay_id);
+		$jsApiParameters = $jsApi->getParameters();
+	}
+	if ($code_url || $prepay_id) {
+		if (M('mp_payment')->where(['mpid'=>$data['mpid'],'orderid'=>$data['orderid']])->find('id')) {
+		
+		} else {
+			M('mp_payment')->add([
+				'mpid' => $data['mpid'],
+				'openid' => $data['openid'],
+				'orderid' => $data['orderid'],
+				'create_time' => time(),
+				'detail' => json_encode($data),
+				'price' => $data['price'],
+				'notify' => isset($data['notify']) ? $data['notify'] : '',
+				'status' => 0,
+				'mchid' => $mchid,
+				'trade_type' => strtoupper($data['trade_type']),
+				'prepay_id' => $prepay_id,
+				'code_url' => $code_url
+			]);
+		}
 	}
 	
     return $jsApiParameters;

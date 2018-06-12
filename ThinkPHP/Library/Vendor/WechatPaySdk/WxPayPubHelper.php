@@ -342,6 +342,18 @@ class UnifiedOrder_pub extends Wxpay_client_pub
 		return $prepay_id;
 	}
 	
+	/**
+	 * 获取支付二维码code_url
+	 * 艾逗笔 <http://idoubi.cc>
+	 * 2018-06-12
+	 */
+	function getCodeUrl() {
+		$this->postXml();
+		$this->result = $this->xmlToArray($this->response);
+		$code_url = $this->result["code_url"];
+		return $code_url;
+	}
+	
 }
 
 /**
