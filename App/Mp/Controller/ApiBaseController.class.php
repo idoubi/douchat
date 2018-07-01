@@ -435,6 +435,9 @@ class ApiBaseController extends Controller {
 				'body' => $body,
 				'notify' => $notify
 			]);
+			if (!is_array($payParams)) {
+				$payParams = json_decode($payParams,true);
+			}
 			$this->response(0, '获取成功', $payParams);
 		} catch (\Exception $e) {
 			$this->response(1001, '获取支付参数失败');
