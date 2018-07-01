@@ -59,6 +59,10 @@ class Wxapp {
 	}
 	
 	// 获取小程序码
+    // 修改说明: ermao<ermaotech@163.com>
+    // 增加对获取小程序码后返回值的判断，获取出错时会返回json，成功会返回string
+    // 修改前，只要有返回值就写入文件，如果获取出错，会生成一个无法打开的jpg文件，并返回成功
+    // 获取小程序码请求参数中is_hyaline表示是否透明，在透明情况下，生成的文件格式应为png
 	public function getQrcode($path,$type=1,$options=[],$filename=''){
 		if (!$this->access_token && !$this->checkAuth()) return false;
 		if (!isset($path)) return false;
@@ -87,18 +91,27 @@ class Wxapp {
 		
 		$data = array_merge($params, $options);
 		$result = $this->http_post($api, self::json_encode($data));
-		if (empty($filename)) {			// 如果没有指定要保存到的文件
-			$path = UPLOAD_PATH . 'WxaQrcode/';
-			if (!is_dir($path)) {
-				@mkdir($path, 0777);
-			}
-			$filename = $path . time() . '.jpg';
-		}
-		$res = file_put_contents($filename, $result);
-		if (!$res) {
-			return false;
-		}
-		return $filename;
+        if (!is_object(json_decode($result))) { //判断返回值是否为json，是否生成小程序码成功
+            if (empty($filename)) {            // 如果没有指定要保存到的文件
+                $path = UPLOAD_PATH . 'WxaQrcode/';
+                if (!is_dir($path)) {
+                    @mkdir($path, 0777);
+                }
+                if ($data['is_hyaline'] === true) { //如果透明小程序码生成png
+                    $filename = $path . time() . '.png';
+                } else {
+                    $filename = $path . time() . '.jpg';
+                }
+
+            }
+            $res = file_put_contents($filename, $result);
+            if (!$res) {
+                return false;
+            }
+            return $filename;
+        } else {
+            return json_decode($result);
+        }
 	}
 	
 	/**
