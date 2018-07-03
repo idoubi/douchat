@@ -124,7 +124,7 @@ class AddonsController extends BaseController {
 		$data['name'] = $addon_info['name'];
 		$data['bzname'] = $addon_info['bzname'];
 		$data['desc'] = $addon_info['desc'];
-		$data['type'] = $addon_info['type'];
+		$data['type'] = $addon_info['type'] ? $addon_info['type'] : 1;
 		$data['version'] = $addon_info['version'];
 		$data['author'] = $addon_info['author'];
 		$data['logo'] = $addon_info['logo'];
