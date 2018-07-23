@@ -109,6 +109,7 @@ class MobileBaseController extends Controller {
 				if ($sign == $payment['sign']) {			// 签名校验通过
 					$data['detail'] = json_encode($payment);
 					$data['status'] = 1;
+					$data['openid'] = $payment['openid'];
 					M('mp_payment')->where([
 						'orderid' => $payment['out_trade_no'],
 						'mchid' => $payment['mch_id']
@@ -117,6 +118,8 @@ class MobileBaseController extends Controller {
 					// 将通知转发到插件控制器中进行处理
 					if (isset($info['notify']) && !empty($info['notify'])) {
 						$notify_url = $info['notify'];
+						$payment['mpid'] = $info['mpid'];
+						$payment['orderid'] = $payment['out_trade_no'];
 						$ch = curl_init();
 						curl_setopt($ch, CURLOPT_URL, $notify_url);
 						curl_setopt($ch, CURLOPT_POST, 1);
