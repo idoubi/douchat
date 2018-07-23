@@ -99,7 +99,7 @@ class CommonController extends Controller {
 			$per = min($count,$per);
 			$results = array();
 			$begin = ($page-1)*$per;
-			$end = $begin+$per;
+			$end = min($begin+$per, $count);
 			$n = 0;
 			for($i=$begin;$i<$end;$i++) {
 				$results[$n] = $list_data[$i];
