@@ -120,8 +120,8 @@ class ApiBaseController extends Controller {
 		$this->checkAccess();
 		try {
 			$post = I('post.');
-			if (empty($post['code']) || empty($post['encryptedData']) || empty($post['iv'])) {
-				$this->response(1001, '参数code、encryptedData、iv必传');
+			if (empty($post['code'])) {
+				$this->response(1001, '参数code必传');
 			}
 			$mp_info = $this->mp_info;
 			$appid = $mp_info['appid'];
@@ -148,36 +148,39 @@ class ApiBaseController extends Controller {
 					'session_key' => $sessionData['session_key']
 				]);
 				
-				$fansInfo = D('MpFans')->where([
-					'mpid' => $this->mpid,
-					'openid' => $this->openid
-				])->find();
-				$decodeData = [];
-				if (empty($fansInfo)) {
-					$crypt = new WXBizDataCrypt($appid, $sessionData['session_key']);
-					$errCode = $crypt->decryptData($post['encryptedData'], $post['iv'], $decodeData);
-					if ($errCode == 0) {
-						$decodeData = json_decode($decodeData, true);
-						if (is_array($decodeData) && count($decodeData) > 0) {
-							$fansInfo['mpid'] = $this->mpid;
-							$fansInfo['openid'] = $decodeData['openId'];
-							$fansInfo['unionid'] = isset($decodeData['unionId']) ? $decodeData['unionId'] : $decodeData['openId'];
-							$fansInfo['nickname'] = text_encode($decodeData['nickName']);
-							$fansInfo['headimgurl'] = $decodeData['avatarUrl'];
-							$fansInfo['province'] = $decodeData['province'];
-							$fansInfo['city'] = $decodeData['city'];
-							$fansInfo['country'] = $decodeData['country'];
-							$fansInfo['sex'] = $decodeData['gender'];
-							$fansInfo['language'] = $decodeData['language'];
-							$fansInfo['is_subscribe'] = 1;
-							$fansInfo['subscribe_time'] = time();
-							D('MpFans')->add($fansInfo);       // 登录成功写到数据表
+				// 解密用户信息
+				if (!empty($post['encryptedData']) && !empty($post['iv'])) {
+					$fansInfo = D('MpFans')->where([
+						'mpid' => $this->mpid,
+						'openid' => $this->openid
+					])->find();
+					$decodeData = [];
+					if (empty($fansInfo)) {
+						$crypt = new WXBizDataCrypt($appid, $sessionData['session_key']);
+						$errCode = $crypt->decryptData($post['encryptedData'], $post['iv'], $decodeData);
+						if ($errCode == 0) {
+							$decodeData = json_decode($decodeData, true);
+							if (is_array($decodeData) && count($decodeData) > 0) {
+								$fansInfo['mpid'] = $this->mpid;
+								$fansInfo['openid'] = $decodeData['openId'];
+								$fansInfo['unionid'] = isset($decodeData['unionId']) ? $decodeData['unionId'] : $decodeData['openId'];
+								$fansInfo['nickname'] = text_encode($decodeData['nickName']);
+								$fansInfo['headimgurl'] = $decodeData['avatarUrl'];
+								$fansInfo['province'] = $decodeData['province'];
+								$fansInfo['city'] = $decodeData['city'];
+								$fansInfo['country'] = $decodeData['country'];
+								$fansInfo['sex'] = $decodeData['gender'];
+								$fansInfo['language'] = $decodeData['language'];
+								$fansInfo['is_subscribe'] = 1;
+								$fansInfo['subscribe_time'] = time();
+								D('MpFans')->add($fansInfo);       // 登录成功写到数据表
+							}
+						} else {
+							$this->response(1001, '解密用户信息失败');
 						}
 					} else {
-						$this->response(1001, '解密用户信息失败');
+					
 					}
-				} else {
-				
 				}
 				
 				$this->response(0, '登录成功', [
