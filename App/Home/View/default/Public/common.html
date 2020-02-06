@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <title>{$system_settings.site_name}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -11,6 +12,7 @@
   <link rel="stylesheet" type="text/css" href="__PUBLIC__/Home/default/css/style.css">
   <block name="style"></block>
 </head>
+
 <body>
   <div class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
@@ -29,10 +31,10 @@
             <a href="./" target="_self">首页</a>
           </li>
           <li>
-            <a href="http://doc.douchat.net/" target="_blank">手册</a>
+            <a href="http://doc.douchat.net/" target="_blank">开发文档</a>
           </li>
           <li class="hidden-sm hidden-md">
-            <a href="http://bbs.douchat.net/" target="_blank">社区</a>
+            <a href="http://douchat.net/" target="_blank">产品官网</a>
           </li>
         </ul>
         <ul class="nav navbar-nav navbar-right hidden-sm">
@@ -45,15 +47,20 @@
   <block name="main_content"></block>
 
   <footer class="footer ">
-      <div class="container">
-        <div class="row footer-bottom">
-          <ul class="list-inline text-center">
-            <li><if condition="$system_settings['site_copyright']">{$system_settings.site_copyright}<else />Copyright © 2015-2018 <a href="http://douchat.net/" target="_blank">豆信</a>版权所有</if></li><li>{$system_settings.site_icp_beian}</li>
-          </ul>
-        </div>
+    <div class="container">
+      <div class="row footer-bottom">
+        <ul class="list-inline text-center">
+          <li>
+            <if condition="$system_settings['site_copyright']">{$system_settings.site_copyright}
+              <else />Copyright © 2015-2020 <a href="http://douchat.net/" target="_blank">豆信</a>版权所有</if>
+          </li>
+          <li>{$system_settings.site_icp_beian}</li>
+        </ul>
       </div>
-    </footer>
+    </div>
+  </footer>
   <script type="text/javascript" src="__PUBLIC__/Common/js/jquery-3.1.0.js"></script>
   <script type="text/javascript" src="__PUBLIC__/Common/js/bootstrap.min.js"></script>
 </body>
+
 </html>

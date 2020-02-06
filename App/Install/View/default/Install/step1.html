@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta charset="utf-8">
@@ -8,61 +9,73 @@
     <link href="__PUBLIC__/Install/css/bootstrap.css" rel="stylesheet" type="text/css">
     <link rel="stylesheet" type="text/css" href="__PUBLIC__/Install/css/install.css">
 </head>
+
 <body>
     <div class="aw-install">
         <div class="aw-mod-head">
             <img src="__PUBLIC__/Install/img/logo.png" alt="">
         </div>
         <div class="aw-mod-body">
-        <form action="" method="post" id="installer">
-        <input type="hidden" name="step" value="2">
-            <dl>
-                <dt>• 欢迎使用</dt>
-                <dd>欢迎使用 豆信 安装程序, 豆信 是一个简洁、高效的微信公众号开发框架</dd>
-            </dl>
-            <dl>
-                <dt>• 运行环境检查</dt>
-                <dd></dd>
-            </dl>
+            <form action="" method="post" id="installer">
+                <input type="hidden" name="step" value="2">
+                <dl>
+                    <dt>• 欢迎使用</dt>
+                    <dd>欢迎使用 豆信 安装程序, 豆信 是一个简洁、高效的微信公众号开发框架</dd>
+                </dl>
+                <dl>
+                    <dt>• 运行环境检查</dt>
+                    <dd></dd>
+                </dl>
                 <ul>
-                <volist name="env" id="item">
-                <li>
-                    <b>{$item[0]}</b><span>{$item[1]}</span><span>{$item[3]}</span><span class="green"><php>if ($item[4] == 'success') { echo '√'; } else { echo 'x'; }</php></if></span>       
-                </li>
-                </volist>
-                
-            </ul>
-            <dl>
-                <dt>• 依赖性</dt>
-                <dd></dd>
-            </dl>
+                    <volist name="env" id="item">
+                        <li>
+                            <b>{$item[0]}</b><span>{$item[1]}</span><span>{$item[3]}</span><span class="green">
+                                <php>if ($item[4] == 'success') { echo '√'; } else { echo 'x'; }</php>
+                                </if>
+                            </span>
+                        </li>
+                    </volist>
+
+                </ul>
+                <dl>
+                    <dt>• 依赖性</dt>
+                    <dd></dd>
+                </dl>
                 <ul>
-                <volist name="func" id="item">
-                <li>
-                    <b>{$item[0]}</b><span>{$item[3]}</span><span>{$item[1]}</span><span class="green"><php>if ($item[2] == 'success') { echo '√'; } else { echo 'x'; }</php></if></span>       
-                </li>
-                </volist>
-                
-            </ul>
-            <dl>
-                <dt>• 目录、文件权限检查</dt>
-                <dd></dd>
-            </dl>
+                    <volist name="func" id="item">
+                        <li>
+                            <b>{$item[0]}</b><span>{$item[3]}</span><span>{$item[1]}</span><span class="green">
+                                <php>if ($item[2] == 'success') { echo '√'; } else { echo 'x'; }</php>
+                                </if>
+                            </span>
+                        </li>
+                    </volist>
+
+                </ul>
+                <dl>
+                    <dt>• 目录、文件权限检查</dt>
+                    <dd></dd>
+                </dl>
                 <ul>
-                <volist name="dirfile" id="item">
-                <li>
-                    <b>{$item[3]}</b><span></span><span>{$item[1]}</span><span class="green"><php>if ($item[2] == 'success') { echo '√'; } else { echo 'x'; }</php></if></span>       
-                </li>
-                </volist>
-                
-            </ul>
-            <a class="btn btn-success pull-right" href="{:U('Install/step2')}">下一步</a>
-             </form>
+                    <volist name="dirfile" id="item">
+                        <li>
+                            <b>{$item[3]}</b><span></span><span>{$item[1]}</span><span class="green">
+                                <php>if ($item[2] == 'success') { echo '√'; } else { echo 'x'; }</php>
+                                </if>
+                            </span>
+                        </li>
+                    </volist>
+
+                </ul>
+                <a class="btn btn-success pull-right" href="{:U('Install/step2')}">下一步</a>
+            </form>
         </div>
 
-        </div>
-        <div class="aw-install-footer">
-            <a href="http://bbs.douchat.net/" target="_blank">遇到问题? 联系我们</a> | Copyright ©  - <a href="http://douchat.net/" target="blank">豆信 3.0</a>, All Rights Reserved
-        </div>
+    </div>
+    <div class="aw-install-footer">
+        <a href="http://blogcdn.idoustudio.com/idoubi-mp-1.png" target="_blank">遇到问题? 联系我们</a> | Copyright © - <a
+            href="http://douchat.net/" target="blank">豆信 4.0</a>, All Rights Reserved
+    </div>
 </body>
+
 </html>

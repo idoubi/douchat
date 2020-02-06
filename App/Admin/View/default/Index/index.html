@@ -1,98 +1,101 @@
 <extend name="./App/Common/View/default/Base/common.html" />
 <block name="style">
-<style type="text/css">
-.mod-body table tbody td{
-    text-align: left; !important;
-}
-</style>
+    <style type="text/css">
+        .mod-body table tbody td {
+            text-align: left;
+             !important;
+        }
+    </style>
 </block>
 <block name="main_content">
-<div class="row mod-echat-info">
-    <div class="col-md-6">
-        <div class="mod">
-            <div class="mod-head">
-                <h3>
-                    <span class="pull-left">框架信息</span>
-                </h3>
-            </div>
-            <div class="tab-content mod-content">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <td>操作系统</td>
-                            <td>{$Think.const.PHP_OS}</td>
-                        </tr>
-                        <tr>
-                            <td>运行环境</td>
-                            <td>{$_SERVER['SERVER_SOFTWARE']}</td>
-                        </tr>
-                        <tr>
-                            <td>MySQL 版本</td>
-                            <php>
-                                $system_info_mysql = M()->query("select version() as v;");
-                            </php>
-                            <td>{$system_info_mysql.0.v}</td>
-                        </tr>
-                        <tr>
-                            <td>ThinkPHP版本</td>
-                            <td>{$Think.VERSION}</td>
-                        </tr>
-                        <tr>
-                            <td>豆信框架版本</td>
-                            <td>{$product_info.version}</td>
-                        </tr>
-                        <tr>
-                            <td>最后更新时间</td>
-                            <td>{$product_info.upgrade_time}</td>
-                        </tr>
-                    </tbody>
-                </table>
+    <div class="row mod-echat-info">
+        <div class="col-md-6">
+            <div class="mod">
+                <div class="mod-head">
+                    <h3>
+                        <span class="pull-left">框架信息</span>
+                    </h3>
+                </div>
+                <div class="tab-content mod-content">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>操作系统</td>
+                                <td>{$Think.const.PHP_OS}</td>
+                            </tr>
+                            <tr>
+                                <td>运行环境</td>
+                                <td>{$_SERVER['SERVER_SOFTWARE']}</td>
+                            </tr>
+                            <tr>
+                                <td>MySQL 版本</td>
+                                <php>
+                                    $system_info_mysql = M()->query("select version() as v;");
+                                </php>
+                                <td>{$system_info_mysql.0.v}</td>
+                            </tr>
+                            <tr>
+                                <td>ThinkPHP版本</td>
+                                <td>{$Think.VERSION}</td>
+                            </tr>
+                            <tr>
+                                <td>豆信框架版本</td>
+                                <td>{$product_info.version}</td>
+                            </tr>
+                            <tr>
+                                <td>最后更新时间</td>
+                                <td>{$product_info.upgrade_time}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
-    </div>
 
-    <div class="col-md-6">
-        <div class="mod">
-            <div class="mod-head">
-                <h3>
-                    <span class="pull-left">产品信息</span>
-                </h3>
-            </div>
-            <div class="tab-content mod-content">
-                <table class="table table-striped">
-                    <tbody>
-                        <tr>
-                            <td>总策划</td>
-                            <td><a href="http://idoubi.cc/" target="_blank">艾逗笔</a></td>
-                        </tr>
-                        <tr>
-                            <td>官方网址</td>
-                            <td><a href="http://douchat.net/" target="_blank">http://douchat.net</a></td>
-                        </tr>
-                        <tr>
-                            <td>代码仓库</td>
-                            <td><a href="https://github.com/mikemintang/douchat" target="_blank">https://github.com/mikemintang/douchat</a></td>
-                        </tr>
-                        <tr>
-                            <td>开发手册</td>
-                            <td><a href="http://doc.douchat.net" target="_blank">http://doc.douchat.net</a></td>
-                        </tr>
-                        <tr>
-                            <td>交流社区</td>
-                            <td><a href="http://bbs.douchat.net/" target="_blank">http://bbs.douchat.net</a></td>
-                        </tr>
-                        <tr>
-                            <td>官方QQ群</td>
-                            <td><a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=41a33c33d92f00d63db24ae1490df68ade624d22488dfa8a832089fb8bbce576"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="豆信开源框架交流群" title="豆信开源框架交流群"></a></td>
-                        </tr>
-                        <tr>
-                            <td>微信公众号</td>
-                            <td><a href="javascript:;"><img border="0" width="200" height="200" src="http://p5ucckjq4.bkt.clouddn.com/douchat_framework.png" alt="微信公众号" title="微信公众号"></a></td>
-                        </tr>
-                    </tbody>
-                </table>
+        <div class="col-md-6">
+            <div class="mod">
+                <div class="mod-head">
+                    <h3>
+                        <span class="pull-left">产品信息</span>
+                    </h3>
+                </div>
+                <div class="tab-content mod-content">
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr>
+                                <td>总策划</td>
+                                <td><a href="http://idoubi.cc/" target="_blank">艾逗笔</a></td>
+                            </tr>
+                            <tr>
+                                <td>官方网址</td>
+                                <td><a href="http://douchat.net/" target="_blank">http://douchat.net</a></td>
+                            </tr>
+                            <tr>
+                                <td>代码仓库</td>
+                                <td><a href="https://github.com/idoubi/douchat"
+                                        target="_blank">https://github.com/idoubi/douchat</a></td>
+                            </tr>
+                            <tr>
+                                <td>开发手册</td>
+                                <td><a href="http://doc.douchat.net" target="_blank">http://doc.douchat.net</a></td>
+                            </tr>
+                            <tr>
+                                <td>官方QQ群</td>
+                                <td><a target="_blank"
+                                        href="http://shang.qq.com/wpa/qunwpa?idkey=41a33c33d92f00d63db24ae1490df68ade624d22488dfa8a832089fb8bbce576"><img
+                                            border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="豆信开源框架交流群"
+                                            title="豆信开源框架交流群"></a></td>
+                            </tr>
+                            <tr>
+                                <td>微信交流群</td>
+                                <td><a href="javascript:;"><img border="0" width="400" height="150"
+                                            src="http://blogcdn.idoustudio.com/idoubi-mp-1.png" alt="微信公众号"
+                                            title="微信公众号"></a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 </block>
