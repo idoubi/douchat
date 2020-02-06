@@ -17,5 +17,7 @@
 
 ## 产品体验
 
-#### 豆信官网：<a href="http://douchat.net/" target="_blank">http://douchat.net/</a>
-#### 产品交流QQ群：<a target="_blank" href="http://shang.qq.com/wpa/qunwpa?idkey=41a33c33d92f00d63db24ae1490df68ade624d22488dfa8a832089fb8bbce576"><img border="0" src="http://pub.idqqimg.com/wpa/images/group.png" alt="豆信开源框架交流群" title="豆信开源框架交流群"></a>
+#### 产品官网：<a href="http://douchat.net/" target="_blank">http://douchat.net/</a>
+#### 联系作者：
+
+![](./author.png)
