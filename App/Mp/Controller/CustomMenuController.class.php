@@ -1,47 +1,51 @@
-<?php 
+<?php
 
 namespace Mp\Controller;
+
 use Mp\Controller\BaseController;
 
 /**
  * 自定义菜单控制器
  * @author 艾逗笔<765532665@qq.com>
  */
-class CustomMenuController extends BaseController {
+class CustomMenuController extends BaseController
+{
 
 	/**
 	 * 菜单列表
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function lists() {
+	public function lists()
+	{
 		$this->addCrumb('公众号管理', U('Mp/CustomMenu/lists'), '')
-			 ->addCrumb('自定义菜单', U('Mp/CustomMenu/lists'), '')
-			 ->addCrumb('菜单列表', '', 'active')
-			 ->addNav('菜单列表', '', 'active')
-			 ->addButton('添加自定义菜单', U('Mp/CustomMenu/add'), 'btn btn-primary')
-			 ->common_lists();
+			->addCrumb('自定义菜单', U('Mp/CustomMenu/lists'), '')
+			->addCrumb('菜单列表', '', 'active')
+			->addNav('菜单列表', '', 'active')
+			->addButton('添加自定义菜单', U('Mp/CustomMenu/add'), 'btn btn-primary')
+			->common_lists();
 	}
 
 	/**
 	 * 发布菜单
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function publish() {
+	public function publish()
+	{
 		$menu = get_menu();
-		$this->addCrumb('公众号管理', U('Mp/CustomMenu/lists'), '')
-			 ->addCrumb('自定义菜单', U('Mp/CustomMenu/lists'), '')
-			 ->addCrumb('发布菜单', '', 'active')
-			 ->addButton('重新编辑菜单', U('Mp/CustomMenu/add'), 'btn btn-primary edit_menu')
-			 ->addButton('拉取菜单', U('Mp/CustomMenu/add'), 'btn btn-success pull_menu')
-			 ->addButton('删除菜单', U('Mp/CustomMenu/add'), 'btn btn-danger delete_menu')
-			 ->setTip('由于微信端缓存的原因，发布的菜单不会立马在微信端生效，可以尝试重新关注关注查看效果')
-			 ->addNav('发布菜单', '', 'active')
-			 ->assign('menu', $menu['menu'])
-			 ->display();
+		$this->addCrumb('公众号', '', '')
+			->addCrumb('自定义菜单', '', 'active')
+			->addButton('重新编辑菜单', U('Mp/CustomMenu/add'), 'btn btn-primary edit_menu')
+			->addButton('拉取菜单', U('Mp/CustomMenu/add'), 'btn btn-success pull_menu')
+			->addButton('删除菜单', U('Mp/CustomMenu/add'), 'btn btn-danger delete_menu')
+			->setTip('由于微信端缓存的原因，发布的菜单不会立马在微信端生效，可以尝试重新关注关注查看效果')
+			->addNav('发布菜单', '', 'active')
+			->assign('menu', $menu['menu'])
+			->display();
 	}
 
-	public function get_menu() {
-		$flag = 'custom_menu_'.get_mpid();
+	public function get_menu()
+	{
+		$flag = 'custom_menu_' . get_mpid();
 		if (S($flag)) {
 			$menu = S($flag);
 		} else {
@@ -57,7 +61,8 @@ class CustomMenuController extends BaseController {
 	/**
 	 * 创建菜单
 	 */
-	public function create_menu() {
+	public function create_menu()
+	{
 		$menu = I('post.menu');
 		$button = $menu['button'];
 		foreach ($button as $k => &$v) {
@@ -72,7 +77,7 @@ class CustomMenuController extends BaseController {
 					}
 					$two['name'] = $vv['name'];
 					$two['type'] = $vv['type'];
-					
+
 					if ($vv['type'] == 'view') {
 						if (!$vv['url']) {
 							$return['errcode'] = 1002;
@@ -95,22 +100,22 @@ class CustomMenuController extends BaseController {
 						}
 						$two['key'] = $vv['key'];
 					} elseif ($vv['type'] == 'miniprogram') {
-                        if (!$vv['url']) {
-                            $return['errcode'] = 1002;
-                            $return['errmsg'] = '菜单链接不能为空';
-                            $return['data_id'] = $kk;
-                            $this->ajaxReturn($return);
-                        } elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $vv['url'])) {
-                            $return['errcode'] = 1004;
-                            $return['errmsg'] = '菜单链接地址不合法';
-                            $return['data_id'] = $kk;
-                            $this->ajaxReturn($return);
-                        }
+						if (!$vv['url']) {
+							$return['errcode'] = 1002;
+							$return['errmsg'] = '菜单链接不能为空';
+							$return['data_id'] = $kk;
+							$this->ajaxReturn($return);
+						} elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $vv['url'])) {
+							$return['errcode'] = 1004;
+							$return['errmsg'] = '菜单链接地址不合法';
+							$return['data_id'] = $kk;
+							$this->ajaxReturn($return);
+						}
 
-                        $two['url'] = $vv['url'];
-                        $two['appid'] = $vv['appid'];
-                        $two['pagepath'] = $vv['pagepath'];
-                    }else {
+						$two['url'] = $vv['url'];
+						$two['appid'] = $vv['appid'];
+						$two['pagepath'] = $vv['pagepath'];
+					} else {
 						$return['errcode'] = 1001;
 						$return['errmsg'] = '菜单动作必选';
 						$return['data_id'] = $kk;
@@ -118,7 +123,7 @@ class CustomMenuController extends BaseController {
 					}
 					$tmp[] = $two;
 				}
-				
+
 				if (count($tmp) == 0) {
 					$item['type'] = $v['type'];
 					if ($v['type'] == 'view') {
@@ -143,22 +148,22 @@ class CustomMenuController extends BaseController {
 						}
 						$item['key'] = $v['key'];
 					} elseif ($vv['type'] == 'miniprogram') {
-                        if (!$vv['url']) {
-                            $return['errcode'] = 1002;
-                            $return['errmsg'] = '菜单链接不能为空';
-                            $return['data_id'] = $kk;
-                            $this->ajaxReturn($return);
-                        } elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $vv['url'])) {
-                            $return['errcode'] = 1004;
-                            $return['errmsg'] = '菜单链接地址不合法';
-                            $return['data_id'] = $kk;
-                            $this->ajaxReturn($return);
-                        }
+						if (!$vv['url']) {
+							$return['errcode'] = 1002;
+							$return['errmsg'] = '菜单链接不能为空';
+							$return['data_id'] = $kk;
+							$this->ajaxReturn($return);
+						} elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $vv['url'])) {
+							$return['errcode'] = 1004;
+							$return['errmsg'] = '菜单链接地址不合法';
+							$return['data_id'] = $kk;
+							$this->ajaxReturn($return);
+						}
 
-                        $item['url'] = $v['url'];
-                        $item['appid'] = $v['appid'];
-                        $item['pagepath'] = $v['pagepath'];
-                    }else {
+						$item['url'] = $v['url'];
+						$item['appid'] = $v['appid'];
+						$item['pagepath'] = $v['pagepath'];
+					} else {
 						$return['errcode'] = 1001;
 						$return['errmsg'] = '菜单动作必选';
 						$return['data_id'] = $k;
@@ -192,21 +197,21 @@ class CustomMenuController extends BaseController {
 					}
 					$item['key'] = $v['key'];
 				} elseif ($v['type'] == 'miniprogram') {
-                    if (!$v['url']) {
-                        $return['errcode'] = 1002;
-                        $return['errmsg'] = '菜单链接不能为空';
-                        $return['data_id'] = $k;
-                        $this->ajaxReturn($return);
-                    } elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $v['url'])) {
-                        $return['errcode'] = 1004;
-                        $return['errmsg'] = '菜单链接地址不合法';
-                        $return['data_id'] = $k;
-                        $this->ajaxReturn($return);
-                    }
-                    $item['url'] = $v['url'];
-                    $item['appid'] = $v['appid'];
-                    $item['pagepath'] = $v['pagepath'];
-                }else {
+					if (!$v['url']) {
+						$return['errcode'] = 1002;
+						$return['errmsg'] = '菜单链接不能为空';
+						$return['data_id'] = $k;
+						$this->ajaxReturn($return);
+					} elseif (!preg_match('/\b(([\w-]+:\/\/?|www[.])[^\s()<>]+(?:\([\w\d]+\)|([^[:punct:]\s]|\/)))/', $v['url'])) {
+						$return['errcode'] = 1004;
+						$return['errmsg'] = '菜单链接地址不合法';
+						$return['data_id'] = $k;
+						$this->ajaxReturn($return);
+					}
+					$item['url'] = $v['url'];
+					$item['appid'] = $v['appid'];
+					$item['pagepath'] = $v['pagepath'];
+				} else {
 					$return['errcode'] = 1001;
 					$return['errmsg'] = '菜单动作必选';
 					$return['data_id'] = $k;
@@ -226,7 +231,7 @@ class CustomMenuController extends BaseController {
 		$result = create_menu($custom_menu);
 		if ($result === true) {
 			$menu['menu'] = $custom_menu;
-			$flag = 'custom_menu_'.get_mpid();
+			$flag = 'custom_menu_' . get_mpid();
 			S($flag, $menu, 3600);
 			$return['errcode'] = 0;
 			$return['errmsg'] = '发布菜单成功';
@@ -234,28 +239,26 @@ class CustomMenuController extends BaseController {
 			$this->ajaxReturn($return);
 		} else {
 			$return['errcode'] = 1008;
-			$return['errmsg'] = '发布菜单失败，错误说明：'.$result['errmsg'];
+			$return['errmsg'] = '发布菜单失败，错误说明：' . $result['errmsg'];
 			$return['data'] = $custom_menu;
 			$this->ajaxReturn($return);
 		}
-		
 	}
 
 	// 删除菜单
-	public function delete_menu() {
+	public function delete_menu()
+	{
 		$result = delete_menu();
 		if ($result === true) {
-			$flag = 'custom_menu_'.get_mpid();
+			$flag = 'custom_menu_' . get_mpid();
 			S($flag, null);
 			$return['errcode'] = 0;
 			$return['errmsg'] = '删除菜单成功';
 			$this->ajaxReturn($return);
 		} else {
 			$return['errcode'] = 1007;
-			$return['errmsg'] = '删除菜单失败，错误说明：'.$result;
+			$return['errmsg'] = '删除菜单失败，错误说明：' . $result;
 			$this->ajaxReturn($return);
 		}
 	}
 }
-
- ?>

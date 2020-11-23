@@ -1,56 +1,59 @@
-<?php 
+<?php
 
 namespace Mp\Controller;
+
 use Mp\Controller\BaseController;
 
 /**
  * 自动回复控制器
  * @author 艾逗笔<765532665@qq.com>
  */
-class AutoReplyController extends BaseController {
-	
+class AutoReplyController extends BaseController
+{
+
 	/**
 	 * 关键词回复
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function keyword() {
+	public function keyword()
+	{
 		$options = array(
 			'add' => array(
 				'title' => '编辑',
-				'url' => U('edit', array('id'=>'{id}')),
+				'url' => U('edit', array('id' => '{id}')),
 				'class' => 'btn btn-primary btn-sm icon-edit'
 			),
 			'delete' =>	array(
 				'title' => '删除',
-				'url' => U('delete', array('id'=>'{id}')),
+				'url' => U('delete', array('id' => '{id}')),
 				'class' => 'btn btn-danger btn-sm icon-delete'
 			)
 		);
-		$this->addCrumb('公众号管理', U('Mp/Index/index'), '')
-			 ->addCrumb('自动回复', U('Mp/AutoReply/keyword'), '')
-			 ->addCrumb('关键词回复', '', 'active')
-			 ->addNav('关键词回复', '', 'active')
-			 ->addNav('特殊消息回复', U('special'), '')
-			 ->addNav('事件回复', U('event'), '')
-			 ->addNav('未识别回复', U('unrecognize'), '')
-			 ->addButton('添加文本回复', U('add?type=text'), 'btn btn-primary')
-			 ->addButton('添加图片回复', U('add?type=image'), 'btn btn-info')
-			 ->addButton('添加图文回复', U('add?type=news'), 'btn btn-success')
-			 ->setModel('mp_auto_reply')
-			 ->setListMap(array('mpid'=>get_mpid(),'type'=>'keyword'))
-			 ->setListOrder('id desc')
-			 ->addListItem('id', '关键词', 'callback', array('callback_name'=>'get_keyword'))
-			 ->addListItem('reply_type', '回复类型', 'enum', array('options'=>array('text'=>'文本','image'=>'图片','news'=>'图文')))
-			 ->addListItem('material_id', '回复内容', 'callback', array('callback_name'=>'get_reply_content'))
-			 ->addListItem('id', '操作', 'custom', array('options'=>$options))
-			 ->common_lists();
+		$this->addCrumb('公众号', '', '')
+			->addCrumb('自动回复', '', 'active')
+			->addNav('关键词回复', '', 'active')
+			->addNav('特殊消息回复', U('special'), '')
+			->addNav('事件回复', U('event'), '')
+			->addNav('未识别回复', U('unrecognize'), '')
+			->addButton('添加文本回复', U('add?type=text'), 'btn btn-primary')
+			->addButton('添加图片回复', U('add?type=image'), 'btn btn-info')
+			->addButton('添加图文回复', U('add?type=news'), 'btn btn-success')
+			->setModel('mp_auto_reply')
+			->setListMap(array('mpid' => get_mpid(), 'type' => 'keyword'))
+			->setListOrder('id desc')
+			->addListItem('id', '关键词', 'callback', array('callback_name' => 'get_keyword'))
+			->addListItem('reply_type', '回复类型', 'enum', array('options' => array('text' => '文本', 'image' => '图片', 'news' => '图文')))
+			->addListItem('material_id', '回复内容', 'callback', array('callback_name' => 'get_reply_content'))
+			->addListItem('id', '操作', 'custom', array('options' => $options))
+			->common_lists();
 	}
 
 	/**
 	 * 添加文本回复
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function add() {
+	public function add()
+	{
 		if (IS_POST) {
 			$data = I('post.');
 			$type = $data['reply_type'];
@@ -62,13 +65,13 @@ class AutoReplyController extends BaseController {
 			}
 		} else {
 			$type = I('get.type');
-			$type_arr = array('text'=>'文本','image'=>'图片','news'=>'图文');
-			$this->addCrumb('公众号管理', U('Index/index'), '')
-				 ->addCrumb('关键词回复', U('AutoReply/keyword'), '')
-				 ->addCrumb('添加'.$type_arr[$type].'回复', '', '')
-				 ->addNav('添加'.$type_arr[$type].'回复', '', 'active')
-				 ->addFormField('keyword', '关键词', 'text')
-				 ->addFormField('reply_type', '回复类型', 'hidden', array('value'=>$type));
+			$type_arr = array('text' => '文本', 'image' => '图片', 'news' => '图文');
+			$this->addCrumb('公众号', '', '')
+				->addCrumb('关键词回复', '', 'active')
+				->addNav('返回', U('AutoReply/keyword'), '')
+				->addNav('添加' . $type_arr[$type] . '回复', '', 'active')
+				->addFormField('keyword', '关键词', 'text')
+				->addFormField('reply_type', '回复类型', 'hidden', array('value' => $type));
 			switch ($type) {
 				case 'text':
 					$this->addFormField('content', '文本内容', 'textarea');
@@ -78,14 +81,14 @@ class AutoReplyController extends BaseController {
 					break;
 				case 'news':
 					$this->addFormField('title', '图文标题', 'text')
-					     ->addFormField('picurl', '图文封面', 'image')
-					     ->addFormField('description', '图文描述', 'textarea')
-					     ->addFormField('url', '图文链接', 'text');
+						->addFormField('picurl', '图文封面', 'image')
+						->addFormField('description', '图文描述', 'textarea')
+						->addFormField('url', '图文链接', 'text');
 					break;
 				default:
 					# code...
 					break;
-			}	 
+			}
 			$this->common_add();
 		}
 	}
@@ -94,7 +97,8 @@ class AutoReplyController extends BaseController {
 	 * 编辑自动回复
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function edit() {
+	public function edit()
+	{
 		if (IS_POST) {
 			$data = I('post.');
 			$type = $data['reply_type'];
@@ -111,17 +115,17 @@ class AutoReplyController extends BaseController {
 			}
 			$form_data = $result['result'];
 			$type = $form_data['reply_type'];
-			$type_arr = array('text'=>'文本','image'=>'图片','news'=>'图文');
-			$this->addCrumb('公众号管理', U('Index/index'), '')
-				 ->addCrumb('关键词回复', U('AutoReply/keyword'), '')
-				 ->addCrumb('编辑'.$type_arr[$type].'回复', '', 'active')
-				 ->addNav('编辑'.$type_arr[$type].'回复', '', 'active')
-				 ->addFormField('keyword', '关键词', 'text', array('attr'=>'readonly'))
-				 ->addFormField('reply_id', '回复规则ID', 'hidden')
-				 ->addFormField('material_id', '素材ID', 'hidden')
-				 ->addFormField('rule_id', '关键词触发规则ID', 'hidden')
-				 ->addFormField('reply_type', '回复类型', 'hidden')
-				 ->setFormData($form_data);
+			$type_arr = array('text' => '文本', 'image' => '图片', 'news' => '图文');
+			$this->addCrumb('公众号', '', '')
+				->addCrumb('关键词回复', '', 'active')
+				->addNav('返回', U('AutoReply/keyword'), '')
+				->addNav('编辑' . $type_arr[$type] . '回复', '', 'active')
+				->addFormField('keyword', '关键词', 'text', array('attr' => 'readonly'))
+				->addFormField('reply_id', '回复规则ID', 'hidden')
+				->addFormField('material_id', '素材ID', 'hidden')
+				->addFormField('rule_id', '关键词触发规则ID', 'hidden')
+				->addFormField('reply_type', '回复类型', 'hidden')
+				->setFormData($form_data);
 			switch ($type) {
 				case 'text':
 					$this->addFormField('content', '文本内容', 'textarea');
@@ -131,9 +135,9 @@ class AutoReplyController extends BaseController {
 					break;
 				case 'news':
 					$this->addFormField('title', '图文标题', 'text')
-					     ->addFormField('picurl', '图文封面', 'image')
-					     ->addFormField('description', '图文描述', 'textarea')
-					     ->addFormField('url', '图文链接', 'text');
+						->addFormField('picurl', '图文封面', 'image')
+						->addFormField('description', '图文描述', 'textarea')
+						->addFormField('url', '图文链接', 'text');
 					break;
 				default:
 					# code...
@@ -147,7 +151,8 @@ class AutoReplyController extends BaseController {
 	 * 获取自动回复关键词
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_keyword($reply_id) {
+	public function get_keyword($reply_id)
+	{
 		$reply_rule = D('MpRule')->get_auto_reply_rule($reply_id);
 		return $reply_rule['keyword'];
 	}
@@ -156,7 +161,8 @@ class AutoReplyController extends BaseController {
 	 * 获取回复内容
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_reply_content($material_id) {
+	public function get_reply_content($material_id)
+	{
 		return D('MpMaterial')->get_material($material_id);
 	}
 
@@ -164,7 +170,8 @@ class AutoReplyController extends BaseController {
 	 * 删除关键词回复
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function delete() {
+	public function delete()
+	{
 		$result = D('MpAutoReply')->get_auto_reply(I('get.id'));
 		if ($result['errcode'] != 0) {
 			$this->error($result['errmsg']);
@@ -185,7 +192,8 @@ class AutoReplyController extends BaseController {
 	 * 非关键词回复
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function special() {
+	public function special()
+	{
 		if (IS_POST) {
 			C('TOKEN_ON', false);
 			if (!I('type') || count(I('type')) == 0) {
@@ -197,8 +205,8 @@ class AutoReplyController extends BaseController {
 			foreach ($types as $k => $v) {
 				$data['type'] = $v;
 				$data['reply_type'] = I($v);
-				$data['keyword'] = I($v.'_keyword');
-				$data['addon'] = I($v.'_addon');
+				$data['keyword'] = I($v . '_keyword');
+				$data['addon'] = I($v . '_addon');
 				if (!$AutoReply->create($data)) {
 					$this->error($AutoReply->getError());
 				} else {
@@ -212,7 +220,7 @@ class AutoReplyController extends BaseController {
 					}
 				}
 			}
-			
+
 			$this->success('保存特殊消息回复成功');
 		} else {
 			$AutoReply = D('MpAutoReply');
@@ -248,13 +256,8 @@ class AutoReplyController extends BaseController {
 			$this->assign('addons', $addons);
 			$crumb = array(
 				array(
-					'title' => '公众号管理',
-					'url' => U('Index/index'),
-					'class' => ''
-				),
-				array(
-					'title' => '自动回复',
-					'url' => U('AutoReply/keyword'),
+					'title' => '公众号',
+					'url' => '',
 					'class' => ''
 				),
 				array(
@@ -297,7 +300,8 @@ class AutoReplyController extends BaseController {
 	 * 事件回复
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function event() {
+	public function event()
+	{
 		if (IS_POST) {
 			C('TOKEN_ON', false);
 			if (!I('type') || count(I('type')) == 0) {
@@ -309,8 +313,8 @@ class AutoReplyController extends BaseController {
 			foreach ($types as $k => $v) {
 				$data['type'] = $v;
 				$data['reply_type'] = I($v);
-				$data['keyword'] = I($v.'_keyword');
-				$data['addon'] = I($v.'_addon');
+				$data['keyword'] = I($v . '_keyword');
+				$data['addon'] = I($v . '_addon');
 				if (!$AutoReply->create($data)) {
 					$this->error($AutoReply->getError());
 				} else {
@@ -324,7 +328,7 @@ class AutoReplyController extends BaseController {
 					}
 				}
 			}
-			
+
 			$this->success('保存事件回复成功');
 		} else {
 			$AutoReply = D('MpAutoReply');
@@ -362,13 +366,8 @@ class AutoReplyController extends BaseController {
 			$this->assign('addons', $addons);
 			$crumb = array(
 				array(
-					'title' => '公众号管理',
-					'url' => U('Index/index'),
-					'class' => ''
-				),
-				array(
-					'title' => '自动回复',
-					'url' => U('AutoReply/keyword'),
+					'title' => '公众号',
+					'url' => '',
 					'class' => ''
 				),
 				array(
@@ -408,7 +407,8 @@ class AutoReplyController extends BaseController {
 	}
 
 	// 未识别回复
-	public function unrecognize() {
+	public function unrecognize()
+	{
 		if (IS_POST) {
 			C('TOKEN_ON', false);
 			if (!I('type') || count(I('type')) == 0) {
@@ -420,8 +420,8 @@ class AutoReplyController extends BaseController {
 			foreach ($types as $k => $v) {
 				$data['type'] = $v;
 				$data['reply_type'] = I($v);
-				$data['keyword'] = I($v.'_keyword');
-				$data['addon'] = I($v.'_addon');
+				$data['keyword'] = I($v . '_keyword');
+				$data['addon'] = I($v . '_addon');
 				if (!$AutoReply->create($data)) {
 					$this->error($AutoReply->getError());
 				} else {
@@ -435,7 +435,7 @@ class AutoReplyController extends BaseController {
 					}
 				}
 			}
-			
+
 			$this->success('保存未识别回复成功');
 		} else {
 			$AutoReply = D('MpAutoReply');
@@ -451,13 +451,8 @@ class AutoReplyController extends BaseController {
 			$this->assign('addons', $addons);
 			$crumb = array(
 				array(
-					'title' => '公众号管理',
-					'url' => U('Index/index'),
-					'class' => ''
-				),
-				array(
-					'title' => '自动回复',
-					'url' => U('AutoReply/keyword'),
+					'title' => '公众号',
+					'url' => '',
 					'class' => ''
 				),
 				array(
@@ -495,7 +490,4 @@ class AutoReplyController extends BaseController {
 			$this->display();
 		}
 	}
-
 }
-
- ?>

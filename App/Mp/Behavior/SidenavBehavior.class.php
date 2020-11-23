@@ -4,12 +4,16 @@
  * 生成侧边栏导航行为类
  * @author 艾逗笔<http://idoubi.cc>
  */
+
 namespace Mp\Behavior;
+
 use Think\Behavior;
 
-class SidenavBehavior extends Behavior {
+class SidenavBehavior extends Behavior
+{
 
-	public function run(&$params) {
+	public function run(&$params)
+	{
 		$ctl = $params['controller'];
 		$act = $params['action'];
 		$access_addons = D('Addons')->get_access_addons();
@@ -22,12 +26,12 @@ class SidenavBehavior extends Behavior {
 					'children' => [
 						[
 							'title' => '微信公众号',
-							'url' => U('Mp/lists', ['mp_type'=>1]),
+							'url' => U('Mp/lists', ['mp_type' => 1]),
 							'class' => $ctl == 'mp' && $params['mp_type'] == 1 ? 'active' : ''
 						],
 						[
 							'title' => '微信小程序',
-							'url' => U('Mp/lists', ['mp_type'=>2]),
+							'url' => U('Mp/lists', ['mp_type' => 2]),
 							'class' => $ctl == 'mp' && $params['mp_type'] == 2 ? 'active' : ''
 						]
 					]
@@ -51,8 +55,14 @@ class SidenavBehavior extends Behavior {
 							'title' => '秘钥管理',
 							'url' => U('AccessKey/lists'),
 							'class' => $ctl == 'accesskey' ? 'active' : ''
-						]
+						],
+
 					]
+				],
+				[
+					'title' => '应用中心',
+					'url' => U('Mp/Addons/manage'),
+					'class' => 'icon icon-job'
 				]
 			];
 		} elseif (in_array($ctl, ['addons']) || get_addon()) {
@@ -83,19 +93,19 @@ class SidenavBehavior extends Behavior {
 							'url' => U('Index/index'),
 							'class' => $ctl == 'index' ? 'active' : ''
 						],
-                        [
-                            'title' => '粉丝管理',
-                            'url' => U('Fans/lists') ,
-                            'class' => $ctl == 'fans' ? 'active' : ''
-                        ],
+						[
+							'title' => '粉丝管理',
+							'url' => U('Fans/lists'),
+							'class' => $ctl == 'fans' ? 'active' : ''
+						],
 						[
 							'title' => '支付管理',
-							'url' => U('Payment/wechat') ,
+							'url' => U('Payment/wechat'),
 							'class' => $ctl == 'payment' ? 'active' : ''
 						],
 						[
 							'title' => '模板消息',
-							'url' => U('Tempmsg/lists') ,
+							'url' => U('Tempmsg/lists'),
 							'class' => $ctl == 'tempmsg' ? 'active' : ''
 						]
 					]
@@ -104,7 +114,7 @@ class SidenavBehavior extends Behavior {
 		} else {
 			$sidenav = [
 				array(
-					'title' => '公众号功能',
+					'title' => '功能',
 					'url' => 'javascript:;',
 					'class' => 'icon icon-signup',
 					'attr' => 'data="icon"',
@@ -112,54 +122,52 @@ class SidenavBehavior extends Behavior {
 						[
 							'title' => '基础设置',
 							'url' => U('Index/index'),
-							'class' => ''
+							'class' => $ctl == 'index' ? 'active' : ''
 						],
 						[
 							'title' => '支付管理',
 							'url' => U('Payment/wechat'),
-							'class' => ''
+							'class' => $ctl == 'payment' ? 'active' : ''
 						],
 						[
 							'title' => '自动回复',
 							'url' => U('AutoReply/keyword'),
-							'class' => ''
+							'class' => $ctl == 'autoreply' ? 'active' : ''
 						],
 						[
 							'title' => '自定义菜单',
 							'url' => U('CustomMenu/publish'),
-							'class' => ''
+							'class' => $ctl == 'custommenu' ? 'active' : ''
 						],
 						[
 							'title' => '场景二维码',
 							'url' => U('SceneQrcode/lists'),
-							'class' => ''
+							'class' => $ctl == 'sceneqrcode' ? 'active' : ''
 						],
 						[
 							'title' => '粉丝管理',
 							'url' => U('Fans/lists'),
-							'class' => ''
+							'class' => $ctl == 'fans' ? 'active' : ''
 						],
 						[
 							'title' => '消息管理',
 							'url' => U('Message/lists'),
-							'class' => ''
+							'class' => $ctl == 'message' ? 'active' : ''
 						],
 						[
 							'title' => '素材管理',
 							'url' => U('Material/text'),
-							'class' => ''
+							'class' => $ctl == 'material' ? 'active' : ''
 						]
 					]
 				),
-				[
-					'title' => '应用功能',
-					'url' => 'javascript:;',
-					'class' => 'icon icon-job',
-					'attr' => 'data="icon"',
-					'children' => [
-					
-					]
-				]
+				// [
+				// 	'title' => '应用功能',
+				// 	'url' => 'javascript:;',
+				// 	'class' => 'icon icon-job',
+				// 	'attr' => 'data="icon"',
+				// 	'children' => []
+				// ]
 			];
 			foreach ($access_addons as $k => $v) {
 				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
@@ -175,5 +183,3 @@ class SidenavBehavior extends Behavior {
 		return $sidenav;
 	}
 }
-
- ?>

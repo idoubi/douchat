@@ -4,11 +4,14 @@
  * 模块公用控制器
  * @author 艾逗笔<http://idoubi.cc>
  */
+
 namespace Common\Controller;
+
 use Think\Controller;
 
-class CommonController extends Controller {
-	
+class CommonController extends Controller
+{
+
 	public $user_id;				// 当前登录用户id
 	public $user_info;				// 当前用户信息
 	public $user_access;			// 当前用户权限
@@ -17,19 +20,20 @@ class CommonController extends Controller {
 	public $action;					// 当前方法
 	public $product_info;			// 产品信息
 	public $system_settings;		// 系统设置
-	
+
 	public $model = [];				// 当前数据模型
-	
+
 	// 初始化
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct();
-		if (!is_file(SITE_PATH.'/Data/install.lock')) {				// 如果框架未安装，则跳转到安装页面
+		if (!is_file(SITE_PATH . '/Data/install.lock')) {				// 如果框架未安装，则跳转到安装页面
 			$this->redirect('Install/Index/index');
 		}
-		
+
 		add_hook('rbac', 'Common\Behavior\RbacBehavior');
 		hook('rbac');								// 用户权限检测
-		
+
 		$this->user_id = get_user_id();
 		$this->user_info = get_user_info();
 		$this->user_access = D('User/User')->get_user_access($this->user_id);
@@ -38,10 +42,10 @@ class CommonController extends Controller {
 		$this->action = strtolower(ACTION_NAME);
 		$this->product_info = json_decode(file_get_contents('./Data/product.info'), true);
 		$this->system_settings = D('Admin/SystemSetting')->get_settings();
-		
+
 		global $_G;
 		$_G['site_path'] = SITE_PATH . '/';
-		$_G['site_url'] = str_replace('index.php', '', 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['PHP_SELF']);
+		$_G['site_url'] = str_replace('index.php?s=/', '', U('/', [], false, true));
 		$_G['addons_path'] = str_replace('./', $_G['site_path'], ADDON_PATH);
 		$_G['addons_url'] = $_G['site_url'] . str_replace('./', '', ADDON_PATH);
 		$_G['user_id'] = $this->user_id;
@@ -53,15 +57,16 @@ class CommonController extends Controller {
 		$_G['product_info'] = $this->product_info;
 		$_G['system_settings'] = $this->system_settings;
 	}
-	
-	protected function _initialize() {
-	
+
+	protected function _initialize()
+	{
 	}
 
 	/**
 	 * 通用数据列表
 	 */
-	public function common_lists($model = array()) {
+	public function common_lists($model = array())
+	{
 		cookie('__forward__', $_SERVER['HTTP_REFERER']);
 		!empty($model) && $this->model = $model;
 		if (IS_POST) {
@@ -73,8 +78,8 @@ class CommonController extends Controller {
 			// if (!$keyword) {
 			// 	$this->error('请输入搜素内容');
 			// }
-			$this->model['list_map'][$target] =  array('like', '%'.$keyword.'%');
-			$this->assign('search_tip', $this->model['list_search'][$target].'为“'.$keyword.'”的搜索结果');
+			$this->model['list_map'][$target] =  array('like', '%' . $keyword . '%');
+			$this->assign('search_tip', $this->model['list_search'][$target] . '为“' . $keyword . '”的搜索结果');
 			$this->assign('keyword', $keyword);
 			$this->assign('target', $target);
 		}
@@ -92,16 +97,16 @@ class CommonController extends Controller {
 		$per = $this->model['per'] ? $this->model['per'] : 20;
 		if ($this->model['name']) {
 			$count = M($this->model['name'])->where($this->model['list_map'])->count();
-			$results = M($this->model['name'])->where($this->model['list_map'])->field($fields)->order($this->model['list_order'])->page($page.','.$per)->select();
+			$results = M($this->model['name'])->where($this->model['list_map'])->field($fields)->order($this->model['list_order'])->page($page . ',' . $per)->select();
 		} else {
 			$list_data = isset($this->model['list_data']) ? $this->model['list_data'] : array();
 			$count = $list_data ? count($list_data) : 0;
-			$per = min($count,$per);
+			$per = min($count, $per);
 			$results = array();
-			$begin = ($page-1)*$per;
-			$end = min($begin+$per, $count);
+			$begin = ($page - 1) * $per;
+			$end = min($begin + $per, $count);
 			$n = 0;
-			for($i=$begin;$i<$end;$i++) {
+			for ($i = $begin; $i < $end; $i++) {
 				$results[$n] = $list_data[$i];
 				$n++;
 			}
@@ -113,7 +118,7 @@ class CommonController extends Controller {
 				}
 				if ($n['format'] == 'image') {
 					$src = $v[$n['name']] ? $v[$n['name']] : $n['extra']['placeholder'];
-					$data[$k][$m] = "<img src='".$src."' ".$n['extra']['attr']." />";
+					$data[$k][$m] = "<img src='" . $src . "' " . $n['extra']['attr'] . " />";
 				} elseif ($n['format'] == 'datetime') {
 					$data[$k][$m] = date('Y-m-d H:i:s', $v[$n['name']]);
 				} elseif ($n['format'] == 'date') {
@@ -182,17 +187,17 @@ class CommonController extends Controller {
 						$q[3] || $q[3] = $q['attr'];
 						preg_match_all('/%7B(.*?)%7D/', $q[1], $match);
 						if ($match[1]) {
-							foreach($match[1] as $mm) {
-								$search[] = '%7B'.$mm.'%7D';
+							foreach ($match[1] as $mm) {
+								$search[] = '%7B' . $mm . '%7D';
 								$replace[] = $v[$mm];
 							}
 						}
 						$q[1] = str_replace($search, $replace, $q[1]);
 						unset($search);
 						unset($replace);
-						$format .= '<a href="'.$q[1].'" class="'.$q[2].'" '.$q[3].'>'.$q[0].'</a>&nbsp;';
+						$format .= '<a href="' . $q[1] . '" class="' . $q[2] . '" ' . $q[3] . '>' . $q[0] . '</a>&nbsp;';
 					}
-				
+
 					$data[$k][$m] = $format;
 				} else {
 					$data[$k][$m] = $v[$n['name']] !== '' ? $v[$n['name']] : $n['extra']['placeholder'];
@@ -219,9 +224,10 @@ class CommonController extends Controller {
 	 * 通用新增数据
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function common_add($model = array()) {
+	public function common_add($model = array())
+	{
 		!empty($model) && $this->model = $model;
-		$add_success_url = $this->model['add_success_url'] ? $this->model['add_success_url'] : U('lists', array('addon'=>get_addon())); 
+		$add_success_url = $this->model['add_success_url'] ? $this->model['add_success_url'] : U('lists', array('addon' => get_addon()));
 		$add_success_info = $this->model['add_success_info'] ? $this->model['add_success_info'] : '新增成功';
 		$add_error_info = $this->model['add_error_info'] ? $this->model['add_error_info'] : '新增失败';
 		if (IS_POST) {
@@ -230,9 +236,9 @@ class CommonController extends Controller {
 				if (isset($v['pre_type']) && isset($v['pre_name']) && isset($v['name'])) {
 					if ($v['pre_type'] == 'function') {
 						$function = $v['pre_name'];
-						if (!isset($v['pre_params'])) {									
-							$_POST[$v['name']] = $function($_POST[$v['name']]);		
-						} else {	
+						if (!isset($v['pre_params'])) {
+							$_POST[$v['name']] = $function($_POST[$v['name']]);
+						} else {
 							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
 							$params_arr = explode(',', $params_str);
 							switch (count($params_arr)) {
@@ -255,9 +261,9 @@ class CommonController extends Controller {
 						}
 					} elseif ($v['pre_type'] == 'callback') {
 						$callback = $v['pre_name'];
-						if (!isset($v['pre_params'])) {									
-							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);		
-						} else {	
+						if (!isset($v['pre_params'])) {
+							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);
+						} else {
 							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
 							$params_arr = explode(',', $params_str);
 							switch (count($params_arr)) {
@@ -287,7 +293,7 @@ class CommonController extends Controller {
 			$_auto = $this->model['auto'];
 			$Model->setProperty('_validate', $_validate);
 			$Model->setProperty('_auto', $_auto);
-			
+
 			if (!$Model->create()) {
 				$this->error($Model->getError());
 			} else {
@@ -336,16 +342,17 @@ class CommonController extends Controller {
 				$templateFile = APP_PATH . 'Common' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'add' . C('TMPL_TEMPLATE_SUFFIX');
 			}
 			$this->display($templateFile);
-		}	
+		}
 	}
 
 	/**
 	 * 通用编辑数据
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function common_edit($model = array()) {
+	public function common_edit($model = array())
+	{
 		!empty($model) && $this->model = $model;
-		$edit_success_url = $this->model['edit_success_url'] ? $this->model['edit_success_url'] : U('lists', array('addon'=>get_addon())); 
+		$edit_success_url = $this->model['edit_success_url'] ? $this->model['edit_success_url'] : U('lists', array('addon' => get_addon()));
 		$edit_success_info = $this->model['edit_success_info'] ? $this->model['edit_success_info'] : '编辑成功';
 		$edit_error_info = $this->model['edit_error_info'] ? $this->model['edit_error_info'] : '编辑失败';
 		if (IS_POST) {
@@ -354,9 +361,9 @@ class CommonController extends Controller {
 				if (isset($v['pre_type']) && isset($v['pre_name']) && isset($v['name'])) {
 					if ($v['pre_type'] == 'function') {
 						$function = $v['pre_name'];
-						if (!isset($v['pre_params'])) {									
-							$_POST[$v['name']] = $function($_POST[$v['name']]);		
-						} else {	
+						if (!isset($v['pre_params'])) {
+							$_POST[$v['name']] = $function($_POST[$v['name']]);
+						} else {
 							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
 							$params_arr = explode(',', $params_str);
 							switch (count($params_arr)) {
@@ -379,9 +386,9 @@ class CommonController extends Controller {
 						}
 					} elseif ($v['pre_type'] == 'callback') {
 						$callback = $v['pre_name'];
-						if (!isset($v['pre_params'])) {									
-							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);		
-						} else {	
+						if (!isset($v['pre_params'])) {
+							$_POST[$v['name']] = $this->$callback($_POST[$v['name']]);
+						} else {
 							$params_str = str_replace('###', $_POST[$v['name']], $v['pre_params']);
 							$params_arr = explode(',', $params_str);
 							switch (count($params_arr)) {
@@ -466,17 +473,18 @@ class CommonController extends Controller {
 				$templateFile = APP_PATH . 'Common' . DIRECTORY_SEPARATOR . 'View' . DIRECTORY_SEPARATOR . C('DEFAULT_THEME') . DIRECTORY_SEPARATOR . 'Base' . DIRECTORY_SEPARATOR . 'edit' . C('TMPL_TEMPLATE_SUFFIX');
 			}
 			$this->display($templateFile);
-		}	
+		}
 	}
 
 	/**
 	 * 通用数据删除
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function common_delete($model = array()) {
+	public function common_delete($model = array())
+	{
 		!empty($model) && $this->model = $model;
-		$delete_success_url = $this->model['delete_success_url'] ? $this->model['delete_success_url'] : U('lists', array('addon'=>get_addon())); 
-		$delete_success_info = $this->model['delete_success_info'] ? $this->model['delete_success_info'] : '删除成功'; 
+		$delete_success_url = $this->model['delete_success_url'] ? $this->model['delete_success_url'] : U('lists', array('addon' => get_addon()));
+		$delete_success_info = $this->model['delete_success_info'] ? $this->model['delete_success_info'] : '删除成功';
 		if (IS_POST) {			// 批量删除
 			if (isset($_POST['action']) && $_POST['action'] == 'mass_delete') {
 				$model = I('model');
@@ -517,7 +525,8 @@ class CommonController extends Controller {
 	/**
 	 * 设置浏览器标题
 	 */
-	public function setMetaTitle($meta_title) {
+	public function setMetaTitle($meta_title)
+	{
 		$this->model['meta_title'] = $meta_title;
 		return $this;
 	}
@@ -526,7 +535,8 @@ class CommonController extends Controller {
 	 * 设置表单提交方式
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setSubmitType($submit_type) {
+	public function setSubmitType($submit_type)
+	{
 		$this->model['submit_type'] = $submit_type;
 		return $this;
 	}
@@ -535,7 +545,8 @@ class CommonController extends Controller {
 	 * 设置模型
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setModel($model) {
+	public function setModel($model)
+	{
 		if (is_array($model)) {
 			$this->model = $model;
 		} else {
@@ -548,7 +559,8 @@ class CommonController extends Controller {
 	 * 设置查询条件
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setListMap($map) {
+	public function setListMap($map)
+	{
 		$this->model['list_map'] = $map;
 		return $this;
 	}
@@ -556,7 +568,8 @@ class CommonController extends Controller {
 	/**
 	 * 设置搜索条件
 	 */
-	public function setListSearch($search) {
+	public function setListSearch($search)
+	{
 		$this->model['list_search'] = $search;
 		return $this;
 	}
@@ -565,12 +578,14 @@ class CommonController extends Controller {
 	 * 设置数据排序
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setListOrder($order) {
+	public function setListOrder($order)
+	{
 		$this->model['list_order'] = $order;
 		return $this;
 	}
 
-	public function setListPer($per) {
+	public function setListPer($per)
+	{
 		$this->model['per'] = intval($per);
 		return $this;
 	}
@@ -579,7 +594,8 @@ class CommonController extends Controller {
 	 * 设置编辑条件
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setEditMap($map) {
+	public function setEditMap($map)
+	{
 		$this->model['edit_map'] = $map;
 		return $this;
 	}
@@ -588,7 +604,8 @@ class CommonController extends Controller {
 	 * 设置数据查询条件
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setFindMap($map) {
+	public function setFindMap($map)
+	{
 		$this->model['find_map'] = $map;
 		return $this;
 	}
@@ -597,7 +614,8 @@ class CommonController extends Controller {
 	 * 设置删除条件
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setDeleteMap($map) {
+	public function setDeleteMap($map)
+	{
 		$this->model['delete_map'] = $map;
 		return $this;
 	}
@@ -606,7 +624,8 @@ class CommonController extends Controller {
 	 * 添加表单字段
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addFormField($name, $title, $type = 'text', $extra = []) {
+	public function addFormField($name, $title, $type = 'text', $extra = [])
+	{
 		if (is_array($name)) {
 			$this->model['fields'][] = $name;
 		} else {
@@ -627,7 +646,8 @@ class CommonController extends Controller {
 	 * 添加自动验证规则
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addValidate($field, $rule, $error_tip, $condition, $extra_rule, $validate_time) {
+	public function addValidate($field, $rule, $error_tip, $condition, $extra_rule, $validate_time)
+	{
 		if (is_array($field)) {
 			$this->model['validate'][] = $field;
 		} else {
@@ -641,7 +661,8 @@ class CommonController extends Controller {
 	 * 添加自动完成规则
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addAuto($field, $rule, $condition, $extra_rule) {
+	public function addAuto($field, $rule, $condition, $extra_rule)
+	{
 		if (is_array($field)) {
 			$this->model['auto'][] = $field;
 		} else {
@@ -655,7 +676,8 @@ class CommonController extends Controller {
 	 * 设置自动验证
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setValidate($validate) {
+	public function setValidate($validate)
+	{
 		$this->model['validate'] = $validate;
 		return $this;
 	}
@@ -664,7 +686,8 @@ class CommonController extends Controller {
 	 * 设置自动完成
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setAuto($auto) {
+	public function setAuto($auto)
+	{
 		$this->model['auto'] = $auto;
 		return $this;
 	}
@@ -673,18 +696,20 @@ class CommonController extends Controller {
 	 * 设置表单值
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setFormData($data) {
+	public function setFormData($data)
+	{
 		$this->model['info'] = $data;
 		return $this;
 	}
 
-	public function setListData($data) {
-	    if (!is_array($data)) {
-	        return $this;
-        }
-        foreach ($data as $k => $v) {
-	        $this->model['list_data'][] = $v;
-        }
+	public function setListData($data)
+	{
+		if (!is_array($data)) {
+			return $this;
+		}
+		foreach ($data as $k => $v) {
+			$this->model['list_data'][] = $v;
+		}
 		return $this;
 	}
 
@@ -692,7 +717,8 @@ class CommonController extends Controller {
 	 * 设置表单字段
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setFormFields($fields) {
+	public function setFormFields($fields)
+	{
 		$this->model['fields'] = $fields;
 		return $this;
 	}
@@ -701,7 +727,8 @@ class CommonController extends Controller {
 	 * 设置新增成功后跳转链接
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setAddSuccessUrl($url) {
+	public function setAddSuccessUrl($url)
+	{
 		$this->model['add_success_url'] = $url;
 		return $this;
 	}
@@ -710,7 +737,8 @@ class CommonController extends Controller {
 	 * 设置编辑成功后跳转链接
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setEditSuccessUrl($url) {
+	public function setEditSuccessUrl($url)
+	{
 		$this->model['edit_success_url'] = $url;
 		return $this;
 	}
@@ -719,7 +747,8 @@ class CommonController extends Controller {
 	 * 设置删除成功跳转链接
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setDeleteSuccessUrl($url) {
+	public function setDeleteSuccessUrl($url)
+	{
 		$this->model['delete_success_url'] = $url;
 		return $this;
 	}
@@ -728,7 +757,8 @@ class CommonController extends Controller {
 	 * 设置新增成功后提示信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setAddSuccessInfo($info) {
+	public function setAddSuccessInfo($info)
+	{
 		$this->model['add_success_info'] = $info;
 		return $this;
 	}
@@ -737,7 +767,8 @@ class CommonController extends Controller {
 	 * 设置编辑成功后提示信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setEditSuccessInfo($info) {
+	public function setEditSuccessInfo($info)
+	{
 		$this->model['edit_success_info'] = $info;
 		return $this;
 	}
@@ -746,7 +777,8 @@ class CommonController extends Controller {
 	 * 设置删除成功后提示信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function setDeleteSuccessInfo($info) {
+	public function setDeleteSuccessInfo($info)
+	{
 		$this->model['delete_success_info'] = $info;
 		return $this;
 	}
@@ -755,7 +787,8 @@ class CommonController extends Controller {
 	 * 添加显示项
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addListItem($name, $title = '', $format = '', $extra = []) {
+	public function addListItem($name, $title = '', $format = '', $extra = [])
+	{
 		if (is_array($name)) {
 			$this->model['lists'][] = $name;
 		} else {
@@ -774,7 +807,8 @@ class CommonController extends Controller {
 	 * 添加面包屑
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addCrumb($title, $url = '', $class = '') {
+	public function addCrumb($title, $url = '', $class = '')
+	{
 		if (is_array($title)) {
 			$this->model['crumb'][] = $title;
 		} else {
@@ -787,8 +821,9 @@ class CommonController extends Controller {
 		}
 		return $this;
 	}
-	
-	public function setCrumb($crumb) {
+
+	public function setCrumb($crumb)
+	{
 		$this->model['crumb'] = $crumb;
 		return $this;
 	}
@@ -796,8 +831,9 @@ class CommonController extends Controller {
 	/**
 	 * 添加导航
 	 */
-	public function addNav($title, $url = '', $class = '') {
-		if (is_array($title)) {			
+	public function addNav($title, $url = '', $class = '')
+	{
+		if (is_array($title)) {
 			$this->model['nav'][] = $title;
 		} else {
 			$nav = array(
@@ -813,7 +849,8 @@ class CommonController extends Controller {
 	/**
 	 * 设置导航
 	 */
-	public function setNav($nav) {
+	public function setNav($nav)
+	{
 		$this->model['nav'] = $nav;
 		return $this;
 	}
@@ -821,7 +858,8 @@ class CommonController extends Controller {
 	/**
 	 * 添加子导航
 	 */
-	public function addSubNav($title, $url = '', $class = '') {
+	public function addSubNav($title, $url = '', $class = '')
+	{
 		if (is_array($title)) {
 			$this->model['subnav'][] = $title;
 		} else {
@@ -838,7 +876,8 @@ class CommonController extends Controller {
 	/**
 	 * 设置子导航
 	 */
-	public function setSubNav($subnav) {
+	public function setSubNav($subnav)
+	{
 		$this->model['subnav'] = $subnav;
 		return $this;
 	}
@@ -846,7 +885,8 @@ class CommonController extends Controller {
 	/**
 	 * 设置左侧导航
 	 */
-	public function setSideNav($sidenav) {
+	public function setSideNav($sidenav)
+	{
 		$this->model['sidenav'] = $sidenav;
 		return $this;
 	}
@@ -854,9 +894,10 @@ class CommonController extends Controller {
 	/**
 	 * 添加操作按钮
 	 */
-	public function addButton($title, $url = '', $class = 'btn btn-primary', $attr = '') {
+	public function addButton($title, $url = '', $class = 'btn btn-primary', $attr = '')
+	{
 		if (is_array($title)) {
-			$this->model['btn'][] = $title; 
+			$this->model['btn'][] = $title;
 		} else {
 			$btn = array(
 				'title' => $title,
@@ -872,7 +913,8 @@ class CommonController extends Controller {
 	/**
 	 * 设置提示信息
 	 */
-	public function setTip($tip) {
+	public function setTip($tip)
+	{
 		$this->model['tip'] = $tip;
 		return $this;
 	}
@@ -880,7 +922,8 @@ class CommonController extends Controller {
 	/**
 	 * 显示模板
 	 */
-	public function display($templateFile='',$charset='',$contentType='',$content='',$prefix='') {
+	public function display($templateFile = '', $charset = '', $contentType = '', $content = '', $prefix = '')
+	{
 		global $_G;
 		$this->model['meta_title'] || $this->model['meta_title'] = $this->meta_title;
 		$this->model['crumb'] || $this->model['crumb'] = $this->crumb;
@@ -902,9 +945,6 @@ class CommonController extends Controller {
 		$this->model['list_search'] && $this->assign('list_search', $this->model['list_search']);
 		$this->model['submit_type'] && $this->assign('submit_type', $this->model['submit_type']);
 		$this->assign('_G', $_G);
-		parent::display($templateFile,$charset,$contentType,$content,$prefix);
+		parent::display($templateFile, $charset, $contentType, $content, $prefix);
 	}
 }
-
-
- ?>

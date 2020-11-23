@@ -8,7 +8,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="blank" />
 <meta name="format-detection" content="telephone=no" />
-<title>{$meta_title}-{$system_settings['site_name']}</title>
+<title>{$meta_title}-{$system_settings['site_name'] | default='豆信'}</title>
 <meta name="keywords" content="{$settings['site_keywords']}" />
 <meta name="description" content="{$settings['site_intro']}" />
 <script type="text/javascript">
@@ -107,41 +107,7 @@
     </button>
 
     <div class="mod-header-user">
-        <ul class="pull-left">
-            <li class="dropdown mp">
-                <if condition="$mp_info['origin_id']">
-                <a href="#" class="dropdown-toggle mod-bell" data-toggle="dropdown">
-                    <img src="<if condition="$mp_info['headimg']">{$mp_info['headimg']}<else />__PUBLIC__/Admin/img/noname.jpg</if>" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
-                    {$mp_info['name']}
-                    <span class="caret"></span>
-                </a>
-                <else />
-                <a href="#" class="dropdown-toggle mod-bell" data-toggle="">
-                    <img src="__PUBLIC__/Admin/img/noname.jpg" class="img-circle" width="30" height="30" style="position:relative;top:8px;">
-                    <if condition="$_G['module'] eq 'admin'">
-                    系统管理后台
-                    <else />
-                    请选择账号
-                    </if>
-                </a>
-                </if>
-                <ul class="dropdown-menu mod-user">
-                    <!--<li>-->
-                        <!--<a href="{:U('Mp/Index/index', ['mpid'=>$mp_info['id']])}"><i class="icon icon-home"></i>管理当前账号</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                        <!--<a href="{:U('Mp/Mp/edit', ['id'=>$mp_info['id'], 'mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-edit"></i>编辑当前账号</a>-->
-                    <!--</li>-->
-                    <!--<li>-->
-                        <!--<a href="{:U('Mp/Mp/lists', ['mp_type'=>$mp_info['mp_type']])}"><i class="icon icon-ul"></i>管理其他账号</a>-->
-                    <!--</li>-->
-                    <volist name="mp_list" id="vo">
-                        <li>
-                            <a href="{:U('Mp/Index/index', ['mpid'=>$vo['id']])}">{$vo.name}</a>
-                        </li>
-                    </volist>
-                </ul>
-            </li>
+        <ul class="pull-left" style="padding-left: 30px;">
             <volist name="topnav" id="vo">
             <li class="top-menu"> 
                 <a href="{$vo.url}" class="{$vo.class}">{$vo.title}</a>
@@ -149,7 +115,7 @@
             </volist>
         </ul>
        <!--  <if condition="$mp_info"><a href="{:U('Mp/Index/index', array('mpid'=>$mp_info['id']))}">{$mp_info['name']}</a></if> -->
-        <ul class="pull-right">
+        <ul class="pull-right" style="margin-right: 235px">
             
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle mod-bell" data-toggle="dropdown">
@@ -161,7 +127,7 @@
                         您有 1 条消息                    
                     </div>
                     <li class="mod-media">
-                        <a href="http://bbs.douchat.net" target="_blank">
+                        <a href="http://www.douchat.net" target="_blank">
                             豆信体验反馈
                         </a>
                     </li>
