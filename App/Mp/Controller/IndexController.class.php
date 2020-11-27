@@ -43,7 +43,7 @@ class IndexController extends BaseController
 		$this->assign('info', $info);
 		$this->setMetaTitle('账号接入')
 			->addCrumb('公众号', '', '')
-			->addCrumb('首页', '', 'active')
+			->addCrumb('账号接入', '', 'active')
 			->addNav('账号信息', '', 'active')
 			->addNav('清除缓存', U('clear_cache'), '')
 			->assign('api_url', $apiUrl)

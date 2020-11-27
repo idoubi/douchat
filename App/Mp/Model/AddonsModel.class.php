@@ -1,15 +1,18 @@
-<?php 
+<?php
 
 namespace Mp\Model;
+
 use Think\Model;
 
-class AddonsModel extends Model {
+class AddonsModel extends Model
+{
 
 	/**
 	 * 获取用户权限范围内的插件
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_access_addons() {
+	public function get_access_addons()
+	{
 		$user_id = get_user_id();				// 当前管理用户
 		$user_access = D('User/User')->get_user_access($user_id);
 		$installed_addons = $this->get_installed_addons();
@@ -21,9 +24,9 @@ class AddonsModel extends Model {
 			$arr['bzname'] = $v['bzname'];
 			$arr['type'] = isset($v['type']) ? explode(',', $v['type']) : [1];
 			preg_match('/.*index.php/', $v['index_url'], $m);
-			$arr['url'] = str_replace($m[0], SITE_URL.'index.php', $v['index_url']);
+			$arr['url'] = str_replace($m[0], SITE_URL . 'index.php', $v['index_url']);
 			$arr['class'] = '';
-			
+
 			$addon_info = $this->get_addon_info($v['bzname']);
 			$arr['config'] = $addon_info['config'];
 			$access_addons[] = $arr;
@@ -35,8 +38,9 @@ class AddonsModel extends Model {
 	 * 判断插件是否禁用
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function is_addon_forbidden($addon, $mpid) {
-		$status = M('addons_access')->where(array('addon'=>$addon,'mpid'=>$mpid))->getField('status');
+	public function is_addon_forbidden($addon, $mpid)
+	{
+		$status = M('addons_access')->where(array('addon' => $addon, 'mpid' => $mpid))->getField('status');
 		if ($status == 2) {
 			return true;
 		} else {
@@ -48,7 +52,8 @@ class AddonsModel extends Model {
 	 * 获取已安装的插件
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_installed_addons($type = '') {
+	public function get_installed_addons($type = '')
+	{
 		$mpType = get_mp_type();
 		$map['status'] = 1;
 		if ($type) {
@@ -62,15 +67,15 @@ class AddonsModel extends Model {
 				$v['index_url'] = $addon_dir_info['config']['index_url'];
 			} elseif ($addon_dir_info['config']['respond_rule'] && $mpType != 2) {
 				// $v['index_url'] = U('Mp/Web/rule', array('addon'=>$v['bzname']));
-				$v['index_url'] = U('/addon/'.$v['bzname'].'/rule');
+				$v['index_url'] = U('/addon/' . $v['bzname'] . '/rule');
 			} elseif ($addon_dir_info['config']['setting']) {
 				// $v['index_url'] = U('Mp/Web/setting', array('addon'=>$v['bzname']));
-				$v['index_url'] = U('/addon/'.$v['bzname'].'/setting');
+				$v['index_url'] = U('/addon/' . $v['bzname'] . '/setting');
 			} else {
 				// $v['index_url'] = U('Mp/Web/index', array('addon'=>$v['bzname']));
-				$v['index_url'] = U('/addon/'.$v['bzname'].'/index');
+				$v['index_url'] = U('/addon/' . $v['bzname'] . '/index');
 			}
-			
+
 			if (!$v['last_version']) {
 				unset($addons[$k]);
 			}
@@ -85,7 +90,8 @@ class AddonsModel extends Model {
 	 * 根据插件标识名获取插件信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_addon_info_by_bzname($bzname) {
+	public function get_addon_info_by_bzname($bzname)
+	{
 		if (!$bzname) {
 			return false;
 		}
@@ -95,13 +101,14 @@ class AddonsModel extends Model {
 			return false;
 		}
 		return $addon_info;
-	} 
+	}
 
 	/**
 	 * 获取插件信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_addon_info($addon='', $type='file') {
+	public function get_addon_info($addon = '', $type = 'file')
+	{
 		if (empty($addon)) {
 			$addon = get_addon();
 		}
@@ -133,7 +140,8 @@ class AddonsModel extends Model {
 	 * 获取插件配置信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_addon_config($addon='') {
+	public function get_addon_config($addon = '')
+	{
 		if (empty($addon)) {
 			$addon = get_addon();
 		}
@@ -148,7 +156,8 @@ class AddonsModel extends Model {
 	 * 获取插件模型信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_addon_model($model) {
+	public function get_addon_model($model)
+	{
 		if (empty($model)) {
 			return false;
 		}
@@ -163,7 +172,8 @@ class AddonsModel extends Model {
 	 * 获取业务导航信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_addon_menu($act, $addon = '') {
+	public function get_addon_menu($act, $addon = '')
+	{
 		if ($addon == '') {
 			$addon = get_addon();
 		}
@@ -187,14 +197,15 @@ class AddonsModel extends Model {
 				break;
 			}
 		}
-		return $menu;		
+		return $menu;
 	}
 
 	/**
 	 * 更新插件配置信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function save_addon_config($config, $addon) {
+	public function save_addon_config($config, $addon)
+	{
 		if (!$addon) {
 			return false;
 		}
@@ -208,7 +219,8 @@ class AddonsModel extends Model {
 	 * 获取插件文件夹信息
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function get_addon_dir_info($bzname) {
+	public function get_addon_dir_info($bzname)
+	{
 		if (!$bzname) {
 			return false;
 		}
@@ -225,21 +237,32 @@ class AddonsModel extends Model {
 		}
 		return $addon_info;
 	}
-	
+
 	// 获取插件导航
-	public function get_addon_nav($addon = '') {
+	public function get_addon_nav($addon = '')
+	{
 		if (empty($addon)) {
 			$addon = get_addon();
 		}
 		$mpType = get_mp_type();		// 账号类型。1：公众号，2：小程序
 		$addon_config = D('Addons')->get_addon_config();
-		if ($addon_config['respond_rule'] == 1 && $mpType != 2) {
-			$addonnav['rule'] = array(
-				'title' => '响应规则',
-				'url' => U('/addon/'.$addon.'/rule'),
-				'class' => ACTION_NAME == 'rule' ? 'active' : ''
-			);
+
+		$addonnav = [];
+
+		if ($addon_config['menu'] == 1) {
+			$menu_list = $this->parse_menu($addon_config['menu_list']);
+
+			foreach ($menu_list as $k => $v) {
+				$addonnav['menu_' . $k] = $v;
+			}
+			// $addonnav['menu'] = array(
+			// 	'title' => '功能导航',
+			// 	'url' => !empty($menu_list) ? $menu_list[0]['url'] : '',
+			// 	'class' => ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME != 'entry' ? 'active' : '',
+			// 	'children' => $menu_list
+			// );
 		}
+
 		if ($addon_config['setting'] == 1) {
 			if (isset($addon_config['setting_list_group'])) {
 				foreach ($addon_config['setting_list_group'] as $k => $v) {
@@ -254,7 +277,7 @@ class AddonsModel extends Model {
 						}
 						$children[] = array(
 							'title' => $v['title'],
-							'url' => U('/addon/'.$addon.'/setting', array('type'=>$k)),
+							'url' => U('/addon/' . $addon . '/setting', array('type' => $k)),
 							'class' => $type == $k ? 'active' : ''
 						);
 					}
@@ -263,57 +286,62 @@ class AddonsModel extends Model {
 				$children = array(
 					array(
 						'title' => '默认配置',
-						'url' => U('/addon/'.$addon.'/setting'),
+						'url' => U('/addon/' . $addon . '/setting'),
 						'class' => 'active'
 					)
 				);
 			}
 			$addonnav['setting'] = array(
 				'title' => '配置参数',
-				'url' => U('/addon/'.$addon.'/setting'),
+				'url' => U('/addon/' . $addon . '/setting'),
+				'icon' => 'gear',
 				'class' => ACTION_NAME == 'setting' ? 'active' : '',
 				'children' => $children
 			);
 		}
+
+		if ($addon_config['respond_rule'] == 1 && $mpType != 2) {
+			$addonnav['rule'] = array(
+				'title' => '公众号回复',
+				'url' => U('/addon/' . $addon . '/rule'),
+				'class' => ACTION_NAME == 'rule' ? 'active' : '',
+				'icon' => 'reply'
+			);
+		}
+
 		if ($addon_config['entry'] == 1 && $mpType != 2) {
 			$entry_list = $this->parse_entry($addon_config['entry_list']);
 			$addonnav['entry'] = array(
 				'title' => '公众号入口',
 				'url' => !empty($entry_list) ? $entry_list[0]['url'] : '',
+				'icon' => 'eye',
 				'class' => $addon_config['entry_list'][I('act')] ? 'active' : '',
 				'children' => $entry_list
 			);
 		}
-		if ($addon_config['menu'] == 1) {
-			$menu_list = $this->parse_menu($addon_config['menu_list']);
-			$addonnav['menu'] = array(
-				'title' => '功能导航',
-				'url' => !empty($menu_list) ? $menu_list[0]['url'] : '',
-				'class' => ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME !='entry' ? 'active' : '',
-				'children' => $menu_list
-			);
-		}
+
 		return $addonnav;
 	}
-	
-	private function parse_entry($entry_list) {
+
+	private function parse_entry($entry_list)
+	{
 		foreach ($entry_list as $k => $v) {
 			$arr['title'] = $v;
-			$arr['url'] = U('/addon/'.get_addon().'/entry/'.$k);
+			$arr['url'] = U('/addon/' . get_addon() . '/entry/' . $k);
 			$arr['class'] = I('act') == $k ? 'active' : '';
 			$children[] = $arr;
 		}
 		return $children;
 	}
-	
-	private function parse_menu($menu_list) {
+
+	private function parse_menu($menu_list)
+	{
 		foreach ($menu_list as $k => $v) {
 			$arr['title'] = $v;
-			$arr['url'] = U('/addon/'.get_addon().'/web/'.$k);
+			$arr['url'] = U('/addon/' . get_addon() . '/web/' . $k);
 			$arr['class'] = ACTION_NAME == $k ? 'active' : '';
 			$children[] = $arr;
 		}
 		return $children;
 	}
-
 }

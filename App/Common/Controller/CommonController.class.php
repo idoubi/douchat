@@ -646,7 +646,7 @@ class CommonController extends Controller
 	 * 添加自动验证规则
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addValidate($field, $rule, $error_tip, $condition, $extra_rule, $validate_time)
+	public function addValidate($field, $rule, $error_tip, $condition = null, $extra_rule = null, $validate_time = null)
 	{
 		if (is_array($field)) {
 			$this->model['validate'][] = $field;
@@ -661,7 +661,7 @@ class CommonController extends Controller
 	 * 添加自动完成规则
 	 * @author 艾逗笔<765532665@qq.com>
 	 */
-	public function addAuto($field, $rule, $condition, $extra_rule)
+	public function addAuto($field, $rule, $condition = null, $extra_rule = null)
 	{
 		if (is_array($field)) {
 			$this->model['auto'][] = $field;

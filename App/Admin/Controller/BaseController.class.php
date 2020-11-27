@@ -4,52 +4,56 @@
  * 后台公用控制器
  * @author 艾逗笔<http://idoubi.cc>
  */
+
 namespace Admin\Controller;
+
 use Common\Controller\CommonController;
 
-class BaseController extends CommonController {
-	
+class BaseController extends CommonController
+{
+
 	// 初始化
-	public function __construct() {
+	public function __construct()
+	{
 		parent::__construct();
 		if (empty($this->user_access) || empty($this->user_access['admin'])) {
 			$this->error('你没有访问此模块的权限');
 		}
-		
+
 		global $_G;
 		$topnav = [];
 		if ($this->user_access['mp']) {
 			$topnav[] = array(
 				'title' => '账号中心',
 				'url' => U('Mp/Mp/lists'),
-				'class' => ''
-			);
-			$topnav[] = array(
-				'title' => '应用中心',
-				'url' => U('Mp/Addons/manage'),
+				'icon' => 'wechat',
 				'class' => ''
 			);
 		}
 		$topnav[] = array(
 			'title' => '系统管理',
 			'url' => U('Admin/Index/index'),
+			'icon' => 'gear',
 			'class' => 'active'
 		);
 		$sidenav = array(
 			array(
 				'title' => '首页',
 				'url' => U('Index/index'),
-				'class' => 'icon icon-home'
+				'class' => '',
+				'icon' => 'home'
 			),
 			array(
 				'title' => '全局设置',
 				'url' => U('Setting/siteinfo'),
-				'class' => 'icon icon-setting'
+				'icon' => 'gear',
+				'class' => ''
 			),
 			array(
 				'title' => '用户权限管理',
 				'url' => 'javascript:;',
-				'class' => 'icon icon-user',
+				'icon' => 'user',
+				'class' => '',
 				'attr' => 'data="icon"',
 				'children' => array(
 					array(
@@ -72,7 +76,8 @@ class BaseController extends CommonController {
 			array(
 				'title' => '账号管理',
 				'url' => 'javascript:;',
-				'class' => 'icon icon-reply',
+				'class' => '',
+				'icon' => 'wechat',
 				'attr' => 'data="icon"',
 				'children' => array(
 					array(
@@ -90,14 +95,15 @@ class BaseController extends CommonController {
 			array(
 				'title' => '扩展管理',
 				'url' => U('Addons/lists'),
-				'class' => 'icon icon-job',
-                'children' => [
-                    [
-                        'title' => '功能插件',
-                        'url' => U('Addons/lists'),
-                        'class' => $this->controller == 'addons' ? 'active' : ''
-                    ]
-                ]
+				'class' => '',
+				'icon' => 'plug',
+				'children' => [
+					[
+						'title' => '功能插件',
+						'url' => U('Addons/lists'),
+						'class' => $this->controller == 'addons' ? 'active' : ''
+					]
+				]
 			)
 		);
 		$this->assign('sidenav', $sidenav);
@@ -106,14 +112,12 @@ class BaseController extends CommonController {
 		$this->assign('system_settings', $_G['system_settings']);
 		$this->assign('user_info', $this->user_info);
 	}
-	
+
 	/**
 	 * 初始化
 	 */
-	public function _initialize() {
+	public function _initialize()
+	{
 		parent::_initialize();
 	}
 }
-
-
-?>

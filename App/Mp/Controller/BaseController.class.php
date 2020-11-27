@@ -42,23 +42,52 @@ class BaseController extends CommonController
 			}
 		}
 
-		$topnav[] = array(
-			'title' => '账号与应用',
-			'url' => U('Mp/Mp/lists', ['mp_type' => $_G['mp_type']]),
-			'class' => get_addon() || $_G['controller'] == 'addons' ? '' : 'active'
-		);
-		// $topnav[] = array(
-		// 	'title' => '应用中心',
-		// 	'url' => U('Mp/Addons/manage'),
-		// 	'class' => get_addon() || $_G['controller'] == 'addons' ? 'active' : ''
-		// );
-		if ($this->user_access['admin']) {
+		$modctl = $_G['module'] . '/' . $_G['controller'];
+		if (in_array($modctl, ['mp/mp', 'mp/user', 'mp/accesskey'])) {
 			$topnav[] = array(
-				'title' => '系统管理',
-				'url' => U('Admin/Index/index'),
+				'title' => '账号中心',
+				'url' => U('Mp/Mp/lists'),
+				'icon' => 'wechat',
+				'class' => 'active'
+			);
+			if ($this->user_access['admin']) {
+				$topnav[] = array(
+					'title' => '系统管理',
+					'icon' => 'gear',
+					'url' => U('Admin/Index/index'),
+					'class' => ''
+				);
+			}
+		}
+		if (in_array($modctl, ['mp/index', 'mp/addons', 'mp/payment', 'mp/message', 'mp/fans', 'mp/autoreply', 'mp/material', 'mp/custommenu', 'mp/sceneqrcode'])) {
+			$topnav[] = array(
+				'title' => '微信公众号',
+				'url' => U('Mp/Index/index'),
+				'icon' => 'wechat',
+				'class' => 'active'
+			);
+			$topnav[] = array(
+				'title' => '返回账号中心',
+				'url' => U('Mp/Mp/lists', ['type' => 1]),
+				'icon' => 'reply',
 				'class' => ''
 			);
 		}
+		if (get_addon()) {
+			$topnav[] = [
+				'title' => get_addon_name($this->addon),
+				'class' => 'active',
+				'icon' => 'plug',
+				'url' => U('/addon/' . $this->addon . '/web/index')
+			];
+			$topnav[] = [
+				'title' => '返回公众号',
+				'class' => '',
+				'icon' => 'reply',
+				'url' => U('Mp/Addons/manage')
+			];
+		}
+
 
 		add_hook('editor', 'Mp\Behavior\EditorBehavior');
 		add_hook('sidenav', 'Mp\Behavior\SidenavBehavior');				// 添加生成侧边栏导航的钩子

@@ -14,32 +14,114 @@ class SidenavBehavior extends Behavior
 
 	public function run(&$params)
 	{
+		$mod = $params['module'];
 		$ctl = $params['controller'];
 		$act = $params['action'];
 		$access_addons = D('Addons')->get_access_addons();
-		if (in_array($ctl, ['mp', 'user', 'accesskey'])) {
+
+		$modctl = $mod . '/' . $ctl;
+		if (in_array($modctl, ['mp/index', 'mp/payment', 'mp/message', 'mp/fans', 'mp/autoreply', 'mp/material', 'mp/custommenu', 'mp/sceneqrcode', 'mp/addons'])) {
+			$sidenav = [
+				[
+					'title' => '账号接入',
+					'url' => U('Index/index'),
+					'icon' => 'wechat',
+					'class' => $ctl == 'index' ? 'active' : ''
+				],
+				[
+					'title' => '支付管理',
+					'url' => U('Payment/wechat'),
+					'icon' => 'paypal',
+					'class' => $ctl == 'payment' ? 'active' : ''
+				],
+				[
+					'title' => '自动回复',
+					'url' => U('AutoReply/keyword'),
+					'icon' => 'reply',
+					'class' => $ctl == 'autoreply' ? 'active' : ''
+				],
+				[
+					'title' => '自定义菜单',
+					'url' => U('CustomMenu/publish'),
+					'icon' => 'list-alt',
+					'class' => $ctl == 'custommenu' ? 'active' : ''
+				],
+				[
+					'title' => '场景二维码',
+					'url' => U('SceneQrcode/lists'),
+					'icon' => 'qrcode',
+					'class' => $ctl == 'sceneqrcode' ? 'active' : ''
+				],
+				[
+					'title' => '粉丝管理',
+					'url' => U('Fans/lists'),
+					'icon' => 'user',
+					'class' => $ctl == 'fans' ? 'active' : ''
+				],
+				[
+					'title' => '消息管理',
+					'url' => U('Message/lists'),
+					'icon' => 'comments',
+					'class' => $ctl == 'message' ? 'active' : ''
+				],
+				[
+					'title' => '素材管理',
+					'url' => U('Material/text'),
+					'icon' => 'newspaper-o',
+					'class' => $ctl == 'material' ? 'active' : ''
+				],
+				[
+					'title' => '功能插件',
+					'url' => U('Mp/Addons/manage'),
+					'icon' => 'plug',
+					'class' => $ctl == 'addons' ? 'active' : ''
+				]
+			];
+
+			foreach ($access_addons as $k => $v) {
+				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
+					if (isset($v['config']['sidebar_list']['mp'])) {
+						$mp_sidebar = $v['config']['sidebar_list']['mp'];
+						foreach ($mp_sidebar as $kk => $vv) {
+							$sidenav[] = $vv;
+						}
+					}
+				}
+			}
+
+
+			return $sidenav;
+		}
+
+		if (in_array($modctl, ['mp/mp', 'mp/user', 'mp/accesskey'])) {
 			$sidenav = [
 				[
 					'title' => '账号管理',
-					'url' => '',
-					'class' => 'icon icon-ul',
+					'class' => $ctl == 'mp' ? 'active' : '',
+					'icon' => 'wechat',
 					'children' => [
 						[
 							'title' => '微信公众号',
-							'url' => U('Mp/lists', ['mp_type' => 1]),
-							'class' => $ctl == 'mp' && $params['mp_type'] == 1 ? 'active' : ''
+							'url' => U('Mp/lists', ['type' => 1]),
+							'class' => $ctl == 'mp' && $params['type'] == 1 ? 'active' : ''
 						],
 						[
 							'title' => '微信小程序',
-							'url' => U('Mp/lists', ['mp_type' => 2]),
-							'class' => $ctl == 'mp' && $params['mp_type'] == 2 ? 'active' : ''
+							'url' => U('Mp/lists', ['type' => 2]),
+							'class' => $ctl == 'mp' && $params['type'] == 2 ? 'active' : ''
 						]
 					]
 				],
+				// [
+				// 	'title' => '功能插件',
+				// 	'url' => U('Mp/Addons/manage'),
+				// 	'class' => $ctl == 'addons' ? 'icon icon-job active' : 'icon icon-job',
+				// ],
 				[
 					'title' => '个人中心',
 					'url' => '',
-					'class' => 'icon icon-user',
+					'class' => '',
+					'icon' => 'user',
 					'children' => [
 						[
 							'title' => '基本资料',
@@ -59,27 +141,17 @@ class SidenavBehavior extends Behavior
 
 					]
 				],
-				[
-					'title' => '应用中心',
-					'url' => U('Mp/Addons/manage'),
-					'class' => 'icon icon-job'
-				]
+
 			];
-		} elseif (in_array($ctl, ['addons']) || get_addon()) {
-			if ($act == 'manage') {
-				$sidenav[] = [
-					'title' => '全部应用',
-					'url' => U('Addons/manage'),
-					'class' => 'icon icon-list active'
-				];
-			} else {
-				$sidenav[] = [
-					'title' => get_addon_name(),
-					'url' => 'javascript:;',
-					'class' => 'icon icon-home',
-					'attr' => 'data="icon"',
-					'children' => D('Addons')->get_addon_nav()
-				];
+
+			return $sidenav;
+		}
+
+		if (get_addon()) {
+			$navs = D('Addons')->get_addon_nav();
+			foreach ($navs as $v) {
+				unset($v['children']);
+				$sidenav[] = $v;
 			}
 		} elseif ($params['mp_type'] == 2) {
 			$sidenav = [
@@ -112,73 +184,6 @@ class SidenavBehavior extends Behavior
 				]
 			];
 		} else {
-			$sidenav = [
-				array(
-					'title' => '功能',
-					'url' => 'javascript:;',
-					'class' => 'icon icon-signup',
-					'attr' => 'data="icon"',
-					'children' => [
-						[
-							'title' => '基础设置',
-							'url' => U('Index/index'),
-							'class' => $ctl == 'index' ? 'active' : ''
-						],
-						[
-							'title' => '支付管理',
-							'url' => U('Payment/wechat'),
-							'class' => $ctl == 'payment' ? 'active' : ''
-						],
-						[
-							'title' => '自动回复',
-							'url' => U('AutoReply/keyword'),
-							'class' => $ctl == 'autoreply' ? 'active' : ''
-						],
-						[
-							'title' => '自定义菜单',
-							'url' => U('CustomMenu/publish'),
-							'class' => $ctl == 'custommenu' ? 'active' : ''
-						],
-						[
-							'title' => '场景二维码',
-							'url' => U('SceneQrcode/lists'),
-							'class' => $ctl == 'sceneqrcode' ? 'active' : ''
-						],
-						[
-							'title' => '粉丝管理',
-							'url' => U('Fans/lists'),
-							'class' => $ctl == 'fans' ? 'active' : ''
-						],
-						[
-							'title' => '消息管理',
-							'url' => U('Message/lists'),
-							'class' => $ctl == 'message' ? 'active' : ''
-						],
-						[
-							'title' => '素材管理',
-							'url' => U('Material/text'),
-							'class' => $ctl == 'material' ? 'active' : ''
-						]
-					]
-				),
-				// [
-				// 	'title' => '应用功能',
-				// 	'url' => 'javascript:;',
-				// 	'class' => 'icon icon-job',
-				// 	'attr' => 'data="icon"',
-				// 	'children' => []
-				// ]
-			];
-			foreach ($access_addons as $k => $v) {
-				if (isset($v['config']['sidebar']) && $v['config']['sidebar'] == 1) {
-					if (isset($v['config']['sidebar_list']['mp'])) {
-						$mp_sidebar = $v['config']['sidebar_list']['mp'];
-						foreach ($mp_sidebar as $kk => $vv) {
-							$sidenav[] = $vv;
-						}
-					}
-				}
-			}
 		}
 		return $sidenav;
 	}

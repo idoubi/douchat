@@ -19,7 +19,7 @@ class MpController extends BaseController
 	public function __construct()
 	{
 		parent::__construct();
-		$this->mp_type = I('mp_type', 1, 'intval');
+		$this->mp_type = I('type', 1, 'intval');
 		$mp_type_arr = [
 			1 => '公众号',
 			2 => '小程序'
@@ -45,7 +45,7 @@ class MpController extends BaseController
 		}
 		$this->setMetaTitle($this->mp_type_name . '列表')
 			->addCrumb('账号管理', '', '')
-			->addCrumb($this->mp_type_name . '列表', '', 'active')
+			->addCrumb($this->mp_type_name . '', '', 'active')
 			->addNav($this->mp_type_name . '列表', '', 'active')
 			->setModel('mp')
 			->setListMap(array('user_id' => get_user_id(), 'mp_type' => $this->mp_type))
@@ -70,8 +70,8 @@ class MpController extends BaseController
 		}
 		$this->setMetaTitle('添加' . $this->mp_type_name)
 			->addCrumb('账号管理', '', '')
-			->addCrumb('添加' . $this->mp_type_name, '', 'active')
-			->addNav('返回' . $this->mp_type_name . '列表', U('lists', ['mp_type' => $this->mp_type]), '')
+			->addCrumb($this->mp_type_name, '', 'active')
+			->addNav('返回', U('lists', ['type' => $this->mp_type]), '')
 			->addNav('添加' . $this->mp_type_name, '', 'active')
 			->setModel('mp')
 			->addFormField('name', '账号名称', 'text')
@@ -108,7 +108,8 @@ class MpController extends BaseController
 	public function edit()
 	{
 		$this->addCrumb('账号管理', '', '')
-			->addCrumb('编辑' . $this->mp_type_name, '', 'active')
+			->addCrumb($this->mp_type_name, '', 'active')
+			->addNav('返回', U('lists', ['type' => $this->mp_type]), '')
 			->addNav('编辑' . $this->mp_type_name, '', 'active')
 			->setModel('mp')
 			->addFormField('name', '账号名称', 'text')

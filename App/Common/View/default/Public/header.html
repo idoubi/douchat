@@ -109,8 +109,12 @@
     <div class="mod-header-user">
         <ul class="pull-left" style="padding-left: 30px;">
             <volist name="topnav" id="vo">
-            <li class="top-menu"> 
-                <a href="{$vo.url}" class="{$vo.class}">{$vo.title}</a>
+            <li class="top-menu" style="margin-right: 10px"> 
+                <a href="{$vo.url}" class="{$vo.class}">
+                    <notempty name="vo.icon"></notempty>
+                    <icon class="fa fa-{$vo.icon|default=''}"></icon>
+                    </notempty>
+                    {$vo.title}</a>
             </li>
             </volist>
         </ul>

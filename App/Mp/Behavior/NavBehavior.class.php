@@ -1,30 +1,33 @@
-<?php 
+<?php
 
 namespace Mp\Behavior;
+
 use Think\Behavior;
 
 /**
  * 生成插件导航行为类
  * @author 艾逗笔<765532665@qq.com>
  */
-class NavBehavior extends Behavior {
+class NavBehavior extends Behavior
+{
 
-	public function run(&$params) {
+	public function run(&$params)
+	{
 		$mpType = get_mp_type();		// 账号类型。1：公众号，2：小程序
 		$addon = get_addon();
 		if ($addon && ACTION_NAME == 'index') {
 			$addonnav['index'] = array(
 				'title' => '功能导航',
-				'url' => U('Mp/Web/index', array('addon'=>$addon)),
+				'url' => U('Mp/Web/index', array('addon' => $addon)),
 				'class' => 'active'
-			);	
+			);
 			// return $addonnav;
 		}
 		$addon_config = D('Addons')->get_addon_config();
 		if ($addon_config['respond_rule'] == 1 && $mpType != 2) {
 			$addonnav['rule'] = array(
-				'title' => '响应规则',
-				'url' => U('/addon/'.$addon.'/rule'),
+				'title' => '公众号回复',
+				'url' => U('/addon/' . $addon . '/rule'),
 				'class' => ACTION_NAME == 'rule' ? 'active' : ''
 			);
 		}
@@ -42,7 +45,7 @@ class NavBehavior extends Behavior {
 						}
 						$children[] = array(
 							'title' => $v['title'],
-							'url' => U('/addon/'.$addon.'/setting', array('type'=>$k)),
+							'url' => U('/addon/' . $addon . '/setting', array('type' => $k)),
 							'class' => $type == $k ? 'active' : ''
 						);
 					}
@@ -51,14 +54,14 @@ class NavBehavior extends Behavior {
 				$children = array(
 					array(
 						'title' => '默认配置',
-						'url' => U('/addon/'.$addon.'/setting'),
+						'url' => U('/addon/' . $addon . '/setting'),
 						'class' => 'active'
 					)
 				);
 			}
 			$addonnav['setting'] = array(
 				'title' => '配置参数',
-				'url' => U('/addon/'.$addon.'/setting'),
+				'url' => U('/addon/' . $addon . '/setting'),
 				'class' => ACTION_NAME == 'setting' ? 'active' : '',
 				'children' => $children
 			);
@@ -77,7 +80,7 @@ class NavBehavior extends Behavior {
 			$addonnav['menu'] = array(
 				'title' => '业务导航',
 				'url' => !empty($menu_list) ? $menu_list[0]['url'] : '',
-				'class' => ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME !='entry' ? 'active' : '',
+				'class' => ACTION_NAME != 'rule' && ACTION_NAME != 'setting' && ACTION_NAME != 'entry' ? 'active' : '',
 				'children' => $menu_list
 			);
 		}
@@ -86,33 +89,34 @@ class NavBehavior extends Behavior {
 				return isset($addonnav['entry']['children']) ? $addonnav['entry']['children'] : [];
 			case 'setting':
 				return isset($addonnav['setting']['children']) ? $addonnav['setting']['children'] : [];
-            case 'index':
-                return isset($addonnav['setting']['children']) ? $addonnav : [];
+			case 'index':
+				return isset($addonnav['setting']['children']) ? $addonnav : [];
 			default:
 				return isset($addonnav['menu']['children']) ? $addonnav['menu']['children'] : [];
 		}
+
 		return $addonnav;
 	}
 
-	private function parse_entry($entry_list) {
+	private function parse_entry($entry_list)
+	{
 		foreach ($entry_list as $k => $v) {
 			$arr['title'] = $v;
-			$arr['url'] = U('/addon/'.get_addon().'/entry/'.$k);
+			$arr['url'] = U('/addon/' . get_addon() . '/entry/' . $k);
 			$arr['class'] = I('act') == $k ? 'active' : '';
 			$children[] = $arr;
 		}
 		return $children;
 	}
 
-	private function parse_menu($menu_list) {
+	private function parse_menu($menu_list)
+	{
 		foreach ($menu_list as $k => $v) {
 			$arr['title'] = $v;
-			$arr['url'] = U('/addon/'.get_addon().'/web/'.$k);
+			$arr['url'] = U('/addon/' . get_addon() . '/web/' . $k);
 			$arr['class'] = ACTION_NAME == $k ? 'active' : '';
 			$children[] = $arr;
 		}
 		return $children;
 	}
 }
-
- ?>

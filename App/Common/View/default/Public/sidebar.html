@@ -26,6 +26,7 @@
         <ul class="mod-bar" >
             <li>
                 <a href="{$vo.url}" class="{$vo.class}" {$vo.attr}>
+                    <icon class="fa fa-{$vo.icon|default='circle-o'}" style="margin-right: 10px"></icon>
                     <span>{$vo.title}</span>
                 </a>
                 <!-- <ul <if condition="CONTROLLER_NAME neq 'Addons'">class="hide"</if>> -->
@@ -33,6 +34,9 @@
                     <volist name="vo.children" id="vv">
                     <li>
                         <a href="{$vv.url}" class="{$vv.class}">
+                            <notempty name='vv.icon'>
+                            <icon class="fa fa-{$vv.icon|default='circle-o'}"></icon>
+                            </notempty>
                             <span>{$vv.title}</span>
                         </a>
                     </li>
